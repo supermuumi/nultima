@@ -1,0 +1,4 @@
+Program('tilemap', 
+        Glob('src/*.cpp'), 
+        FRAMEWORKS=['GLUT', 'OpenGL'],
+        )

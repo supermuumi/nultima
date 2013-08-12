@@ -1,2 +1,10 @@
 
 .DS_Store
+
+*.dblite
+
+*.o
+
+*~
+*.cpp~
+*.h~
