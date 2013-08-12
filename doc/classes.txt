@@ -1,0 +1,47 @@
+CLASSES
+
+Player
+* name
+* gender
+* class (fighter, ...)
+* HP
+* MP
+* Skills (strength, dexterity, wisdom/magic...)
+* Inventory (n Items)
+* Karma
+
+
+NPC
+* todo
+
+
+Item
+* id
+* name
+* category (weapon, potion, scroll, consumable)
+* type (e.g. weapon->sword, potion->red potion...)
+* cursed (boolean)
+* strength
+
+
+Enemy
+* id
+* name
+* HP
+* MP
+* behavior related stuff (ai behavior, min hp before flee...)
+
+
+Tile
+* id
+* type (swamp, grass, forest, deep forest, road, paved road, wall, )
+* movement modifier (e.g. -2 movement for deep forest...)
+* graphics
+  * first frame
+  * num frames
+  * frame length in ms
+
+
+Dialogue
+* id
+* tone (angry...)

@@ -1,0 +1,22 @@
+Business model
+* NONE OF THAT F2P CRAP
+* 
+
+Design & gameplay
+* compelling story (world is in peril, you must save it, gather a group)
+* feel like tabletop rpg from the 80s
+* challenging combat
+* spells, magic
+* various enemies
+* party management (invite, ask to leave...)
+* NPCs
+* living & breathing world (people go about their chores etc)
+* turn based?
+
+
+Tech
+* 2D tile based (or maybe go "voxels"?)
+* portable (osx, win, *nix?)
+* C / C++
+* OpenGL
+
