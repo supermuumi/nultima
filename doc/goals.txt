@@ -12,7 +12,9 @@ Design & gameplay
 * NPCs
 * living & breathing world (people go about their chores etc)
 * turn based?
-
+* time of day
+* multilevel world (mountains to dungeons)
+* seamless (no separation between world and cities)
 
 Tech
 * 2D tile based (or maybe go "voxels"?)

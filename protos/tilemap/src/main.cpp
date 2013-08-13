@@ -16,13 +16,14 @@
 
 #include "stb_image.c"
 #include "camera.h"
+#include "light.h"
 
 #define FRAND() ((float)rand() / RAND_MAX)
 
 using namespace std;
 
 void cleanup(void);       
-void buildLevel(void);
+void buildWorld(void);
 
 static int wWidth = 800;
 static int wHeight = 600;
@@ -33,11 +34,13 @@ double lastFrame = -1.f;
 double timedelta;
 
 Camera *cam;
-
-GLuint levelList;
+Light *light;
+GLuint worldList;
 
 GLuint textureRock;
 GLuint textureWood;
+GLuint textureGrass;
+GLuint textureWater;
 
 void display(void) {
     timer = clock() / (CLOCKS_PER_SEC / 1000.0);
@@ -46,10 +49,24 @@ void display(void) {
 
     glClearColor(0.1f, 0.2f, 0.4f, 1.f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+    // lighting
+    float poo[4];
+    light->ambient.getFloats(poo);
+    glLightfv( GL_LIGHT0, GL_AMBIENT, poo);
+    light->diffuse.getFloats(poo);
+    glLightfv( GL_LIGHT0, GL_DIFFUSE, poo);
+    light->specular.getFloats(poo);
+    glLightfv( GL_LIGHT0, GL_SPECULAR, poo);
+
+    float position[] = { cos(timer*0.0005f)*12.f, sin(timer*.0005f)*25.f, sin(timer*0.0005f)*14.0f, 0.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+    glShadeModel(GL_SMOOTH);
+
     glLoadIdentity();
     cam->setView();
 
-    glCallList(levelList);
+    glCallList(worldList);
    
     glutSwapBuffers();
     glutPostRedisplay();
@@ -184,62 +201,47 @@ void texturedCube(GLfloat size) {
     }
 }
 
-void buildLevel() {
+void buildWorld() {
+#define NUM_LAYERS 2
+    int mapWidth, mapHeight, bpp;
+    unsigned char *mapData[NUM_LAYERS];
 
-#define NUM_LEVELS 3
+    mapData[0] = stbi_load("worldmap.png", &mapWidth, &mapHeight, &bpp, 3);
+    mapData[1] = stbi_load("worldmap2.png", &mapWidth, &mapHeight, &bpp, 3);
+    
+    worldList = glGenLists(1);
+    glNewList(worldList, GL_COMPILE);
+    
+    for (int z = 0; z < NUM_LAYERS; z++) {
+	int ofs = 0;
+	for (int y = 0; y < mapHeight; y++) {
+	    for (int x = 0; x < mapWidth; x++) {
 
-    const char *level[NUM_LEVELS];
-    level[0] = 
-	"xxxxxxxx"
-	"xoooooox"
-	"xoooooox"
-	"xoooooox"
-	"xoooooox"
-	"xoooooox"
-	"xoooooox"
-	"xxxxxxxx";
+		int r = mapData[z][ofs++];
+		int g = mapData[z][ofs++];
+		int b = mapData[z][ofs++];
+		int p = (r << 16) | (g << 8) | b;
+	    
+		switch (p) {
+		case 0x0000ff: glBindTexture(GL_TEXTURE_2D, textureWater); break;
+		case 0x00ff00: glBindTexture(GL_TEXTURE_2D, textureGrass); break;
+		case 0x808080: glBindTexture(GL_TEXTURE_2D, textureRock); break;
+		case 0xff8000: glBindTexture(GL_TEXTURE_2D, textureWood); break;
+		default: continue;
+		}
 
-    level[1] = 
-	"xxxxxxxx"
-	"x______x"
-	"x______x"
-	"x______x"
-	"x______x"
-	"x______x"
-	"x______x"
-	"xxxxxxxx";
-
-    level[2] = 
-	"x______x"
-	"________"
-	"________"
-	"________"
-	"________"
-	"________"
-	"________"
-	"x______x";
-
-    levelList = glGenLists(1);
-    glNewList(levelList, GL_COMPILE);
-
-    for (int z = 0; z < NUM_LEVELS; z++) {
-	for (int y = 0, ofs = 0; y < 8; y++) {
-	    for (int x = 0; x < 8; x++, ofs++) {
-		
-		char ch = level[z][ofs];
-		if (ch == '_') continue;
-		if (ch == 'x') glBindTexture( GL_TEXTURE_2D, textureRock );
-		if (ch == 'o') glBindTexture( GL_TEXTURE_2D, textureWood );
-		
 		glPushMatrix();
 		glTranslatef((float)x, (float)y, (float)z);
-		//glutWireCube(1.0);
 		texturedCube(1.0);
 		glPopMatrix();
 	    }
 	}
+	stbi_image_free(mapData[z]);
     }
     glEndList();
+
+
+
 }
 
 int main(int argc, char** argv) {
@@ -259,12 +261,49 @@ int main(int argc, char** argv) {
 
     atexit(cleanup);
 
-    cout << "Running OpenGL version: " << glGetString(GL_VERSION) << endl;
-    cout << "Extensions:" << endl << glGetString(GL_EXTENSIONS) << endl;
+    //cout << "Running OpenGL version: " << glGetString(GL_VERSION) << endl;
+    //cout << "Extensions:" << endl << glGetString(GL_EXTENSIONS) << endl;
 
+    // set up lighting
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    // Create light components
+    float ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    float diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
+    float specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+
+    // Assign created components to GL_LIGHT0
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+
+
+    //glShadeModel(GL_SMOOTH);
+
+    float As[4] = {0.1f, 0.1f, 0.1f, 1.0f };
+    float Al[4] = {0.0f, 0.0f, 0.0f, 1.0f };
+    float Dl[4] = {1.0f, 1.0f, 1.0f, 1.0f };
+    float Sl[4] = {1.0f, 1.0f, 1.0f, 1.0f };
+    float Am[4] = {0.3f, 0.3f, 0.3f, 1.0f };
+    float Dm[4] = {0.9f, 0.5f, 0.5f, 1.0f };
+    float Sm[4] = {0.6f, 0.6f, 0.6f, 1.0f };
+    float f = 60.0f;
+
+    glLightModelfv( GL_LIGHT_MODEL_AMBIENT, As );
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, Am );
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Dm );
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, Sm );
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, f );
+
+    // textures
     glEnable( GL_TEXTURE_2D );
     textureRock = loadTexture("rock.jpg");
     textureWood = loadTexture("wood.jpg");
+    textureGrass = loadTexture("grass.jpg");
+    textureWater = loadTexture("water.gif");
 
     // enable culling
     glEnable(GL_DEPTH_TEST);
@@ -277,7 +316,10 @@ int main(int argc, char** argv) {
     cam->pos.y = 3.5f;
     cam->pos.z = 8.5f;
 
-    buildLevel();
+    light = new Light();
+
+    //buildLevel();
+    buildWorld();
 
     glutMainLoop();
 
