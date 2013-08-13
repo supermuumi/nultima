@@ -319,7 +319,9 @@ int main(int argc, char** argv) {
     light = new Light();
 
     //buildLevel();
+    printf("start time = %.4f\n", clock() / (CLOCKS_PER_SEC / 1000.0));
     buildWorld();
+    printf("end time = %.4f\n", clock() / (CLOCKS_PER_SEC / 1000.0));
 
     glutMainLoop();
 

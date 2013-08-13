@@ -1,0 +1,51 @@
+World tech
+==========
+
+The world is divided into cells, say 256x256 = 65k total. 
+
+Each cell:
+
+* is 64x64 blocks (right now stored as a 64x64 png)
+* can have N layers (to be decided how this works)
+* has a unique id
+
+===================
+Rendering the world
+===================
+
+Since we have a world that consists of "flat blocks", each cell should
+be rendered with just the one call (e.g. glCallList() - yes it's
+deprecated but just as an idea).
+
+And since we're top down, we should only see max 4 maps (we're at the
+corner of a map), most of the time just the one. Hence a simple cell based
+occlusion should be enough.
+
+
+=========
+Streaming
+=========
+
+Assuming each cell is a 64x64 8-bit PNG and our world has 65k cells, we can easily fit all of the textures in memory (takes like 16 megs). Of course this becomes less feasible as we add more layers to the
+world. 
+
+TODO Should look into using a tree of some sort (quad?)
+
+TODO Need to optimize generate-VBO-or-something-for-cell to be fast.
+
+TODO Cell data generation needs a background thread? Cross platform
+thread lib needed?
+
+As for the actual streaming logic, something like this is probably just fine:
+
+1) Track which cell the player is in
+
+2) Define streaming radius (how many cells outside of player are
+streamed in at any one time). Should this be a proper circle or
+rectangular? Does it matter?
+
+3) Keep the VBOs of all cells within the radius in memory
+
+4) As player moves to another cell, unload old cells and load new
+ones. Probably do this in another thread.
+

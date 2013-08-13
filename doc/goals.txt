@@ -22,3 +22,18 @@ Tech
 * C / C++
 * OpenGL
 
+Streaming
+* world divided into cells, say 256x256
+* each cell 
+  * is 64x64 blocks (right now stored as a 64x64 png)
+  * can have N layers (to be decided how this works)
+  * has a unique id
+* rendering
+  * each cell rendered with one call
+  * since we're top down, we should only see max 4 maps (we're at the corner of a map), most of the time just 1. Hence a simple cell based occlusion should be enough
+* streaming
+  * if each cell = 64x64 8-bit png
+  * and we have 256x256=65k cells
+  * then the texture data = 16 megs - could easily keep all of that in memory
+  * 
+

@@ -10,3 +10,9 @@
 *.h~
 
 
+
+*.txt#
+
+doc/.#goals.txt
+
+protos/tilemap/tilemap
