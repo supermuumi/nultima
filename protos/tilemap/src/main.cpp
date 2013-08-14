@@ -4,6 +4,7 @@
 #include <math.h>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 #if defined(__APPLE__) || defined(MACOSX)
 #include <OpenGL/glu.h>
@@ -13,10 +14,13 @@
 #include <GL/glut.h>
 #endif
 
-
 #include "stb_image.c"
+
+#include "gl_utils.h"
 #include "camera.h"
 #include "light.h"
+#include "Cell.h"
+#include "textures.h"
 
 #define FRAND() ((float)rand() / RAND_MAX)
 
@@ -37,10 +41,11 @@ Camera *cam;
 Light *light;
 GLuint worldList;
 
-GLuint textureRock;
-GLuint textureWood;
-GLuint textureGrass;
-GLuint textureWater;
+TextureManager *textures;
+#define WORLD_WIDTH 4
+#define WORLD_SIZE (WORLD_WIDTH*WORLD_WIDTH)
+
+Cell cells[WORLD_SIZE];
 
 void display(void) {
     timer = clock() / (CLOCKS_PER_SEC / 1000.0);
@@ -66,7 +71,9 @@ void display(void) {
     glLoadIdentity();
     cam->setView();
 
-    glCallList(worldList);
+    // TODO frustum culling
+    for (int i = 0; i < WORLD_SIZE; i++)
+	cells[i].render();
    
     glutSwapBuffers();
     glutPostRedisplay();
@@ -86,7 +93,7 @@ void keyboard(unsigned char key, int x, int y) {
         exit (0);
 
 	// TODO fix frame rate dependency
-#define CAM_SPEED .5f
+#define CAM_SPEED 10.5f
     case 'w': cam->moveZ(CAM_SPEED); break;
     case 's': cam->moveZ(-CAM_SPEED); break;
     case 'a': cam->moveX(-CAM_SPEED); break;
@@ -137,112 +144,23 @@ void cleanup(void) {
 }
 
 
-GLuint loadTexture(char* fname) {
-    int w, h, bpp;
-    unsigned char *data = stbi_load(fname, &w, &h, &bpp, 0);
-
-    GLuint ret;
-    glGenTextures(1, &ret);
-    glBindTexture( GL_TEXTURE_2D, ret );
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-		     GL_LINEAR_MIPMAP_NEAREST );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-
-    gluBuild2DMipmaps( GL_TEXTURE_2D, 3, w, h, 
-		       GL_RGB, GL_UNSIGNED_BYTE, data );
-
-    return ret;
-}
-
-// drawBox() from GLUT sources
-void texturedCube(GLfloat size) {
-    static GLfloat n[6][3] = {
-	{-1.0, 0.0, 0.0},
-	{0.0, 1.0, 0.0},
-	{1.0, 0.0, 0.0},
-	{0.0, -1.0, 0.0},
-	{0.0, 0.0, 1.0},
-	{0.0, 0.0, -1.0}
-    };
-    static GLint faces[6][4] = {
-
-	{0, 1, 2, 3},
-	{3, 2, 6, 7},
-	{7, 6, 5, 4},
-	{4, 5, 1, 0},
-	{5, 6, 2, 1},
-	{7, 4, 0, 3}
-    };
-    GLfloat v[8][3];
-    GLint i;
-
-    v[0][0] = v[1][0] = v[2][0] = v[3][0] = -size / 2;
-    v[4][0] = v[5][0] = v[6][0] = v[7][0] = size / 2;
-    v[0][1] = v[1][1] = v[4][1] = v[5][1] = -size / 2;
-    v[2][1] = v[3][1] = v[6][1] = v[7][1] = size / 2;
-    v[0][2] = v[3][2] = v[4][2] = v[7][2] = -size / 2;
-    v[1][2] = v[2][2] = v[5][2] = v[6][2] = size / 2;
-
-    for (i = 5; i >= 0; i--) {
-	glBegin(GL_QUADS);
-	glNormal3fv(&n[i][0]);
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex3fv(&v[faces[i][0]][0]);
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex3fv(&v[faces[i][1]][0]);
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex3fv(&v[faces[i][2]][0]);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex3fv(&v[faces[i][3]][0]);
-	glEnd();
-    }
-}
-
 void buildWorld() {
-#define NUM_LAYERS 2
-    int mapWidth, mapHeight, bpp;
-    unsigned char *mapData[NUM_LAYERS];
-
-    mapData[0] = stbi_load("worldmap.png", &mapWidth, &mapHeight, &bpp, 3);
-    mapData[1] = stbi_load("worldmap2.png", &mapWidth, &mapHeight, &bpp, 3);
-    
-    worldList = glGenLists(1);
-    glNewList(worldList, GL_COMPILE);
-    
-    for (int z = 0; z < NUM_LAYERS; z++) {
-	int ofs = 0;
-	for (int y = 0; y < mapHeight; y++) {
-	    for (int x = 0; x < mapWidth; x++) {
-
-		int r = mapData[z][ofs++];
-		int g = mapData[z][ofs++];
-		int b = mapData[z][ofs++];
-		int p = (r << 16) | (g << 8) | b;
-	    
-		switch (p) {
-		case 0x0000ff: glBindTexture(GL_TEXTURE_2D, textureWater); break;
-		case 0x00ff00: glBindTexture(GL_TEXTURE_2D, textureGrass); break;
-		case 0x808080: glBindTexture(GL_TEXTURE_2D, textureRock); break;
-		case 0xff8000: glBindTexture(GL_TEXTURE_2D, textureWood); break;
-		default: continue;
-		}
-
-		glPushMatrix();
-		glTranslatef((float)x, (float)y, (float)z);
-		texturedCube(1.0);
-		glPopMatrix();
-	    }
-	}
-	stbi_image_free(mapData[z]);
+    for (int i = 0; i < WORLD_SIZE; i++) {
+	int x = i % WORLD_WIDTH;
+	int y = i / WORLD_WIDTH;
+	cells[i].move((float)x*CELL_SIZE, (float)y*CELL_SIZE);
+	cells[i].load("worldmap.png");
     }
-    glEndList();
-
-
-
 }
+
+void loadTextures() {
+    textures = new TextureManager();
+    textures->addTexture("rock", "rock.jpg");
+    textures->addTexture("wood", "wood.jpg");
+    textures->addTexture("grass", "grass.jpg");
+    textures->addTexture("water", "water.gif");
+}
+
 
 int main(int argc, char** argv) {
 
@@ -300,10 +218,10 @@ int main(int argc, char** argv) {
 
     // textures
     glEnable( GL_TEXTURE_2D );
-    textureRock = loadTexture("rock.jpg");
-    textureWood = loadTexture("wood.jpg");
-    textureGrass = loadTexture("grass.jpg");
-    textureWater = loadTexture("water.gif");
+    loadTextures();
+
+
+    buildWorld();
 
     // enable culling
     glEnable(GL_DEPTH_TEST);
@@ -319,9 +237,7 @@ int main(int argc, char** argv) {
     light = new Light();
 
     //buildLevel();
-    printf("start time = %.4f\n", clock() / (CLOCKS_PER_SEC / 1000.0));
-    buildWorld();
-    printf("end time = %.4f\n", clock() / (CLOCKS_PER_SEC / 1000.0));
+    //buildWorld();
 
     glutMainLoop();
 
