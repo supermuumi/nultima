@@ -66,7 +66,10 @@ void Cell::load(char *fname, int layer) {
 	    // TODO should merge identical neighbors to reduce calls
 	    glPushMatrix();
 	    glTranslatef((float)x, (float)y, 0.0f);
-	    texturedCube(1.0);
+	    if (layer == 0)
+		texturedPlane(1.0);
+	    else 
+		texturedCube(1.0);
 	    glPopMatrix();
 	}
     }
@@ -85,45 +88,12 @@ void Cell::unload() {
 void Cell::render() {
     // TODO should assert?
     if (inMemory) {
-
-#ifdef CELL_DEBUG_LINES
-	glPushMatrix();
-	glBegin(GL_LINE_LOOP);
-	glColor3f(r, g, b);
-	glVertex3f(x, y, 0.0f);
-	glColor3f(r, g, b);
-	glVertex3f(x+CELL_SIZE, y, 0.0f);
-	glColor3f(r, g, b);
-	glVertex3f(x+CELL_SIZE, y+CELL_SIZE, 0.0f);
-	glColor3f(r, g, b);
-	glVertex3f(x, y+CELL_SIZE, 0.0f);
-	glColor3f(r, g, b);
-	glVertex3f(x, y, 0.0f);
-	glEnd();
-	glPopMatrix();
-#elif defined CELL_DEBUG_QUADS
-	glPushMatrix();
-	glBegin(GL_QUADS);
-	glColor3f(r, g, b);
-	glVertex3f(x, y, 0.0f);
-	glColor3f(r, g, b);
-	glVertex3f(x, y+CELL_SIZE, 0.0f);
-	glColor3f(r, g, b);
-	glVertex3f(x+CELL_SIZE, y+CELL_SIZE, 0.0f);
-	glColor3f(r, g, b);
-	glVertex3f(x+CELL_SIZE, y, 0.0f);
-	glEnd();
-	glPopMatrix();
-#else
 	for (int i = 0; i < numLayers; i++) {
 	    glPushMatrix();
-	    glTranslatef(x, y, (float)i);
+	    glTranslatef(x, y, (i == 0) ? 0.0f : i-0.5f);
 	    glCallList(displayList[i]);
 	    glPopMatrix();
 	}
-
-
-#endif
     }
 }
 

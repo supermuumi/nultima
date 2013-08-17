@@ -1,5 +1,4 @@
 Program('tilemap', 
         Glob('src/*.cpp'), 
-	#CPPDEFINES=['DEBUG_OCCLUSION'],
         FRAMEWORKS=['GLUT', 'OpenGL'],
         )

@@ -11,6 +11,7 @@
 
 void cubeAt(GLfloat x, GLfloat y, GLfloat z);
 void texturedCube(GLfloat size);
+void texturedPlane(GLfloat size);
 
 GLuint loadTexture(char *fname);
 

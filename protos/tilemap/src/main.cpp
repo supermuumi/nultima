@@ -150,9 +150,6 @@ void buildWorld() {
 	int x = i % WORLD_WIDTH;
 	int y = i / WORLD_WIDTH;
 	c.move((float)x*CELL_SIZE, (float)y*CELL_SIZE);
-	c.r = x * 0.25f;
-	c.g = y * 0.25f;
-	c.b = 0.0f; //(float)i / WORLD_SIZE;
 	c.load("worldmap.png", 0);
 	c.load("worldmap2.png", 1);
 	cells.push_back(c);
@@ -188,41 +185,6 @@ int main(int argc, char** argv) {
     //cout << "Running OpenGL version: " << glGetString(GL_VERSION) << endl;
     //cout << "Extensions:" << endl << glGetString(GL_EXTENSIONS) << endl;
 
-    // set up lighting
-    /*
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-
-    // Create light components
-    float ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-    float diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
-    float specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-
-
-    // Assign created components to GL_LIGHT0
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
-
-
-    //glShadeModel(GL_SMOOTH);
-
-    float As[4] = {0.1f, 0.1f, 0.1f, 1.0f };
-    float Al[4] = {0.0f, 0.0f, 0.0f, 1.0f };
-    float Dl[4] = {1.0f, 1.0f, 1.0f, 1.0f };
-    float Sl[4] = {1.0f, 1.0f, 1.0f, 1.0f };
-    float Am[4] = {0.3f, 0.3f, 0.3f, 1.0f };
-    float Dm[4] = {0.9f, 0.5f, 0.5f, 1.0f };
-    float Sm[4] = {0.6f, 0.6f, 0.6f, 1.0f };
-    float f = 60.0f;
-
-    glLightModelfv( GL_LIGHT_MODEL_AMBIENT, As );
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, Am );
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Dm );
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, Sm );
-    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, f );
-    */
     // textures
     glEnable( GL_TEXTURE_2D );
     loadTextures();
@@ -231,9 +193,9 @@ int main(int argc, char** argv) {
 
     // enable culling
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
-    //glFrontFace(GL_CW);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     cam = new Camera();
     cam->pos.x = CELL_SIZE / 2.0f; //3.5f;
@@ -241,9 +203,6 @@ int main(int argc, char** argv) {
     cam->pos.z = 10.0f;
 
     light = new Light();
-
-    //buildLevel();
-    //buildWorld();
 
     glutMainLoop();
 

@@ -31,7 +31,6 @@ class Cell {
 
     int numLayers;
     float x, y;
-    float r, g, b;
     char *fname;
     bool inMemory;
     GLuint *displayList; // display list - TODO replace with VBO or something more.. contemporary :)
