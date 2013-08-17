@@ -45,7 +45,7 @@ TextureManager *textures;
 #define WORLD_WIDTH 4
 #define WORLD_SIZE (WORLD_WIDTH*WORLD_WIDTH)
 
-Cell cells[WORLD_SIZE];
+std::vector<Cell> cells; //[WORLD_SIZE];
 
 void display(void) {
     timer = clock() / (CLOCKS_PER_SEC / 1000.0);
@@ -55,25 +55,25 @@ void display(void) {
     glClearColor(0.1f, 0.2f, 0.4f, 1.f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-    // lighting
-    float poo[4];
-    light->ambient.getFloats(poo);
-    glLightfv( GL_LIGHT0, GL_AMBIENT, poo);
-    light->diffuse.getFloats(poo);
-    glLightfv( GL_LIGHT0, GL_DIFFUSE, poo);
-    light->specular.getFloats(poo);
-    glLightfv( GL_LIGHT0, GL_SPECULAR, poo);
-
-    float position[] = { cos(timer*0.0005f)*12.f, sin(timer*.0005f)*25.f, sin(timer*0.0005f)*14.0f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, position);
-    glShadeModel(GL_SMOOTH);
-
+    glShadeModel(GL_FLAT);
+ 
     glLoadIdentity();
     cam->setView();
 
-    // TODO frustum culling
-    for (int i = 0; i < WORLD_SIZE; i++)
-	cells[i].render();
+#ifdef DEBUG_OCCLUSION
+    printf("rendering cells: ");
+#endif
+    for (int i = 0; i < WORLD_SIZE; i++) {
+	if (cam->cubeInFrustum(cells[i].x+CELL_SIZE/2.0f, cells[i].y+CELL_SIZE/2.0f, 0.0f, CELL_SIZE/2.0f)) {
+	    cells[i].render();
+#ifdef DEBUG_OCCLUSION
+	    printf("%d ", i);
+#endif
+	}
+    }
+#ifdef DEBUG_OCCLUSION
+    printf("\n");
+#endif
    
     glutSwapBuffers();
     glutPostRedisplay();
@@ -93,13 +93,13 @@ void keyboard(unsigned char key, int x, int y) {
         exit (0);
 
 	// TODO fix frame rate dependency
-#define CAM_SPEED 10.5f
-    case 'w': cam->moveZ(CAM_SPEED); break;
-    case 's': cam->moveZ(-CAM_SPEED); break;
-    case 'a': cam->moveX(-CAM_SPEED); break;
-    case 'd': cam->moveX(CAM_SPEED); break;
-    case 'q': cam->moveY(-CAM_SPEED); break;
-    case 'z': cam->moveY(CAM_SPEED); break;
+#define CAM_SPEED 1.0f
+    case 'w': cam->moveY(CAM_SPEED); break;
+    case 's': cam->moveY(-CAM_SPEED); break;
+    case 'a': cam->moveX(CAM_SPEED); break;
+    case 'd': cam->moveX(-CAM_SPEED); break;
+    case 'q': cam->moveZ(-CAM_SPEED); break;
+    case 'z': cam->moveZ(CAM_SPEED); break;
 
     case 'y': cam->rotateZ(CAM_SPEED); break;
     case 'h': cam->rotateZ(-CAM_SPEED); break;
@@ -133,7 +133,7 @@ void reshape(int x, int y) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //glOrtho(0, 1, 1, 0, 0, 1); 
-    gluPerspective( 60.0, (GLfloat)(wWidth)/(GLfloat)(wHeight), 0.1f, 50000.0 );
+    gluPerspective( 70.0, (GLfloat)(wWidth)/(GLfloat)(wHeight), 0.1f, 50000.0 );
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glutPostRedisplay();
@@ -146,10 +146,16 @@ void cleanup(void) {
 
 void buildWorld() {
     for (int i = 0; i < WORLD_SIZE; i++) {
+	Cell c = Cell(2);
 	int x = i % WORLD_WIDTH;
 	int y = i / WORLD_WIDTH;
-	cells[i].move((float)x*CELL_SIZE, (float)y*CELL_SIZE);
-	cells[i].load("worldmap.png");
+	c.move((float)x*CELL_SIZE, (float)y*CELL_SIZE);
+	c.r = x * 0.25f;
+	c.g = y * 0.25f;
+	c.b = 0.0f; //(float)i / WORLD_SIZE;
+	c.load("worldmap.png", 0);
+	c.load("worldmap2.png", 1);
+	cells.push_back(c);
     }
 }
 
@@ -183,6 +189,7 @@ int main(int argc, char** argv) {
     //cout << "Extensions:" << endl << glGetString(GL_EXTENSIONS) << endl;
 
     // set up lighting
+    /*
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
@@ -215,11 +222,10 @@ int main(int argc, char** argv) {
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Dm );
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, Sm );
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, f );
-
+    */
     // textures
     glEnable( GL_TEXTURE_2D );
     loadTextures();
-
 
     buildWorld();
 
@@ -230,9 +236,9 @@ int main(int argc, char** argv) {
     //glFrontFace(GL_CW);
 
     cam = new Camera();
-    cam->pos.x = 3.5f;
-    cam->pos.y = 3.5f;
-    cam->pos.z = 8.5f;
+    cam->pos.x = CELL_SIZE / 2.0f; //3.5f;
+    cam->pos.y = CELL_SIZE / 2.0f; //3.5f;
+    cam->pos.z = 10.0f;
 
     light = new Light();
 

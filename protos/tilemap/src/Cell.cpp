@@ -8,20 +8,35 @@
 extern TextureManager *textures;
 
 Cell::Cell() {
+    numLayers = 1;
+    displayList = new GLuint[numLayers];
     inMemory = false;
     x = y = 0.0f;
 }
 
-void Cell::load(char *fname) {
+Cell::Cell(int n) {
+    numLayers = n;
+    displayList = new GLuint[numLayers];
+    inMemory = false;
+    x = y = 0.0f;
+}
+/*
+Cell::~Cell() {
+    delete displayList;
+}
+*/
+void Cell::load(char *fname, int layer) {
     int mapWidth, mapHeight, bpp;    
     unsigned char *mapData;
 
+    assert(layer >= 0 && layer < numLayers);
+    
     mapData = stbi_load(fname, &mapWidth, &mapHeight, &bpp, 3);
 
     assert(mapWidth==CELL_SIZE && mapHeight==CELL_SIZE);
 
-    displayList = glGenLists(1);
-    glNewList(displayList, GL_COMPILE);
+    displayList[layer] = glGenLists(1);
+    glNewList(displayList[layer], GL_COMPILE);
 
     for (int y = 0, ofs = 0; y < CELL_SIZE; y++) {
 	for (int x = 0; x < CELL_SIZE; x++) {
@@ -48,6 +63,7 @@ void Cell::load(char *fname) {
 	    default: continue;
 	    }
 
+	    // TODO should merge identical neighbors to reduce calls
 	    glPushMatrix();
 	    glTranslatef((float)x, (float)y, 0.0f);
 	    texturedCube(1.0);
@@ -61,17 +77,53 @@ void Cell::load(char *fname) {
 }
 
 void Cell::unload() {
-    glDeleteLists(displayList, 1);
+    for (int i = 0; i < numLayers; i++)
+	glDeleteLists(displayList[i], 1);
     inMemory = false;
 }
 
 void Cell::render() {
     // TODO should assert?
     if (inMemory) {
+
+#ifdef CELL_DEBUG_LINES
 	glPushMatrix();
-	glTranslatef(x, y, 0.0f);
-	glCallList(displayList);
+	glBegin(GL_LINE_LOOP);
+	glColor3f(r, g, b);
+	glVertex3f(x, y, 0.0f);
+	glColor3f(r, g, b);
+	glVertex3f(x+CELL_SIZE, y, 0.0f);
+	glColor3f(r, g, b);
+	glVertex3f(x+CELL_SIZE, y+CELL_SIZE, 0.0f);
+	glColor3f(r, g, b);
+	glVertex3f(x, y+CELL_SIZE, 0.0f);
+	glColor3f(r, g, b);
+	glVertex3f(x, y, 0.0f);
+	glEnd();
 	glPopMatrix();
+#elif defined CELL_DEBUG_QUADS
+	glPushMatrix();
+	glBegin(GL_QUADS);
+	glColor3f(r, g, b);
+	glVertex3f(x, y, 0.0f);
+	glColor3f(r, g, b);
+	glVertex3f(x, y+CELL_SIZE, 0.0f);
+	glColor3f(r, g, b);
+	glVertex3f(x+CELL_SIZE, y+CELL_SIZE, 0.0f);
+	glColor3f(r, g, b);
+	glVertex3f(x+CELL_SIZE, y, 0.0f);
+	glEnd();
+	glPopMatrix();
+#else
+	for (int i = 0; i < numLayers; i++) {
+	    glPushMatrix();
+	    glTranslatef(x, y, (float)i);
+	    glCallList(displayList[i]);
+	    glPopMatrix();
+	}
+
+
+#endif
     }
 }
 

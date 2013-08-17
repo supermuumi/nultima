@@ -9,7 +9,7 @@
 #include <GL/glut.h>
 #endif
 
-#define CELL_SIZE 64 // each cell is CELL_SIZExCELL_SIZE blocks
+#define CELL_SIZE 64 // each cell is CELL_SIZExCELL_SIZE blocks, each block is 1.0 in size
 
 // pixel-to-block mapping (RGB values in .png denote block type)
 // TODO these should probably be in a separate Block.h
@@ -21,16 +21,21 @@
 class Cell {
  public:
     Cell();
-    void load(char *fname); // stream in, generate map
+    Cell(int n);
+    //    ~Cell();
+
+    void load(char *fname, int layer); // stream in, generate map
     void unload(); // stream out
     void render();
     void move(float, float);
 
- private:
+    int numLayers;
+    float x, y;
+    float r, g, b;
     char *fname;
     bool inMemory;
-    GLuint displayList; // display list - TODO replace with VBO or something more.. contemporary :)
-    float x, y;
+    GLuint *displayList; // display list - TODO replace with VBO or something more.. contemporary :)
+
 };
 
 

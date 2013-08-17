@@ -9,7 +9,9 @@
 #include <GL/glut.h>
 #endif
 
+void cubeAt(GLfloat x, GLfloat y, GLfloat z);
 void texturedCube(GLfloat size);
+
 GLuint loadTexture(char *fname);
 
 #endif

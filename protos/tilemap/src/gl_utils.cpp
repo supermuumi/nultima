@@ -1,8 +1,7 @@
+#include <math.h>
 #include "gl_utils.h"
 #define STBI_HEADER_FILE_ONLY
 #include "stb_image.c"
-
-
 
 // loads .. a texture *gasp*
 GLuint loadTexture(char* fname) {
@@ -26,6 +25,13 @@ GLuint loadTexture(char* fname) {
 		       GL_RGB, GL_UNSIGNED_BYTE, data );
 
     return ret;
+}
+
+void cubeAt(GLfloat x, GLfloat y, GLfloat z) {
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glutSolidCube(1.0);
+    glPopMatrix();
 }
 
 // drawBox() from GLUT sources
