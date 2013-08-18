@@ -33,9 +33,10 @@ static int wWidth = 800;
 static int wHeight = 600;
 static float angle = .0f;
 
-double timer = .0f;
-double lastFrame = -1.f;
-double timedelta;
+double timer = 0.f;
+double fps = 12.f;
+double timerDelta = 0.f;
+double lastFrame = 0.f;
 
 Camera *cam;
 Light *light;
@@ -47,11 +48,62 @@ TextureManager *textures;
 
 std::vector<Cell> cells; //[WORLD_SIZE];
 
-void display(void) {
-    timer = clock() / (CLOCKS_PER_SEC / 1000.0);
-    timedelta = (lastFrame < .0) ? .0 : timer-lastFrame;
-    lastFrame = timer;
+static void drawStats()
+{
+    char string[128];
+    sprintf(string, "fps: %4.0f (%4.1f ms)", 1000/fps, timerDelta);
+    int i, len; 
+   
+    glColor4f(1, 1, 1, 1);
 
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D( 0.0, wWidth, 0.0, wHeight);
+    //glTranslatef(0.0f, 0.0f, -5.0f);
+    
+    glRasterPos2i(20, wHeight-20);
+    
+    glDisable(GL_TEXTURE);
+    glDisable(GL_TEXTURE_2D);
+
+    for (i = 0, len = strlen(string); i < len; i++)
+        glutBitmapCharacter(GLUT_BITMAP_8_BY_13, (int)string[i]);
+
+    glEnable(GL_TEXTURE);
+    glEnable(GL_TEXTURE_2D);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+}
+
+void setCameraMatrices()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    //glOrtho(0, 1, 1, 0, 0, 1); 
+    gluPerspective( 70.0, (GLfloat)(wWidth)/(GLfloat)(wHeight), 0.1f, 50000.0 );
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+void display(void) {
+    static const double ratio = 0.98f;
+    timer = clock() / (CLOCKS_PER_SEC / 1000.0);
+    timerDelta = timer - lastFrame;
+    lastFrame = timer;
+    fps = timerDelta * (1.f-ratio) + fps * ratio;
+
+    setCameraMatrices();
+
+    glColor4f(1, 1, 1, 1);
     glClearColor(0.1f, 0.2f, 0.4f, 1.f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
@@ -74,6 +126,8 @@ void display(void) {
 #ifdef DEBUG_OCCLUSION
     printf("\n");
 #endif
+
+    drawStats();
    
     glutSwapBuffers();
     glutPostRedisplay();
@@ -130,12 +184,7 @@ void reshape(int x, int y) {
     wHeight = y;
 
     glViewport(0, 0, x, y);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    //glOrtho(0, 1, 1, 0, 0, 1); 
-    gluPerspective( 70.0, (GLfloat)(wWidth)/(GLfloat)(wHeight), 0.1f, 50000.0 );
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    setCameraMatrices(); 
     glutPostRedisplay();
 }
 
