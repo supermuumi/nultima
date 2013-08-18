@@ -1,7 +1,6 @@
 #define DEG2RAD 0.0174532925f
 
 #include <math.h>
-#include "vector.h"
 #include "object3d.h"
 
 Object3D::Object3D() {
