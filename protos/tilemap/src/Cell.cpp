@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <assert.h>§
 #include "Cell.h"
 #define STBI_HEADER_FILE_ONLY
 #include "stb_image.c"
@@ -12,6 +12,8 @@ Cell::Cell() {
     displayList = new GLuint[numLayers];
     inMemory = false;
     x = y = 0.0f;
+
+    mapData = new unsigned char*[CELL_MAX_LAYERS];
 }
 
 Cell::Cell(int n) {
@@ -19,31 +21,35 @@ Cell::Cell(int n) {
     displayList = new GLuint[numLayers];
     inMemory = false;
     x = y = 0.0f;
+
+    mapData = new unsigned char*[CELL_MAX_LAYERS];
 }
-/*
-Cell::~Cell() {
-    delete displayList;
+
+int Cell::getBlockAt(int x, int y, int layer) {
+    int ofs = (y * CELL_SIZE + x) * 3;
+    int r = mapData[layer][ofs++];
+    int g = mapData[layer][ofs++];
+    int b = mapData[layer][ofs++];
+
+    return (r << 16) | (g << 8) | b;
 }
-*/
+
 void Cell::load(char *fname, int layer) {
     int mapWidth, mapHeight, bpp;    
-    unsigned char *mapData;
 
     assert(layer >= 0 && layer < numLayers);
     
-    mapData = stbi_load(fname, &mapWidth, &mapHeight, &bpp, 3);
+    mapData[layer] = stbi_load(fname, &mapWidth, &mapHeight, &bpp, 3);
 
     assert(mapWidth==CELL_SIZE && mapHeight==CELL_SIZE);
 
     displayList[layer] = glGenLists(1);
     glNewList(displayList[layer], GL_COMPILE);
 
-    for (int y = 0, ofs = 0; y < CELL_SIZE; y++) {
+    for (int y = 0; y < CELL_SIZE; y++) {
 	for (int x = 0; x < CELL_SIZE; x++) {
-	    int r = mapData[ofs++];
-	    int g = mapData[ofs++];
-	    int b = mapData[ofs++];
-	    int p = (r << 16) | (g << 8) | b;
+
+	    int p = getBlockAt(x, y, layer);
 
 	    switch (p) {
 
@@ -59,7 +65,7 @@ void Cell::load(char *fname, int layer) {
 		case BLOCK_WOOD: 
 		    glBindTexture(GL_TEXTURE_2D, textures->get("wood")); 
 		    break;
-
+		    
 	    default: continue;
 	    }
 
@@ -73,15 +79,17 @@ void Cell::load(char *fname, int layer) {
 	    glPopMatrix();
 	}
     }
-    stbi_image_free(mapData);
+
     glEndList();
 
     inMemory = true;
 }
 
 void Cell::unload() {
-    for (int i = 0; i < numLayers; i++)
+    for (int i = 0; i < numLayers; i++) {
 	glDeleteLists(displayList[i], 1);
+	stbi_image_free(mapData[i]);
+    }
     inMemory = false;
 }
 

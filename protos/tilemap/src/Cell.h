@@ -10,6 +10,7 @@
 #include <GL/glut.h>
 #endif
 
+#define CELL_MAX_LAYERS 2 // 
 #define CELL_SIZE 64 // each cell is CELL_SIZExCELL_SIZE blocks, each block is 1.0 in size
 
 // pixel-to-block mapping (RGB values in .png denote block type)
@@ -23,12 +24,13 @@ class Cell {
  public:
     Cell();
     Cell(int n);
-    //    ~Cell();
 
     void load(char *fname, int layer); // stream in, generate map
     void unload(); // stream out
     void render();
     void move(float, float);
+
+    int getBlockAt(int x, int y, int layer);
 
     int numLayers;
     float x, y;
@@ -36,6 +38,7 @@ class Cell {
     bool inMemory;
     GLuint *displayList; // display list - TODO replace with VBO or something more.. contemporary :)
 
+    unsigned char **mapData;
 };
 
 

@@ -16,11 +16,13 @@
 
 #include "stb_image.c"
 
+#include "world.h"
 #include "gl_utils.h"
 #include "camera.h"
 #include "light.h"
 #include "Cell.h"
 #include "textures.h"
+#include "Player.h"
 
 #define FRAND() ((float)rand() / RAND_MAX)
 
@@ -28,6 +30,7 @@ using namespace std;
 
 void cleanup(void);       
 void buildWorld(void);
+void movePlayer(int x, int y);
 
 static int wWidth = 800;
 static int wHeight = 600;
@@ -41,10 +44,9 @@ double lastFrame = 0.f;
 Camera *cam;
 Light *light;
 GLuint worldList;
+Player *player;
 
 TextureManager *textures;
-#define WORLD_WIDTH 4
-#define WORLD_SIZE (WORLD_WIDTH*WORLD_WIDTH)
 
 std::vector<Cell> cells; //[WORLD_SIZE];
 
@@ -107,25 +109,18 @@ void display(void) {
     glClearColor(0.1f, 0.2f, 0.4f, 1.f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-    glShadeModel(GL_FLAT);
- 
     glLoadIdentity();
     cam->setView();
 
-#ifdef DEBUG_OCCLUSION
-    printf("rendering cells: ");
-#endif
+    // render world
     for (int i = 0; i < WORLD_SIZE; i++) {
 	if (cam->cubeInFrustum(cells[i].x+CELL_SIZE/2.0f, cells[i].y+CELL_SIZE/2.0f, 0.0f, CELL_SIZE/2.0f)) {
 	    cells[i].render();
-#ifdef DEBUG_OCCLUSION
-	    printf("%d ", i);
-#endif
 	}
     }
-#ifdef DEBUG_OCCLUSION
-    printf("\n");
-#endif
+
+    // render player
+    player->render();
 
     drawStats();
    
@@ -140,34 +135,41 @@ void idle(void) {
 void keyboard(unsigned char key, int x, int y) {
     x; y;
 
+    float dist = timerDelta * 0.1f;
+
     switch(key) {
     case 9: // tab
 	break; 
     case 27: // esc
         exit (0);
 
-	// TODO fix frame rate dependency
-#define CAM_SPEED 1.0f
-    case 'w': cam->moveY(CAM_SPEED); break;
-    case 's': cam->moveY(-CAM_SPEED); break;
-    case 'a': cam->moveX(CAM_SPEED); break;
-    case 'd': cam->moveX(-CAM_SPEED); break;
-    case 'q': cam->moveZ(-CAM_SPEED); break;
-    case 'z': cam->moveZ(CAM_SPEED); break;
+    case 'a': cam->moveX(dist); break;
+    case 'd': cam->moveX(-dist); break;
+    case 'w': cam->moveY(dist); break;
+    case 's': cam->moveY(-dist); break;
+    case 'q': cam->moveZ(-dist); break;
+    case 'z': cam->moveZ(dist); break;
 
-    case 'y': cam->rotateZ(CAM_SPEED); break;
-    case 'h': cam->rotateZ(-CAM_SPEED); break;
-    case 'g': cam->rotateX(-CAM_SPEED); break;
-    case 'j': cam->rotateX(CAM_SPEED); break;
-    case 't': cam->rotateY(-CAM_SPEED); break;
-    case 'b': cam->rotateY(CAM_SPEED); break;
+    case 'y': cam->rotateZ(dist); break;
+    case 'h': cam->rotateZ(-dist); break;
+    case 'g': cam->rotateX(-dist); break;
+    case 'j': cam->rotateX(dist); break;
+    case 't': cam->rotateY(-dist); break;
+    case 'b': cam->rotateY(dist); break;
 
- default: 
+    default: 
      cout << "pressed " << ((int)key) << endl;
         break;
     }
+}
 
-printf("cam pos = %.2f %.2f %.2f\n", cam->pos.x, cam->pos.y, cam->pos.z);
+void specialKeys(int key, int x, int y) {
+
+    if (key == GLUT_KEY_LEFT) movePlayer(-1, 0);
+    if (key == GLUT_KEY_RIGHT) movePlayer(1, 0);
+    if (key == GLUT_KEY_UP) movePlayer(0, 1); //cam->moveY(dist);
+    if (key == GLUT_KEY_DOWN) movePlayer(0, -1); //cam->moveY(-dist);
+
 }
 
 void click(int button, int updown, int x, int y)  {
@@ -214,6 +216,27 @@ void loadTextures() {
 }
 
 
+bool playerCanMoveTo(int p) {
+    if (p == BLOCK_ROCK || p == BLOCK_WATER) 
+	return false;
+    return true;
+}
+
+void movePlayer(int x, int y) {
+    int newX = player->x + x;
+    int newY = player->y + y;
+
+    // clip
+    if (newX < 0 || newY < 0 || newX >= CELL_SIZE*WORLD_WIDTH || newY >= CELL_SIZE*WORLD_WIDTH) 
+	return;
+
+    int cellId = newY/CELL_SIZE*WORLD_WIDTH + newX/CELL_SIZE;
+    Cell c = cells.at(cellId);
+    if (playerCanMoveTo(c.getBlockAt(newX % CELL_SIZE, newY % CELL_SIZE, player->layer)))
+	player->setPosition(newX, newY);
+}
+
+// TODO fix memleaks :-)
 int main(int argc, char** argv) {
 
     srand((unsigned)time(NULL));
@@ -224,6 +247,7 @@ int main(int argc, char** argv) {
     int win = glutCreateWindow("tilemap proto");
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(specialKeys);
     glutMouseFunc(click);
     glutMotionFunc(motion);
     glutReshapeFunc(reshape);
@@ -235,7 +259,8 @@ int main(int argc, char** argv) {
     //cout << "Extensions:" << endl << glGetString(GL_EXTENSIONS) << endl;
 
     // textures
-    glEnable( GL_TEXTURE_2D );
+    glShadeModel(GL_FLAT);
+    glEnable(GL_TEXTURE_2D);
     loadTextures();
 
     buildWorld();
@@ -252,10 +277,13 @@ int main(int argc, char** argv) {
     cam->pos.z = 10.0f;
 
     light = new Light();
+    player = new Player();
 
     glutMainLoop();
 
     delete cam;
+    delete light;
+    delete player;
 
     return 0;
 }

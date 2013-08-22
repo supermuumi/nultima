@@ -1,0 +1,27 @@
+* a - attack
+* b
+* c - cast spell
+* d
+* e - enter/exit
+* f
+* g
+* h
+* i - inventory
+* j
+* k
+* l - look
+* m - mount (or just use (u)se?)
+* n
+* o - open (or just use (u)se? would need (c)lose too if not...)
+* p - push/pull (or should pull be separate, e.g. (y)ank)
+* q
+* r - rest
+* s - search
+* t - talk
+* u - use
+* v
+* w 
+* x
+* y
+* z
+* up/down/left/right - move

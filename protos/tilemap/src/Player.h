@@ -4,10 +4,12 @@
 class Player {
  public:
     Player();
+    
+    void render();
+    void setPosition(int _x, int _y);
 
-    int getCellId();
-
-    int x, y; // location in world 
+    int x, y;
+    int layer;
 };
 
 #endif

@@ -1,0 +1,13 @@
+* attack
+*** fireball small/large/great
+*** ice bolt small/large/great
+*** freeze enemy
+*** panic - make enemy flee
+* defense
+*** protect - increase DEF for one (or more?) party members
+*** heal
+*** cure poison
+*** flee combat
+*** warp 
+* misc
+*** teleport - teleport to... nearest city/something?
