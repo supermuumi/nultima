@@ -26,6 +26,8 @@ Cell::Cell(int n) {
 }
 
 int Cell::getBlockAt(int x, int y, int layer) {
+    assert(x >= 0 && y >= 0 && layer >= 0);
+
     int ofs = (y * CELL_SIZE + x) * 3;
     int r = mapData[layer][ofs++];
     int g = mapData[layer][ofs++];

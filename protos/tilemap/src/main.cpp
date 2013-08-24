@@ -216,9 +216,20 @@ void loadTextures() {
 }
 
 
-bool playerCanMoveTo(int p) {
-    if (p == BLOCK_ROCK || p == BLOCK_WATER) 
-	return false;
+bool playerCanMoveTo(int x, int y, int layer)
+{
+    int     cellId  = y/CELL_SIZE*WORLD_WIDTH + x/CELL_SIZE;
+    Cell    c       = cells.at(cellId);
+
+    int block       = c.getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer);
+    int below       = c.getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer-1);
+
+    if (block == BLOCK_ROCK || block == BLOCK_WATER) 
+    	return false;
+
+    if (below == BLOCK_WATER)
+        return false;
+
     return true;
 }
 
@@ -228,12 +239,10 @@ void movePlayer(int x, int y) {
 
     // clip
     if (newX < 0 || newY < 0 || newX >= CELL_SIZE*WORLD_WIDTH || newY >= CELL_SIZE*WORLD_WIDTH) 
-	return;
+    	return;
 
-    int cellId = newY/CELL_SIZE*WORLD_WIDTH + newX/CELL_SIZE;
-    Cell c = cells.at(cellId);
-    if (playerCanMoveTo(c.getBlockAt(newX % CELL_SIZE, newY % CELL_SIZE, player->layer)))
-	player->setPosition(newX, newY);
+    if (playerCanMoveTo(newX, newY, player->layer))
+        player->setPosition(newX, newY);
 }
 
 // TODO fix memleaks :-)
