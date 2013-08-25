@@ -23,14 +23,16 @@
 #include "Cell.h"
 #include "textures.h"
 #include "Player.h"
+#include "keyboard.h"
 
 #define FRAND() ((float)rand() / RAND_MAX)
 
 using namespace std;
 
-void cleanup(void);       
+void cleanup(void);	  
 void buildWorld(void);
 void movePlayer(int x, int y);
+void handleKeys();
 
 static int wWidth = 800;
 static int wHeight = 600;
@@ -74,7 +76,7 @@ static void drawStats()
     glDisable(GL_TEXTURE_2D);
 
     for (i = 0, len = strlen(string); i < len; i++)
-        glutBitmapCharacter(GLUT_BITMAP_8_BY_13, (int)string[i]);
+	glutBitmapCharacter(GLUT_BITMAP_8_BY_13, (int)string[i]);
 
     glEnable(GL_TEXTURE);
     glEnable(GL_TEXTURE_2D);
@@ -97,6 +99,9 @@ void setCameraMatrices()
 }
 
 void display(void) {
+
+    handleKeys();
+
     static const double ratio = 0.98f;
     timer = clock() / (CLOCKS_PER_SEC / 1000.0);
     timerDelta = timer - lastFrame;
@@ -132,44 +137,40 @@ void idle(void) {
     glutPostRedisplay();
 }
 
-void keyboard(unsigned char key, int x, int y) {
-    x; y;
-
-    float dist = timerDelta * 0.1f;
-
-    switch(key) {
-    case 9: // tab
-	break; 
-    case 27: // esc
-        exit (0);
-
-    case 'a': cam->moveX(dist); break;
-    case 'd': cam->moveX(-dist); break;
-    case 'w': cam->moveY(dist); break;
-    case 's': cam->moveY(-dist); break;
-    case 'q': cam->moveZ(-dist); break;
-    case 'z': cam->moveZ(dist); break;
-
-    case 'y': cam->rotateZ(dist); break;
-    case 'h': cam->rotateZ(-dist); break;
-    case 'g': cam->rotateX(-dist); break;
-    case 'j': cam->rotateX(dist); break;
-    case 't': cam->rotateY(-dist); break;
-    case 'b': cam->rotateY(dist); break;
-
-    default: 
-     cout << "pressed " << ((int)key) << endl;
-        break;
-    }
+void keyPressed(unsigned char key, int x, int y) {
+    setKeyPressed(key, true);
 }
 
-void specialKeys(int key, int x, int y) {
+void keyReleased(unsigned char key, int x, int y) {
+    setKeyPressed(key, false);
+}
 
+void handleKeys() {
+    float dist = timerDelta * 0.03f;
+
+    if (isKeyDown('a')) cam->moveX(dist); 
+    if (isKeyDown('d')) cam->moveX(-dist); 
+    if (isKeyDown('w')) cam->moveY(dist); 
+    if (isKeyDown('s')) cam->moveY(-dist); 
+    if (isKeyDown('q')) cam->moveZ(-dist); 
+    if (isKeyDown('z')) cam->moveZ(dist); 
+
+    if (isKeyDown('y')) cam->rotateZ(dist);
+    if (isKeyDown('h')) cam->rotateZ(-dist);
+    if (isKeyDown('g')) cam->rotateX(-dist);
+    if (isKeyDown('j')) cam->rotateX(dist);
+    if (isKeyDown('t')) cam->rotateY(-dist);
+    if (isKeyDown('b')) cam->rotateY(dist);
+}
+
+void specialKeyPressed(int key, int x, int y) {
     if (key == GLUT_KEY_LEFT) movePlayer(-1, 0);
     if (key == GLUT_KEY_RIGHT) movePlayer(1, 0);
-    if (key == GLUT_KEY_UP) movePlayer(0, 1); //cam->moveY(dist);
-    if (key == GLUT_KEY_DOWN) movePlayer(0, -1); //cam->moveY(-dist);
+    if (key == GLUT_KEY_UP) movePlayer(0, 1);
+    if (key == GLUT_KEY_DOWN) movePlayer(0, -1); 
+}
 
+void specialKeyReleased(int key, int x, int y) {
 }
 
 void click(int button, int updown, int x, int y)  {
@@ -246,8 +247,10 @@ int main(int argc, char** argv) {
     glutInitWindowSize(wWidth, wHeight);
     int win = glutCreateWindow("tilemap proto");
     glutDisplayFunc(display);
-    glutKeyboardFunc(keyboard);
-    glutSpecialFunc(specialKeys);
+    glutKeyboardFunc(keyPressed);
+    glutKeyboardUpFunc(keyReleased);
+    glutSpecialFunc(specialKeyPressed);
+    glutSpecialUpFunc(specialKeyReleased);
     glutMouseFunc(click);
     glutMotionFunc(motion);
     glutReshapeFunc(reshape);
@@ -279,8 +282,11 @@ int main(int argc, char** argv) {
     light = new Light();
     player = new Player();
 
+    initKeyboard();
+
     glutMainLoop();
 
+    deinitKeyboard();
     delete cam;
     delete light;
     delete player;

@@ -16,3 +16,4 @@ protos/tilemap/ipch
 *.sdf
 *.vcxproj.user
 *.ilk
+*.org#
