@@ -44,10 +44,9 @@ double fps = 12.f;
 double timerDelta = 0.f;
 double lastFrame = 0.f;
 
-Camera *cam;
-Light *light;
-GLuint worldList;
-Player *player;
+Camera *g_cam;
+Light *g_sun;
+Player *g_player;
 
 TextureManager *textures;
 
@@ -100,8 +99,8 @@ void setCameraMatrices()
     glLoadIdentity();
 }
 
-void display(void) {
-
+void display(void) 
+{
     handleKeys();
 
     static const double ratio = 0.98f;
@@ -117,11 +116,11 @@ void display(void) {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     glLoadIdentity();
-    cam->setView();
+    g_cam->setView();
 
     // render world
     for (int i = 0; i < WORLD_SIZE; i++) {
-	if (cam->cubeInFrustum(cells[i]->x+CELL_SIZE/2.0f, cells[i]->y+CELL_SIZE/2.0f, 0.0f, CELL_SIZE/2.0f)) {
+	if (g_cam->cubeInFrustum(cells[i]->x+CELL_SIZE/2.0f, cells[i]->y+CELL_SIZE/2.0f, 0.0f, CELL_SIZE/2.0f)) {
 	    cells[i]->render();
 	}
     }
@@ -132,7 +131,7 @@ void display(void) {
         (*it)->render();
 
     // render player
-    player->render();
+    g_player->render();
 
     drawStats();
    
@@ -140,56 +139,65 @@ void display(void) {
     glutPostRedisplay();
 }
 
-void idle(void) {
+void idle(void) 
+{
     glutPostRedisplay();
 }
 
-void keyPressed(unsigned char key, int x, int y) {
+void keyPressed(unsigned char key, int x, int y) 
+{
     setKeyPressed(key, true);
 }
 
-void keyReleased(unsigned char key, int x, int y) {
+void keyReleased(unsigned char key, int x, int y) 
+{
     setKeyPressed(key, false);
 }
 
-void handleKeys() {
+void handleKeys() 
+{
     float dist = timerDelta * 0.03f;
 
-    if (isKeyDown('a')) cam->moveX(dist); 
-    if (isKeyDown('d')) cam->moveX(-dist); 
-    if (isKeyDown('w')) cam->moveY(dist); 
-    if (isKeyDown('s')) cam->moveY(-dist); 
-    if (isKeyDown('q')) cam->moveZ(-dist); 
-    if (isKeyDown('z')) cam->moveZ(dist); 
+    if (isKeyDown('a')) g_cam->moveX(dist); 
+    if (isKeyDown('d')) g_cam->moveX(-dist); 
+    if (isKeyDown('w')) g_cam->moveY(dist); 
+    if (isKeyDown('s')) g_cam->moveY(-dist); 
+    if (isKeyDown('q')) g_cam->moveZ(-dist); 
+    if (isKeyDown('z')) g_cam->moveZ(dist); 
 
-    if (isKeyDown('y')) cam->rotateZ(dist);
-    if (isKeyDown('h')) cam->rotateZ(-dist);
-    if (isKeyDown('g')) cam->rotateX(-dist);
-    if (isKeyDown('j')) cam->rotateX(dist);
-    if (isKeyDown('t')) cam->rotateY(-dist);
-    if (isKeyDown('b')) cam->rotateY(dist);
+    if (isKeyDown('y')) g_cam->rotateZ(dist);
+    if (isKeyDown('h')) g_cam->rotateZ(-dist);
+    if (isKeyDown('g')) g_cam->rotateX(-dist);
+    if (isKeyDown('j')) g_cam->rotateX(dist);
+    if (isKeyDown('t')) g_cam->rotateY(-dist);
+    if (isKeyDown('b')) g_cam->rotateY(dist);
 }
 
-void specialKeyPressed(int key, int x, int y) {
+void specialKeyPressed(int key, int x, int y) 
+{
     if (key == GLUT_KEY_LEFT) movePlayer(-1, 0);
     if (key == GLUT_KEY_RIGHT) movePlayer(1, 0);
     if (key == GLUT_KEY_UP) movePlayer(0, 1);
     if (key == GLUT_KEY_DOWN) movePlayer(0, -1); 
 }
 
-void specialKeyReleased(int key, int x, int y) {
+void specialKeyReleased(int key, int x, int y) 
+{
 }
 
-void click(int button, int updown, int x, int y)  {
+void click(int button, int updown, int x, int y)  
+{
     button; updown; x; y;
 }
 
-void motion (int x, int y)  {
+void motion (int x, int y)  
+{
     x; y;
     glutPostRedisplay();
 }
 
-void reshape(int x, int y) {
+void reshape(int x, int y) 
+{
     wWidth = x; 
     wHeight = y;
 
@@ -198,12 +206,15 @@ void reshape(int x, int y) {
     glutPostRedisplay();
 }
 
-void cleanup(void) {
+void cleanup(void) 
+{
     // TODO
 }
 
-void buildWorld() {
-    for (int i = 0; i < WORLD_SIZE; i++) {
+void buildWorld() 
+{
+    for (int i = 0; i < WORLD_SIZE; i++) 
+    {
 	Cell *c = new Cell(2);
 	int x = i % WORLD_WIDTH;
 	int y = i / WORLD_WIDTH;
@@ -239,7 +250,8 @@ void initializeInhabitants()
     stbi_image_free(data);
 }
 
-void loadTextures() {
+void loadTextures() 
+{
     textures = new TextureManager();
     textures->addTexture("rock", "rock.jpg");
     textures->addTexture("wood", "wood.jpg");
@@ -253,8 +265,8 @@ bool playerCanMoveTo(int x, int y, int layer)
     int     cellId  = y/CELL_SIZE*WORLD_WIDTH + x/CELL_SIZE;
     Cell*   c       = cells.at(cellId);
 
-    int block       = c->getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer);
-    int below       = c->getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer-1);
+    int block       = c->getBlockAt(x % CELL_SIZE, y % CELL_SIZE, g_player->layer);
+    int below       = c->getBlockAt(x % CELL_SIZE, y % CELL_SIZE, g_player->layer-1);
 
     if (block == BLOCK_ROCK || block == BLOCK_WATER) 
     	return false;
@@ -281,9 +293,10 @@ bool playerCanMoveTo(int x, int y, int layer)
     return true;
 }
 
-void movePlayer(int x, int y) {
-    int newX = player->x + x;
-    int newY = player->y + y;
+void movePlayer(int x, int y) 
+{
+    int newX = g_player->x + x;
+    int newY = g_player->y + y;
 
     // wrap around
     if (newX < 0) newX = CELL_SIZE*WORLD_WIDTH-1;
@@ -291,13 +304,46 @@ void movePlayer(int x, int y) {
     if (newX >= CELL_SIZE*WORLD_WIDTH) newX = 0;
     if (newY >= CELL_SIZE*WORLD_WIDTH) newY = 0;
 
-    if (playerCanMoveTo(newX, newY, player->layer))
-        player->setPosition(newX, newY);
+    if (playerCanMoveTo(newX, newY, g_player->layer))
+        g_player->setPosition(newX, newY);
+}
+
+void initPlayer() 
+{
+    g_player = new Player();
+}
+
+void deinitPlayer() 
+{
+    delete g_player;
+}
+
+void initLighting() 
+{
+    g_sun = new Light();
+}
+
+void deinitLighting() 
+{
+    delete g_sun;
+}
+
+void initCamera() 
+{
+    g_cam = new Camera();
+    g_cam->pos.x = CELL_SIZE / 2.0f; //3.5f;
+    g_cam->pos.y = CELL_SIZE / 2.0f; //3.5f;
+    g_cam->pos.z = 10.0f;
+}
+
+void deinitCamera() 
+{
+    delete g_cam;
 }
 
 // TODO fix memleaks :-)
-int main(int argc, char** argv) {
-
+int main(int argc, char** argv) 
+{
     srand((unsigned)time(NULL));
 
     glutInit(&argc, argv);
@@ -333,22 +379,17 @@ int main(int argc, char** argv) {
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
-    cam = new Camera();
-    cam->pos.x = CELL_SIZE / 2.0f; //3.5f;
-    cam->pos.y = CELL_SIZE / 2.0f; //3.5f;
-    cam->pos.z = 10.0f;
-
-    light = new Light();
-    player = new Player();
-
+    initPlayer();
+    initCamera();
+    initLighting();
     initKeyboard();
 
     glutMainLoop();
 
     deinitKeyboard();
-    delete cam;
-    delete light;
-    delete player;
+    deinitLighting();
+    deinitCamera();
+    deinitPlayer();
 
     while (cells.size())
     {
