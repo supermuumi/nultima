@@ -17,6 +17,7 @@
     <ClCompile Include="src\gl_utils.cpp" />
     <ClCompile Include="src\light.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\monster.cpp" />
     <ClCompile Include="src\object3d.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\textures.cpp" />
@@ -28,6 +29,7 @@
     <ClInclude Include="src\color.h" />
     <ClInclude Include="src\gl_utils.h" />
     <ClInclude Include="src\light.h" />
+    <ClInclude Include="src\monster.h" />
     <ClInclude Include="src\object3d.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\textures.h" />

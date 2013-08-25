@@ -21,6 +21,7 @@
 #include "Cell.h"
 #include "textures.h"
 #include "Player.h"
+#include "monster.h"
 
 #define FRAND() ((float)rand() / RAND_MAX)
 
@@ -43,6 +44,9 @@ Camera *cam;
 GLuint worldList;
 std::vector<Player*> g_heroes;
 int g_currentPlayer = 0;
+
+std::vector<Monster*> g_monsters;
+int g_currentMonster = -1;
 
 TextureManager *textures;
 
@@ -94,12 +98,28 @@ void setCameraMatrices()
     glLoadIdentity();
 }
 
-void display(void) {
+void display(void)
+{
     static const double ratio = 0.98f;
     timer = clock() / (CLOCKS_PER_SEC / 1000.0);
     timerDelta = timer - lastFrame;
     lastFrame = timer;
     fps = timerDelta * (1.f-ratio) + fps * ratio;
+
+    if (g_currentMonster >= 0)
+    {
+        g_monsters[g_currentMonster]->tick();
+        if (!g_monsters[g_currentMonster]->isActive())
+        {
+            g_currentMonster++;
+            if (g_currentMonster == g_monsters.size())
+            {
+                // Player's turn
+                g_currentMonster = -1;
+                g_currentPlayer = 0;
+            }
+        }
+    }
 
     setCameraMatrices();
 
@@ -116,6 +136,10 @@ void display(void) {
     // render heroes
     for (std::vector<Player*>::iterator it = g_heroes.begin(); it != g_heroes.end(); ++it)
         (*it)->render(it-g_heroes.begin() == g_currentPlayer);
+
+    // render monsters
+    for (std::vector<Monster*>::iterator it = g_monsters.begin(); it != g_monsters.end(); ++it)
+        (*it)->render(it-g_monsters.begin() == g_currentMonster);
 
     drawStats();
    
@@ -160,6 +184,9 @@ void keyboard(unsigned char key, int x, int y) {
 
 void specialKeys(int key, int x, int y)
 {
+    if (g_currentPlayer == -1)
+        return;
+
     bool endTurn = false;
     int deltaX = 0;
     int deltaY = 0;
@@ -174,7 +201,14 @@ void specialKeys(int key, int x, int y)
         deltaY = -1;
 
     if (movePlayer(deltaX, deltaY))
-        ++g_currentPlayer %= g_heroes.size();
+        g_currentPlayer++;
+
+    if (g_currentPlayer == g_heroes.size())
+    {
+        // Monsters turn
+        g_currentPlayer = -1;
+        g_currentMonster = 0;
+    }
 }
 
 void click(int button, int updown, int x, int y)  {
@@ -282,6 +316,12 @@ int main(int argc, char** argv) {
     g_heroes.push_back(hunter);
     g_heroes.push_back(gonzo);
 
+    Monster* monster1 = new Monster(4, 10);
+    Monster* monster2 = new Monster(6, 10);
+
+    g_monsters.push_back(monster1);
+    g_monsters.push_back(monster2);
+
     g_currentPlayer = 0;
 
     glutMainLoop();
@@ -293,6 +333,14 @@ int main(int argc, char** argv) {
         Player* jope = g_heroes.back();
         delete jope;
         g_heroes.pop_back();
+    }
+
+
+    while (g_monsters.size())
+    {
+        Monster* jope = g_monsters.back();
+        delete jope;
+        g_monsters.pop_back();
     }
     return 0;
 }

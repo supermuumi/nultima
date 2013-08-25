@@ -12,7 +12,6 @@ static const Vec3 s_blinkColor = Vec3(0.6, 0.6, 0.6);
 Player::Player(int x, int y) :
     m_x(x),
     m_y(y),
-    layer(1),
     m_lastColorChange(0),
     m_color(s_defaultColor)
 {}
@@ -40,7 +39,7 @@ void Player::render(bool isActive)
 
     glPushMatrix();
     glColor3f(m_color.x, m_color.y, m_color.z);
-    cubeAt((float)m_x, (float)m_y, layer-0.5f);
+    cubeAt((float)m_x, (float)m_y, 0.5f);
     glPopMatrix();
 
     glEnable(GL_TEXTURE);

@@ -11,7 +11,6 @@ class Player {
     void setPosition(int _x, int _y);
 
     int m_x, m_y;
-    int layer;
 
 private:
     double  m_lastColorChange;
