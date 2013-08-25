@@ -285,9 +285,11 @@ void movePlayer(int x, int y) {
     int newX = player->x + x;
     int newY = player->y + y;
 
-    // clip
-    if (newX < 0 || newY < 0 || newX >= CELL_SIZE*WORLD_WIDTH || newY >= CELL_SIZE*WORLD_WIDTH) 
-    	return;
+    // wrap around
+    if (newX < 0) newX = CELL_SIZE*WORLD_WIDTH-1;
+    if (newY < 0) newY = CELL_SIZE*WORLD_WIDTH-1;
+    if (newX >= CELL_SIZE*WORLD_WIDTH) newX = 0;
+    if (newY >= CELL_SIZE*WORLD_WIDTH) newY = 0;
 
     if (playerCanMoveTo(newX, newY, player->layer))
         player->setPosition(newX, newY);
