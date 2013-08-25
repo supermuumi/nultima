@@ -1,0 +1,4 @@
+Program('combat', 
+        Glob('src/*.cpp'), 
+        FRAMEWORKS=['GLUT', 'OpenGL'],
+        )
