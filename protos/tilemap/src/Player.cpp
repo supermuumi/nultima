@@ -6,8 +6,18 @@
 #include "gl_utils.h"
 
 Player::Player() {
+
+    m_strength = m_dexterity = m_intelligence = PLAYER_ATTR_DEFAULT;
+
+    inventory = new Inventory();
+
     x = y = 0;
     layer = 1;
+}
+
+Player::~Player()
+{
+    delete inventory;
 }
 
 void Player::setPosition(int _x, int _y) {
