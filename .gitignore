@@ -27,3 +27,5 @@ protos/tilemap/tilemap
 *.idb
 *.ipch
 
+
+protos/combat/combat

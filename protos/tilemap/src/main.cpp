@@ -51,7 +51,7 @@ Player *player;
 
 TextureManager *textures;
 
-std::vector<Cell> cells; //[WORLD_SIZE];
+std::vector<Cell*> cells; //[WORLD_SIZE];
 std::vector<Inhabitant*> inhabitants;
 
 static void drawStats()
@@ -121,8 +121,8 @@ void display(void) {
 
     // render world
     for (int i = 0; i < WORLD_SIZE; i++) {
-	if (cam->cubeInFrustum(cells[i].x+CELL_SIZE/2.0f, cells[i].y+CELL_SIZE/2.0f, 0.0f, CELL_SIZE/2.0f)) {
-	    cells[i].render();
+	if (cam->cubeInFrustum(cells[i]->x+CELL_SIZE/2.0f, cells[i]->y+CELL_SIZE/2.0f, 0.0f, CELL_SIZE/2.0f)) {
+	    cells[i]->render();
 	}
     }
 
@@ -204,12 +204,12 @@ void cleanup(void) {
 
 void buildWorld() {
     for (int i = 0; i < WORLD_SIZE; i++) {
-	Cell c = Cell(2);
+	Cell *c = new Cell(2);
 	int x = i % WORLD_WIDTH;
 	int y = i / WORLD_WIDTH;
-	c.move((float)x*CELL_SIZE, (float)y*CELL_SIZE);
-	c.load("worldmap.png", 0);
-	c.load("worldmap2.png", 1);
+	c->move((float)x*CELL_SIZE, (float)y*CELL_SIZE);
+	c->load("worldmap.png", 0);
+	c->load("worldmap2.png", 1);
 	cells.push_back(c);
     }
 }
@@ -251,10 +251,10 @@ void loadTextures() {
 bool playerCanMoveTo(int x, int y, int layer)
 {
     int     cellId  = y/CELL_SIZE*WORLD_WIDTH + x/CELL_SIZE;
-    Cell    c       = cells.at(cellId);
+    Cell*   c       = cells.at(cellId);
 
-    int block       = c.getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer);
-    int below       = c.getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer-1);
+    int block       = c->getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer);
+    int below       = c->getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer-1);
 
     if (block == BLOCK_ROCK || block == BLOCK_WATER) 
     	return false;
@@ -349,6 +349,13 @@ int main(int argc, char** argv) {
     delete cam;
     delete light;
     delete player;
+
+    while (cells.size())
+    {
+	Cell* c = cells.back();
+	delete c;
+	cells.pop_back();
+    }
 
     while (inhabitants.size())
     {
