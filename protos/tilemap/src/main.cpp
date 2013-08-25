@@ -24,6 +24,7 @@
 #include "textures.h"
 #include "Player.h"
 #include "keyboard.h"
+#include "inhabitant.h"
 
 #define FRAND() ((float)rand() / RAND_MAX)
 
@@ -51,6 +52,7 @@ Player *player;
 TextureManager *textures;
 
 std::vector<Cell> cells; //[WORLD_SIZE];
+std::vector<Inhabitant*> inhabitants;
 
 static void drawStats()
 {
@@ -124,6 +126,11 @@ void display(void) {
 	}
     }
 
+    // Render inhabitants
+    // TODO [sampo] culling
+    for (std::vector<Inhabitant*>::iterator it = inhabitants.begin(); it != inhabitants.end(); ++it)
+        (*it)->render();
+
     // render player
     player->render();
 
@@ -195,7 +202,6 @@ void cleanup(void) {
     // TODO
 }
 
-
 void buildWorld() {
     for (int i = 0; i < WORLD_SIZE; i++) {
 	Cell c = Cell(2);
@@ -208,6 +214,31 @@ void buildWorld() {
     }
 }
 
+extern void             stbi_image_free (void *retval_from_stbi_load);
+extern unsigned char    *stbi_load      (char const *filename,     int *x, int *y, int *comp, int req_comp);
+
+void initializeInhabitants()
+{
+    int mapWidth, mapHeight, bpp;    
+    unsigned char* data = stbi_load("inhabitants.png", &mapWidth, &mapHeight, &bpp, 3);
+    assert(mapWidth==CELL_SIZE && mapHeight==CELL_SIZE);
+
+    for (int i=0; i<mapWidth*mapHeight; i++)
+    {
+        int ofs = i * 3;
+        int r = data[ofs++];
+        int g = data[ofs++];
+        int b = data[ofs++];
+        unsigned int c = (r << 16) | (g << 8) | b;
+        if (c != 0x00808080)
+            continue;
+        
+        Inhabitant* jope = new Inhabitant(0, 0, i % CELL_SIZE, i / CELL_SIZE);
+        inhabitants.push_back(jope);
+    }
+    stbi_image_free(data);
+}
+
 void loadTextures() {
     textures = new TextureManager();
     textures->addTexture("rock", "rock.jpg");
@@ -217,9 +248,36 @@ void loadTextures() {
 }
 
 
-bool playerCanMoveTo(int p) {
-    if (p == BLOCK_ROCK || p == BLOCK_WATER) 
-	return false;
+bool playerCanMoveTo(int x, int y, int layer)
+{
+    int     cellId  = y/CELL_SIZE*WORLD_WIDTH + x/CELL_SIZE;
+    Cell    c       = cells.at(cellId);
+
+    int block       = c.getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer);
+    int below       = c.getBlockAt(x % CELL_SIZE, y % CELL_SIZE, player->layer-1);
+
+    if (block == BLOCK_ROCK || block == BLOCK_WATER) 
+    	return false;
+
+    if (below == BLOCK_WATER)
+        return false;
+
+    // loop the inhabitants
+    for (std::vector<Inhabitant*>::iterator it = inhabitants.begin(); it != inhabitants.end(); ++it)
+    {
+        int jopeCellX = (*it)->getCellX();
+        int jopeCellY = (*it)->getCellY();
+
+        if (cellId != jopeCellY*WORLD_SIZE + jopeCellX)
+            continue;
+
+        int jopeX = (*it)->getX();
+        int jopeY = (*it)->getY();
+
+        if (jopeX == x % CELL_SIZE && jopeY == y % CELL_SIZE)
+            return false;
+    }
+
     return true;
 }
 
@@ -229,12 +287,10 @@ void movePlayer(int x, int y) {
 
     // clip
     if (newX < 0 || newY < 0 || newX >= CELL_SIZE*WORLD_WIDTH || newY >= CELL_SIZE*WORLD_WIDTH) 
-	return;
+    	return;
 
-    int cellId = newY/CELL_SIZE*WORLD_WIDTH + newX/CELL_SIZE;
-    Cell c = cells.at(cellId);
-    if (playerCanMoveTo(c.getBlockAt(newX % CELL_SIZE, newY % CELL_SIZE, player->layer)))
-	player->setPosition(newX, newY);
+    if (playerCanMoveTo(newX, newY, player->layer))
+        player->setPosition(newX, newY);
 }
 
 // TODO fix memleaks :-)
@@ -267,6 +323,7 @@ int main(int argc, char** argv) {
     loadTextures();
 
     buildWorld();
+    initializeInhabitants();
 
     // enable culling
     glEnable(GL_DEPTH_TEST);
@@ -291,5 +348,11 @@ int main(int argc, char** argv) {
     delete light;
     delete player;
 
+    while (inhabitants.size())
+    {
+        Inhabitant* jope = inhabitants.back();
+        delete jope;
+        inhabitants.pop_back();
+    }
     return 0;
 }

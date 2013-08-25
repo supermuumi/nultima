@@ -15,7 +15,6 @@
     <ClCompile Include="src\Cell.cpp" />
     <ClCompile Include="src\color.cpp" />
     <ClCompile Include="src\gl_utils.cpp" />
-    <ClCompile Include="src\inhabitant.cpp" />
     <ClCompile Include="src\light.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\object3d.cpp" />
@@ -28,7 +27,6 @@
     <ClInclude Include="src\Cell.h" />
     <ClInclude Include="src\color.h" />
     <ClInclude Include="src\gl_utils.h" />
-    <ClInclude Include="src\inhabitant.h" />
     <ClInclude Include="src\light.h" />
     <ClInclude Include="src\object3d.h" />
     <ClInclude Include="src\Player.h" />
@@ -38,7 +36,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D7C1384B-99FA-41B0-9DED-DAEC62A336A0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>tilemap</RootNamespace>
+    <RootNamespace>combat</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,7 +62,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>.</OutDir>
+    <OutDir>.\</OutDir>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,7 +73,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>external\glut\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -83,7 +81,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>external\glut\lib\windows</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\tilemap_d.exe</OutputFile>
+      <OutputFile>.\combat_d.exe</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

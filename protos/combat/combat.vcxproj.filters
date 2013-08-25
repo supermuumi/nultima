@@ -11,7 +11,6 @@
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\textures.cpp" />
     <ClCompile Include="src\vec3.cpp" />
-    <ClCompile Include="src\inhabitant.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.h" />
@@ -23,6 +22,5 @@
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\textures.h" />
     <ClInclude Include="src\vec3.h" />
-    <ClInclude Include="src\inhabitant.h" />
   </ItemGroup>
 </Project>
