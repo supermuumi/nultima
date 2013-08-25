@@ -25,6 +25,7 @@
 #include "Player.h"
 #include "keyboard.h"
 #include "inhabitant.h"
+#include "Dice.h"
 
 #define FRAND() ((float)rand() / RAND_MAX)
 
@@ -345,6 +346,13 @@ void deinitCamera()
 int main(int argc, char** argv) 
 {
     srand((unsigned)time(NULL));
+
+    printf("single roll = %d\n", rollDice(6));
+    int* rolls = new int [10];
+    rollMultipleDice(6, 10, rolls);
+    for (int i = 0; i < 10; i++) printf("%d ", rolls[i]);
+    printf("\n");
+
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
