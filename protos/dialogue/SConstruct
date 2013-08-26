@@ -1,0 +1,6 @@
+Program('dialogue', 
+        Glob('*.cpp'), 
+	CPPPATH=['./libjson'],
+	LIBPATH=['./libjson'],
+	LIBS=['libjson']
+        )

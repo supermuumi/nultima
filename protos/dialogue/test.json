@@ -1,0 +1,13 @@
+{
+    "lines" : 
+    [
+	"Greetings!",
+	"My name is Jope!",
+	"I am the town drunk."
+    ],
+    "keywords": 
+    {
+	"name" : 1,
+	"job" : 2
+    }
+}
