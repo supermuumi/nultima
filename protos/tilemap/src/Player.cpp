@@ -9,7 +9,7 @@ Player::Player() {
 
     m_strength = m_dexterity = m_intelligence = PLAYER_ATTR_DEFAULT;
 
-    inventory = new Inventory();
+    m_inventory = new Inventory();
 
     x = y = 0;
     layer = 1;
@@ -17,7 +17,7 @@ Player::Player() {
 
 Player::~Player()
 {
-    delete inventory;
+    delete m_inventory;
 }
 
 void Player::setPosition(int _x, int _y) {

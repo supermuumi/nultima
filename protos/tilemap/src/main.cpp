@@ -49,6 +49,8 @@ Camera *g_cam;
 Light *g_sun;
 Player *g_player;
 
+bool g_inventoryVisible;
+
 TextureManager *textures;
 
 std::vector<Cell*> cells; //[WORLD_SIZE];
@@ -134,6 +136,9 @@ void display(void)
     // render player
     g_player->render();
 
+    if (g_inventoryVisible)
+	g_player->m_inventory->render(wWidth, wHeight);
+
     drawStats();
    
     glutSwapBuffers();
@@ -145,9 +150,25 @@ void idle(void)
     glutPostRedisplay();
 }
 
+void nextTurn()
+{
+    // TODO
+}
+
 void keyPressed(unsigned char key, int x, int y) 
 {
+    // always update the buffer just in case
     setKeyPressed(key, true);
+
+    bool advanceTurn = false;
+
+    if (key == 'i') 
+    {
+	g_inventoryVisible = !g_inventoryVisible;
+    }
+
+    if (advanceTurn)
+	nextTurn();
 }
 
 void keyReleased(unsigned char key, int x, int y) 
@@ -342,17 +363,59 @@ void deinitCamera()
     delete g_cam;
 }
 
+void setupOpenGL() 
+{
+    // textures
+    glShadeModel(GL_FLAT);
+    glEnable(GL_TEXTURE_2D);
+    loadTextures();
+
+    // enable culling
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+}
+
+void initGame()
+{
+    buildWorld();
+    initializeInhabitants();
+
+    initPlayer();
+    initCamera();
+    initLighting();
+    initKeyboard();
+
+    g_inventoryVisible = false;
+}
+
+void deinitGame() 
+{
+    deinitKeyboard();
+    deinitLighting();
+    deinitCamera();
+    deinitPlayer();
+
+    while (cells.size())
+    {
+	Cell* c = cells.back();
+	delete c;
+	cells.pop_back();
+    }
+
+    while (inhabitants.size())
+    {
+        Inhabitant* jope = inhabitants.back();
+        delete jope;
+        inhabitants.pop_back();
+    }
+}
+
 // TODO fix memleaks :-)
 int main(int argc, char** argv) 
 {
     srand((unsigned)time(NULL));
-
-    printf("single roll = %d\n", rollDice(6));
-    int* rolls = new int [10];
-    rollMultipleDice(6, 10, rolls);
-    for (int i = 0; i < 10; i++) printf("%d ", rolls[i]);
-    printf("\n");
-
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -373,44 +436,12 @@ int main(int argc, char** argv)
     //cout << "Running OpenGL version: " << glGetString(GL_VERSION) << endl;
     //cout << "Extensions:" << endl << glGetString(GL_EXTENSIONS) << endl;
 
-    // textures
-    glShadeModel(GL_FLAT);
-    glEnable(GL_TEXTURE_2D);
-    loadTextures();
-
-    buildWorld();
-    initializeInhabitants();
-
-    // enable culling
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
-
-    initPlayer();
-    initCamera();
-    initLighting();
-    initKeyboard();
+    setupOpenGL();
+    initGame();
 
     glutMainLoop();
 
-    deinitKeyboard();
-    deinitLighting();
-    deinitCamera();
-    deinitPlayer();
+    deinitGame();
 
-    while (cells.size())
-    {
-	Cell* c = cells.back();
-	delete c;
-	cells.pop_back();
-    }
-
-    while (inhabitants.size())
-    {
-        Inhabitant* jope = inhabitants.back();
-        delete jope;
-        inhabitants.pop_back();
-    }
     return 0;
 }

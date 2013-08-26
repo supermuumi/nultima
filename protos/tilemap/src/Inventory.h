@@ -11,8 +11,9 @@ public:
 
     void addItem(Item*);
     void removeItem(int id);
-
     int getTotalWeight();
+
+    void render(int w, int h);
 
 private:
     std::vector<Item*> m_items;

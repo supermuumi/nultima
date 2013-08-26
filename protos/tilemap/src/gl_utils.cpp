@@ -1,3 +1,4 @@
+#include <string>
 #include <math.h>
 #include "gl_utils.h"
 #define STBI_HEADER_FILE_ONLY
@@ -11,8 +12,6 @@ GLuint loadTexture(char* fname) {
     GLuint ret;
     glGenTextures(1, &ret);
     glBindTexture( GL_TEXTURE_2D, ret );
-
-    printf("loadTexture(%s): ret=%d\n", fname, ret);
 
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,

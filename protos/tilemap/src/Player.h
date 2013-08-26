@@ -20,7 +20,7 @@ class Player {
     int m_dexterity;
     int m_intelligence;
 
-    Inventory *inventory;
+    Inventory *m_inventory;
 
     int x, y;
     int layer;
