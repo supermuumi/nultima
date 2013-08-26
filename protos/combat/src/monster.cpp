@@ -1,8 +1,10 @@
-#include "monster.h"
-#include "gl_utils.h"
-
 #include <time.h>
 #include <assert.h>
+#include <vector>
+
+#include "monster.h"
+#include "gl_utils.h"
+#include "context.h"
 
 static const Vec3 s_defaultColor = Vec3(0.5, 0.2, 0);
 static const Vec3 s_blinkColor = Vec3(0.6, 0.6, 0.6);
@@ -10,7 +12,7 @@ static const Vec3 s_blinkColor = Vec3(0.6, 0.6, 0.6);
 const Monster::Strategy g_approach[] =
 {
     {Monster::WAITING, 1000},
-    {Monster::MOVING, 0},
+    {Monster::MOVING, -1},
     {Monster::WAITING, 1000}
 };
 
@@ -24,6 +26,47 @@ Monster::Monster(int x, int y) :
     m_strategyStep(0)
 {}
 
+typedef struct
+{
+    int x;
+    int y;
+} Move;
+
+const Move s_possibleMoves[] =
+{
+    {0, -1},
+    {1, 0},
+    {-1, 0},
+    {0, 1},
+};
+
+// TODO approach player instead of move randomly
+void Monster::move()
+{
+    int newX = m_x;
+    int newY = m_y;
+
+    for (int i=0; i<sizeof(s_possibleMoves)/sizeof(s_possibleMoves[0]); i++)
+    {
+        newX = m_x + s_possibleMoves[i].x;
+        newY = m_y + s_possibleMoves[i].y;
+
+        // Collide with other monsters
+        bool collision = false;
+        std::vector<Monster*> monsters = CONTEXT()->getMonsters();
+        for (std::vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it)
+            if (newX == (*it)->m_x && newY == (*it)->m_y)
+                collision = true;
+
+        if (!collision)
+            break;
+    }
+
+    // take step
+    m_x = newX;
+    m_y = newY;
+}
+
 void Monster::tick()
 {
     double timer = clock() / (CLOCKS_PER_SEC / 1000.0);
@@ -31,8 +74,10 @@ void Monster::tick()
     // Make a decision
     if (m_stage == UNDECIDED)
     {
-        // TODO [sampo] always approaching
+        // If next to a player, attack (if many which one?)
+        // If not, move
         m_strategy = g_approach;
+
         m_strategyStep = 0;
         m_lastStageChange = timer;
         m_stage = m_strategy[m_strategyStep].stage;
@@ -49,7 +94,7 @@ void Monster::tick()
 
     case MOVING:
         // TODO [sampo] approach the closest player:
-        m_y -= 1;
+        move();
         break;
 
     case MELEE_ATTACK:

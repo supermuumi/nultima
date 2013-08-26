@@ -14,6 +14,7 @@
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\Cell.cpp" />
     <ClCompile Include="src\color.cpp" />
+    <ClCompile Include="src\context.cpp" />
     <ClCompile Include="src\gl_utils.cpp" />
     <ClCompile Include="src\light.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -27,6 +28,7 @@
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Cell.h" />
     <ClInclude Include="src\color.h" />
+    <ClInclude Include="src\context.h" />
     <ClInclude Include="src\gl_utils.h" />
     <ClInclude Include="src\light.h" />
     <ClInclude Include="src\monster.h" />

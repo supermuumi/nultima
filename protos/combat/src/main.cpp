@@ -22,6 +22,7 @@
 #include "textures.h"
 #include "Player.h"
 #include "monster.h"
+#include "context.h"
 
 #define FRAND() ((float)rand() / RAND_MAX)
 
@@ -42,10 +43,7 @@ double lastFrame = 0.f;
 
 Camera *cam;
 GLuint worldList;
-std::vector<Player*> g_heroes;
 int g_currentPlayer = 0;
-
-std::vector<Monster*> g_monsters;
 int g_currentMonster = -1;
 
 TextureManager *textures;
@@ -108,11 +106,12 @@ void display(void)
 
     if (g_currentMonster >= 0)
     {
-        g_monsters[g_currentMonster]->tick();
-        if (!g_monsters[g_currentMonster]->isActive())
+        std::vector<Monster*> monsters = CONTEXT()->getMonsters();
+        monsters[g_currentMonster]->tick();
+        if (!monsters[g_currentMonster]->isActive())
         {
             g_currentMonster++;
-            if (g_currentMonster == g_monsters.size())
+            if (g_currentMonster == monsters.size())
             {
                 // Player's turn
                 g_currentMonster = -1;
@@ -134,12 +133,14 @@ void display(void)
 	g_arena->render();
 
     // render heroes
-    for (std::vector<Player*>::iterator it = g_heroes.begin(); it != g_heroes.end(); ++it)
-        (*it)->render(it-g_heroes.begin() == g_currentPlayer);
+    std::vector<Player*> heroes = CONTEXT()->getHeroes();
+    for (std::vector<Player*>::iterator it = heroes.begin(); it != heroes.end(); ++it)
+        (*it)->render(it-heroes.begin() == g_currentPlayer);
 
     // render monsters
-    for (std::vector<Monster*>::iterator it = g_monsters.begin(); it != g_monsters.end(); ++it)
-        (*it)->render(it-g_monsters.begin() == g_currentMonster);
+    std::vector<Monster*> monsters = CONTEXT()->getMonsters();
+    for (std::vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it)
+        (*it)->render(it-monsters.begin() == g_currentMonster);
 
     drawStats();
    
@@ -203,7 +204,7 @@ void specialKeys(int key, int x, int y)
     if (movePlayer(deltaX, deltaY))
         g_currentPlayer++;
 
-    if (g_currentPlayer == g_heroes.size())
+    if (g_currentPlayer == CONTEXT()->getHeroes().size())
     {
         // Monsters turn
         g_currentPlayer = -1;
@@ -229,8 +230,8 @@ void reshape(int x, int y) {
     glutPostRedisplay();
 }
 
-void cleanup(void) {
-    // TODO
+void cleanup(void)
+{
 }   
 
 void buildWorld() {
@@ -247,24 +248,25 @@ void loadTextures()
 
 bool movePlayer(int x, int y)
 {
-    int newX = g_heroes[g_currentPlayer]->m_x + x;
-    int newY = g_heroes[g_currentPlayer]->m_y + y;
+    int newX = CONTEXT()->getHeroes()[g_currentPlayer]->m_x + x;
+    int newY = CONTEXT()->getHeroes()[g_currentPlayer]->m_y + y;
 
     // clip
     if (newX < 0 || newY < 0 || newX >= CELL_SIZE || newY >= CELL_SIZE) 
     	return false;
 
     // collide with other players
-    for (std::vector<Player*>::iterator it = g_heroes.begin(); it != g_heroes.end(); ++it)
+    std::vector<Player*> heroes = CONTEXT()->getHeroes();
+    for (std::vector<Player*>::iterator it = heroes.begin(); it != heroes.end(); ++it)
     {
-        if (it-g_heroes.begin() == g_currentPlayer)
+        if (it-heroes.begin() == g_currentPlayer)
             continue;
 
         if (newX == (*it)->m_x && newY == (*it)->m_y)
             return false;
     }
 
-    g_heroes[g_currentPlayer]->setPosition(newX, newY);
+    heroes[g_currentPlayer]->setPosition(newX, newY);
     return true;
 }
 
@@ -308,39 +310,18 @@ int main(int argc, char** argv) {
     cam->pos.y = CELL_SIZE / 2.0f; //3.5f;
     cam->pos.z = 15.0f;
 
-    Player* frank = new Player(5, 5);
-    Player* hunter = new Player(7, 5);
-    Player* gonzo = new Player(9, 5);
+    CONTEXT()->pushHero(new Player(5, 5));
+    CONTEXT()->pushHero(new Player(7, 5));
+    CONTEXT()->pushHero(new Player(9, 5));
 
-    g_heroes.push_back(frank);
-    g_heroes.push_back(hunter);
-    g_heroes.push_back(gonzo);
-
-    Monster* monster1 = new Monster(4, 10);
-    Monster* monster2 = new Monster(6, 10);
-
-    g_monsters.push_back(monster1);
-    g_monsters.push_back(monster2);
+    CONTEXT()->pushMonster(new Monster(4, 11));
+    CONTEXT()->pushMonster(new Monster(4, 10));
 
     g_currentPlayer = 0;
 
     glutMainLoop();
 
+    Context::cleanup();
     delete cam;
-
-    while (g_heroes.size())
-    {
-        Player* jope = g_heroes.back();
-        delete jope;
-        g_heroes.pop_back();
-    }
-
-
-    while (g_monsters.size())
-    {
-        Monster* jope = g_monsters.back();
-        delete jope;
-        g_monsters.pop_back();
-    }
     return 0;
 }

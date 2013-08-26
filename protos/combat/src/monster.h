@@ -22,6 +22,7 @@ public:
 
     void render(bool isActive);
     void tick();
+    void move();
 
     bool isActive() { return (m_stage != UNDECIDED); }
 
