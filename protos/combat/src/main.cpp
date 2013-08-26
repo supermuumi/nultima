@@ -117,6 +117,11 @@ void display(void)
                 g_currentMonster = -1;
                 g_currentPlayer = 0;
             }
+            else
+            {
+                std::vector<Monster*> monsters = CONTEXT()->getMonsters();
+                monsters[g_currentMonster]->prepare();
+            }
         }
     }
 
@@ -209,6 +214,8 @@ void specialKeys(int key, int x, int y)
         // Monsters turn
         g_currentPlayer = -1;
         g_currentMonster = 0;
+        std::vector<Monster*> monsters = CONTEXT()->getMonsters();
+        monsters[g_currentMonster]->prepare();
     }
 }
 

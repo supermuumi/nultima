@@ -8,7 +8,8 @@ public:
         UNDECIDED,
         WAITING,
         MOVING,
-        MELEE_ATTACK
+        MELEE_ATTACK,
+        END
     };
 
     typedef struct
@@ -22,11 +23,14 @@ public:
 
     void render(bool isActive);
     void tick();
+    void prepare();
     void move();
 
-    bool isActive() { return (m_stage != UNDECIDED); }
+    bool isActive() { return (m_stage != END); }
 
 private:
+    bool isPlayerAdjacent(int& playerIdx);
+
     int             m_x;
     int             m_y;
     Vec3            m_color;

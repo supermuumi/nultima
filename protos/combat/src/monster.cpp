@@ -5,15 +5,25 @@
 #include "monster.h"
 #include "gl_utils.h"
 #include "context.h"
+#include "Player.h"
 
 static const Vec3 s_defaultColor = Vec3(0.5, 0.2, 0);
 static const Vec3 s_blinkColor = Vec3(0.6, 0.6, 0.6);
 
 const Monster::Strategy g_approach[] =
 {
-    {Monster::WAITING, 1000},
+    {Monster::WAITING, 300},
     {Monster::MOVING, -1},
-    {Monster::WAITING, 1000}
+    {Monster::WAITING, 300},
+    {Monster::END, -1}
+};
+
+const Monster::Strategy g_attack[] =
+{
+    {Monster::WAITING, 1000},
+    {Monster::MELEE_ATTACK, -1},
+    {Monster::WAITING, 1000},
+    {Monster::END, -1}
 };
 
 Monster::Monster(int x, int y) :
@@ -30,9 +40,9 @@ typedef struct
 {
     int x;
     int y;
-} Move;
+} Vec2;
 
-const Move s_possibleMoves[] =
+const Vec2 s_adjacentTiles[] =
 {
     {0, -1},
     {1, 0},
@@ -46,10 +56,10 @@ void Monster::move()
     int newX = m_x;
     int newY = m_y;
 
-    for (int i=0; i<sizeof(s_possibleMoves)/sizeof(s_possibleMoves[0]); i++)
+    for (int i=0; i<sizeof(s_adjacentTiles)/sizeof(s_adjacentTiles[0]); i++)
     {
-        newX = m_x + s_possibleMoves[i].x;
-        newY = m_y + s_possibleMoves[i].y;
+        newX = m_x + s_adjacentTiles[i].x;
+        newY = m_y + s_adjacentTiles[i].y;
 
         // Collide with other monsters
         bool collision = false;
@@ -67,16 +77,44 @@ void Monster::move()
     m_y = newY;
 }
 
+bool Monster::isPlayerAdjacent(int& playerIdx)
+{
+    std::vector<Player*> players = CONTEXT()->getHeroes();
+    for (std::vector<Player*>::iterator it = players.begin(); it != players.end(); ++it)
+    for (int i=0; i<sizeof(s_adjacentTiles)/sizeof(s_adjacentTiles[0]); i++)
+    {
+        int testX = m_x + s_adjacentTiles[i].x;
+        int testY = m_y + s_adjacentTiles[i].y;
+
+        if (testX == (*it)->m_x && testY == (*it)->m_y)
+        {
+            playerIdx = it-players.begin();
+            return true;
+        }
+    }
+    return false;
+}
+
+void Monster::prepare()
+{
+    m_stage = UNDECIDED;
+}
+
 void Monster::tick()
 {
     double timer = clock() / (CLOCKS_PER_SEC / 1000.0);
 
+    int targetPlayerIdx = -1;
     // Make a decision
     if (m_stage == UNDECIDED)
     {
-        // If next to a player, attack (if many which one?)
+        // If next to a player, attack (if many which one
+        if (isPlayerAdjacent(targetPlayerIdx))
+            m_strategy = g_attack;
+
         // If not, move
-        m_strategy = g_approach;
+        else
+            m_strategy = g_approach;
 
         m_strategyStep = 0;
         m_lastStageChange = timer;
@@ -99,7 +137,15 @@ void Monster::tick()
 
     case MELEE_ATTACK:
         // TODO [sampo] attack an adjacent player
+        printf("attack!\n");
         break;
+
+    case END:
+        printf("end!\n");
+        break;
+
+    default:
+        assert(0);
     }
 
     // Move to the next step
@@ -108,10 +154,6 @@ void Monster::tick()
         m_lastStageChange = timer;
         m_strategyStep++;
         m_stage = m_strategy[m_strategyStep].stage;
-
-        // Done
-        if (m_strategyStep == sizeof(m_strategy) / sizeof(m_strategy[0]))
-            m_stage = UNDECIDED;
     }
 }
 
