@@ -3,11 +3,15 @@
     [
 	"Greetings!",
 	"My name is Jope!",
-	"I am the town drunk."
+	"I am the town drunk.",
+	"Aye, I like to mess with the big four-oh!",
+	"Yarr, it makes my mind slow"
     ],
     "keywords": 
     {
 	"name" : 1,
-	"job" : 2
+	"job" : 2,
+	"drunk" : 3,
+	"four-oh" : 4
     }
 }

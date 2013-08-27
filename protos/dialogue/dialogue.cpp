@@ -71,15 +71,24 @@ int main(void)
     JSONNode dialogue = libjson::parse(jsonData);
     ParseJSON(dialogue);
 
-    printf("Dialogue lines\n");
-    for (std::vector<std::string>::iterator it = g_lines.begin(); it != g_lines.end(); ++it) {
-	std::string s = (*it);
-	printf("\t%s\n", s.c_str());
-    }
+    // start with a greeting
+    std::cout << g_lines.at(0) << std::endl;
+    // conversation loop
+    while (true) 
+    {
+	std::string cmd;
 
-    printf("\nKeywords\n");
-    for (std::map<std::string, int>::iterator it = g_keywords.begin(); it != g_keywords.end(); ++it) {
-	printf("\t%s -> %s\n", it->first.c_str(), g_lines.at(it->second).c_str());
+	std::cout << "You say: ";
+	std::cin >> cmd;
+	
+	if (cmd == "bye")
+	    break;
+
+	std::map<std::string, int>::iterator it = g_keywords.find(cmd);
+	if (it == g_keywords.end())
+	    std::cout << "Whatchoo talkin' about Willis?" << std::endl;
+	else 
+	    std::cout << g_lines.at(it->second) << std::endl;
     }
 
     return 0;
