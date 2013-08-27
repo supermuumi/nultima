@@ -1,3 +1,12 @@
+// Filenames are prefixed with nu and written in mixed caps
+
+// Preprocessor macros are prefixed with NU_
+#define NU_UNDEF(X) (void)(X)
+
+// The namespace is Nultima
+namespace Nultima
+{
+
 // class definitions start with upper case
 class Poop 
 {
@@ -40,3 +49,5 @@ void shiteWipe(int blabla, int doodoo, int craptastic,
 	       int blasfbjlbfjls)
 {
 }
+
+}; // namespace
