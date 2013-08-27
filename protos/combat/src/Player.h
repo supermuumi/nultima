@@ -9,12 +9,15 @@ class Player {
     
     void render(bool isActive);
     void setPosition(int _x, int _y);
+    void attack();
+    bool isAlive() { return m_hp > 0; }
 
     int m_x, m_y;
 
 private:
     double  m_lastColorChange;
     Vec3    m_color;
+    int     m_hp;
 };
 
 #endif

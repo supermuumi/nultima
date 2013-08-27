@@ -110,12 +110,16 @@ void display(void)
         monsters[g_currentMonster]->tick();
         if (!monsters[g_currentMonster]->isActive())
         {
-            g_currentMonster++;
+            while (++g_currentMonster != monsters.size() && !monsters[g_currentMonster]->isAlive());
+
             if (g_currentMonster == monsters.size())
             {
                 // Player's turn
                 g_currentMonster = -1;
                 g_currentPlayer = 0;
+                std::vector<Player*> heroes = CONTEXT()->getHeroes();
+                while (g_currentPlayer < (int)heroes.size() && !heroes[g_currentPlayer]->isAlive())
+                    g_currentPlayer++;
             }
             else
             {
@@ -207,15 +211,23 @@ void specialKeys(int key, int x, int y)
         deltaY = -1;
 
     if (movePlayer(deltaX, deltaY))
+    {
         g_currentPlayer++;
 
-    if (g_currentPlayer == CONTEXT()->getHeroes().size())
-    {
-        // Monsters turn
-        g_currentPlayer = -1;
-        g_currentMonster = 0;
-        std::vector<Monster*> monsters = CONTEXT()->getMonsters();
-        monsters[g_currentMonster]->prepare();
+        if (g_currentPlayer == CONTEXT()->getHeroes().size())
+        {
+            // Monsters turn
+            g_currentPlayer = -1;
+            g_currentMonster = 0;
+            std::vector<Monster*> monsters = CONTEXT()->getMonsters();
+            monsters[g_currentMonster]->prepare();
+        }
+        else
+        {
+            std::vector<Player*> heroes = CONTEXT()->getHeroes();
+            while (!heroes[g_currentPlayer]->isAlive())
+                g_currentPlayer++;
+        }
     }
 }
 
@@ -266,14 +278,33 @@ bool movePlayer(int x, int y)
     std::vector<Player*> heroes = CONTEXT()->getHeroes();
     for (std::vector<Player*>::iterator it = heroes.begin(); it != heroes.end(); ++it)
     {
-        if (it-heroes.begin() == g_currentPlayer)
+        if (it-heroes.begin() == g_currentPlayer || !(*it)->isAlive())
             continue;
 
         if (newX == (*it)->m_x && newY == (*it)->m_y)
             return false;
     }
 
-    heroes[g_currentPlayer]->setPosition(newX, newY);
+    bool movesLeft = true;
+
+    // collide with monsters
+    std::vector<Monster*> monsters = CONTEXT()->getMonsters();
+    for (std::vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it)
+    {
+        if (!(*it)->isAlive())
+            continue;
+
+        Vec2 pos = (*it)->getPosition();
+        if (newX == pos.x && newY == pos.y)
+        {
+            (*it)->attack();
+            movesLeft = false;
+            break;
+        }
+    }
+
+    if (movesLeft)
+        heroes[g_currentPlayer]->setPosition(newX, newY);
     return true;
 }
 
@@ -321,8 +352,11 @@ int main(int argc, char** argv) {
     CONTEXT()->pushHero(new Player(7, 5));
     CONTEXT()->pushHero(new Player(9, 5));
 
-    CONTEXT()->pushMonster(new Monster(4, 11));
-    CONTEXT()->pushMonster(new Monster(4, 10));
+    Vec2 pos;
+    pos.x = 4; pos.y = 11;
+    CONTEXT()->pushMonster(new Monster(pos));
+    pos.y = 10;
+    CONTEXT()->pushMonster(new Monster(pos));
 
     g_currentPlayer = 0;
 

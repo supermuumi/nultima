@@ -1,6 +1,7 @@
 #include <time.h>
 #include <assert.h>
 #include <vector>
+#include <stdlib.h>
 
 #include "monster.h"
 #include "gl_utils.h"
@@ -9,6 +10,7 @@
 
 static const Vec3 s_defaultColor = Vec3(0.5, 0.2, 0);
 static const Vec3 s_blinkColor = Vec3(0.6, 0.6, 0.6);
+static const Vec3 s_deadColor = Vec3(0, 0, 0);
 
 const Monster::Strategy g_approach[] =
 {
@@ -26,21 +28,17 @@ const Monster::Strategy g_attack[] =
     {Monster::END, -1}
 };
 
-Monster::Monster(int x, int y) :
-    m_x(x),
-    m_y(y),
+Monster::Monster(Vec2 position) :
+    m_position(position),
     m_color(s_defaultColor),
     m_lastColorChange(0),
     m_stage(UNDECIDED),
     m_strategy(NULL),
-    m_strategyStep(0)
-{}
-
-typedef struct
+    m_strategyStep(0),
+    m_hp(3),
+    m_targetPlayer(NULL)
 {
-    int x;
-    int y;
-} Vec2;
+}
 
 const Vec2 s_adjacentTiles[] =
 {
@@ -53,46 +51,76 @@ const Vec2 s_adjacentTiles[] =
 // TODO approach player instead of move randomly
 void Monster::move()
 {
-    int newX = m_x;
-    int newY = m_y;
+    int newX = m_position.x;
+    int newY = m_position.y;
 
-    for (int i=0; i<sizeof(s_adjacentTiles)/sizeof(s_adjacentTiles[0]); i++)
+    int dX = m_targetPlayer->m_x-m_position.x;
+    int dY = m_targetPlayer->m_y-m_position.y;
+    if (abs(dX) >= abs(dY))
     {
-        newX = m_x + s_adjacentTiles[i].x;
-        newY = m_y + s_adjacentTiles[i].y;
-
-        // Collide with other monsters
-        bool collision = false;
-        std::vector<Monster*> monsters = CONTEXT()->getMonsters();
-        for (std::vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it)
-            if (newX == (*it)->m_x && newY == (*it)->m_y)
-                collision = true;
-
-        if (!collision)
-            break;
+        if (dX > 0)
+            newX++;
+        else
+            newX--;
+    }
+    else
+    {
+        if (dY > 0)
+            newY++;
+        else
+            newY--;
     }
 
-    // take step
-    m_x = newX;
-    m_y = newY;
+    // Collide with other monsters
+    bool collision = false;
+    std::vector<Monster*> monsters = CONTEXT()->getMonsters();
+    for (std::vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it)
+    {
+        if (!(*it)->isAlive())
+            continue;
+
+        if (newX == (*it)->m_position.x && newY == (*it)->m_position.y)
+            collision = true;
+    }
+
+    if (!collision)
+    {
+        // take step
+        m_position.x = newX;
+        m_position.y = newY;
+    }
+    else
+    {
+        printf("  blocked!\n");
+    }
 }
 
-bool Monster::isPlayerAdjacent(int& playerIdx)
+void Monster::attack()
 {
+    m_hp--;
+    printf(" Monster hp's remaining %d/3\n", m_hp);
+}
+
+Player* Monster::findClosestPlayer(int& distance)
+{
+    Player* ret = NULL;
+    distance = 1000;
+
     std::vector<Player*> players = CONTEXT()->getHeroes();
     for (std::vector<Player*>::iterator it = players.begin(); it != players.end(); ++it)
-    for (int i=0; i<sizeof(s_adjacentTiles)/sizeof(s_adjacentTiles[0]); i++)
     {
-        int testX = m_x + s_adjacentTiles[i].x;
-        int testY = m_y + s_adjacentTiles[i].y;
+        if (!(*it)->isAlive())
+            continue;
 
-        if (testX == (*it)->m_x && testY == (*it)->m_y)
+        int d = abs((*it)->m_x - m_position.x) + abs((*it)->m_y - m_position.y);
+        
+        if (d < distance)
         {
-            playerIdx = it-players.begin();
-            return true;
+            distance = d;
+            ret = *it;
         }
     }
-    return false;
+    return ret;
 }
 
 void Monster::prepare()
@@ -102,14 +130,25 @@ void Monster::prepare()
 
 void Monster::tick()
 {
+    if (m_hp <= 0)
+        return;
+
     double timer = clock() / (CLOCKS_PER_SEC / 1000.0);
 
-    int targetPlayerIdx = -1;
     // Make a decision
     if (m_stage == UNDECIDED)
     {
+        m_targetPlayer = NULL;
+
+        int distance = 0;
+        m_targetPlayer = findClosestPlayer(distance);
+
+        // Monsters won!
+        if (m_targetPlayer == NULL)
+            return;
+
         // If next to a player, attack (if many which one
-        if (isPlayerAdjacent(targetPlayerIdx))
+        if (distance == 1)
             m_strategy = g_attack;
 
         // If not, move
@@ -131,17 +170,18 @@ void Monster::tick()
         break;
 
     case MOVING:
+        printf(" moving\n");
         // TODO [sampo] approach the closest player:
         move();
         break;
 
     case MELEE_ATTACK:
-        // TODO [sampo] attack an adjacent player
-        printf("attack!\n");
+        assert(m_targetPlayer != NULL);
+        m_targetPlayer->attack();
         break;
 
     case END:
-        printf("end!\n");
+        printf(" end\n");
         break;
 
     default:
@@ -172,9 +212,12 @@ void Monster::render(bool isActive)
     if (!isActive)
         m_color = s_defaultColor;
 
+    if (m_hp <= 0)
+        m_color = s_deadColor;
+
     glPushMatrix();
     glColor3f(m_color.x, m_color.y, m_color.z);
-    cubeAt((float)m_x, (float)m_y, 0.5f);
+    cubeAt((float)m_position.x, (float)m_position.y, 0.5f);
     glPopMatrix();
 
     glEnable(GL_TEXTURE);

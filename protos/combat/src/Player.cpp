@@ -8,12 +8,14 @@
 
 static const Vec3 s_defaultColor = Vec3(0.8, 0.8, 0.5);
 static const Vec3 s_blinkColor = Vec3(0.6, 0.6, 0.6);
+static const Vec3 s_deadColor = Vec3(0, 0, 0);
 
 Player::Player(int x, int y) :
     m_x(x),
     m_y(y),
     m_lastColorChange(0),
-    m_color(s_defaultColor)
+    m_color(s_defaultColor),
+    m_hp(2)
 {}
 
 void Player::setPosition(int _x, int _y)
@@ -37,6 +39,9 @@ void Player::render(bool isActive)
     if (!isActive)
         m_color = s_defaultColor;
 
+    if (m_hp <= 0)
+        m_color = s_deadColor;
+
     glPushMatrix();
     glColor3f(m_color.x, m_color.y, m_color.z);
     cubeAt((float)m_x, (float)m_y, 0.5f);
@@ -44,4 +49,10 @@ void Player::render(bool isActive)
 
     glEnable(GL_TEXTURE);
     glEnable(GL_TEXTURE_2D);
+}
+
+void Player::attack()
+{
+    m_hp--;
+    printf("  Player hit, hp's remaining %d/2\n", m_hp);
 }
