@@ -8,6 +8,9 @@
 
 using namespace std;
 
+#define WORLD_SIZE 4
+#define WORLD_CELLSIZE 16
+
 class World
 {
 public:

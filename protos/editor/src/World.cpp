@@ -89,17 +89,8 @@ void World::save(char* fname)
 
     FILE *fp = fopen(fname, "wb");
 
-    fwrite(&m_cellWidth, sizeof(int), 1, fp);
-    fwrite(&m_cellHeight, sizeof(int), 1, fp);
-    fwrite(&m_cellSize, sizeof(int), 1, fp);
-
-    int n = 1;
-    for (std::vector<Cell*>::iterator it = m_cells.begin(); it != m_cells.end(); ++it)
-    {
-	(*it)->writeToFile(fp);
-	printf("wrote cell #%d\n", n);
-	n++;
-    }
+    for (int i = 0; i < m_cellWidth*m_cellHeight; i++)
+	m_cells.at(i)->writeToFile(fp);
 
     fclose(fp);
 
@@ -111,25 +102,15 @@ void World::load(char* fname)
     m_worldInvalid = true;
 
     FILE *fp = fopen(fname, "rb");
-
-    fread(&m_cellWidth, sizeof(int), 1, fp);
-    fread(&m_cellHeight, sizeof(int), 1, fp);
-    fread(&m_cellSize, sizeof(int), 1, fp);
-
-    m_cells.clear();
-    printf("loading %d cells...\n", m_cellWidth*m_cellHeight);
-    for (int i = 0; i < m_cellWidth*m_cellHeight; i++)
-    {
-	printf("\tloading cell %d...\n", i+1);
-	Cell* c = new Cell();
-	c->readFromFile(fp);
-	printf("\tadding cell %d to list...\n", i+1);
-	m_cells.push_back(c);
-	printf("\tdone\n");
+    if (fp) {
+	for (int i = 0; i < m_cellWidth*m_cellHeight; i++)
+	{
+	    Cell *c = m_cells.at(i);
+	    c->readFromFile(fp);
+	}
+	printf("loading world done!\n");
+	
+	fclose(fp);
     }
-    printf("loading world done!\n");
-
-    fclose(fp);
-
     m_worldInvalid = false;
 }

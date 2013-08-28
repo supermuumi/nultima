@@ -1,7 +1,5 @@
 #include <assert.h>
 #include "Cell.h"
-#define STBI_HEADER_FILE_ONLY
-#include "stb_image.c"
 #include "textures.h"
 #include "gl_utils.h"
 
@@ -48,77 +46,6 @@ void Cell::setBlock(int x, int y, int layer, int block)
     mapData[layer][y*cellSize+x] = block;
 }
 
-void Cell::load(char *fname, int layer) {
-    int mapWidth, mapHeight, bpp;    
-
-    assert(layer >= 0 && layer < numLayers);
-    
-    mapData[layer] = stbi_load(fname, &mapWidth, &mapHeight, &bpp, 3);
-
-    assert(mapWidth==cellSize && mapHeight==cellSize);
-
-    displayList[layer] = glGenLists(1);
-    glNewList(displayList[layer], GL_COMPILE);
-
-    for (int y = 0; y < cellSize; y++) {
-	for (int x = 0; x < cellSize; x++) {
-
-	    int p = getBlockAt(x, y, layer);
-
-	    switch (p) {
-
-		case BLOCK_WATER: 
-		    glBindTexture(GL_TEXTURE_2D, textures->get("water")); 
-		    break;
-		case BLOCK_GRASS: 
-		    glBindTexture(GL_TEXTURE_2D, textures->get("grass")); 
-		    break;
-		case BLOCK_ROCK: 
-		    glBindTexture(GL_TEXTURE_2D, textures->get("rock")); 
-		    break;
-		case BLOCK_WOOD: 
-		    glBindTexture(GL_TEXTURE_2D, textures->get("wood")); 
-		    break;
-		    
-	    default: continue;
-	    }
-
-	    // TODO should merge identical neighbors to reduce calls
-	    glPushMatrix();
-	    glTranslatef((float)x, (float)y, 0.0f);
-	    if (layer == 0)
-		texturedPlane(1.0);
-	    else 
-		texturedCube(1.0);
-	    glPopMatrix();
-	}
-    }
-
-    glEndList();
-
-    inMemory = true;
-}
-
-void Cell::unload() {
-    for (int i = 0; i < numLayers; i++) {
-	glDeleteLists(displayList[i], 1);
-	stbi_image_free(mapData[i]);
-    }
-    inMemory = false;
-}
-
-void Cell::render() {
-    // TODO should assert?
-    if (inMemory) {
-	for (int i = 0; i < numLayers; i++) {
-	    glPushMatrix();
-	    glTranslatef(x, y, (i == 0) ? 0.0f : i-0.5f);
-	    glCallList(displayList[i]);
-	    glPopMatrix();
-	}
-    }
-}
-
 void Cell::renderRaw() 
 {
     for (int layer = 0; layer < numLayers; layer++)
@@ -161,26 +88,12 @@ void Cell::move(float _x, float _y)
 
 void Cell::writeToFile(FILE* fp)
 {
-    fwrite(&cellSize, sizeof(int), 1, fp);
-    fwrite(&numLayers, sizeof(int), 1, fp);
-    fwrite(&x, sizeof(float), 1, fp);
-    fwrite(&y, sizeof(float), 1, fp);
-    printf("wrote cell: size=%d, %d layers, x=%.2f, y=%.2f\n", cellSize, numLayers, x, y);
     for (int i = 0; i < numLayers; i++)
-	fwrite(&mapData[i], sizeof(unsigned char*), cellSize*cellSize, fp);
+	fwrite(mapData[i], sizeof(unsigned char), cellSize*cellSize, fp);
 }
 
 void Cell::readFromFile(FILE* fp)
 {
-    fread(&cellSize, sizeof(int), 1, fp);
-    fread(&numLayers, sizeof(int), 1, fp);
-    fread(&x, sizeof(float), 1, fp);
-    fread(&y, sizeof(float), 1, fp);
-
-    printf("read cell: size=%d, %d layers, x=%.2f, y=%.2f\n", cellSize, numLayers, x, y);
-    mapData = new unsigned char*[numLayers];
-    for (int i = 0; i < numLayers; i++) {
-	mapData[i] = new unsigned char[cellSize*cellSize];
-	fread(&mapData[i], sizeof(unsigned char*), cellSize*cellSize, fp);
-    }
+    for (int i = 0; i < numLayers; i++)
+	fread(mapData[i], sizeof(unsigned char), cellSize*cellSize, fp);
 }

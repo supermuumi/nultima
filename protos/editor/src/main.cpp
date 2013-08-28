@@ -147,7 +147,7 @@ void display(void)
     {
 // TODO fix proper
 /*
-	glBindTexture(GL_TEXTURE_2D, cells[0]->getTextureForBlock(activeBlock));
+  	glBindTexture(GL_TEXTURE_2D, cells[0]->getTextureForBlock(activeBlock));
 	texturedCube(1.0);
 */
     }
@@ -219,8 +219,8 @@ void keyPressed(unsigned char key, int x, int y)
     if (key == 'k' && activeLayer > 0) activeLayer--;
     if (key == 'l' && activeLayer < 1) activeLayer++;
 
-    if (key == '1') g_world->save("dada");
-    if (key == '2') { delete g_world; g_world = new World(); g_world->load("dada"); }
+    if (key == '1') g_world->save("worldmap");
+    if (key == '2') g_world->load("worldmap");
 }
 
 void keyReleased(unsigned char key, int x, int y) 
@@ -290,7 +290,7 @@ void initWorld()
     activeBlock = BT_BLANK+1;
     paintMode = false;
 
-    g_world = new World(4, 4, 16);
+    g_world = new World(WORLD_SIZE, WORLD_SIZE, WORLD_CELLSIZE);
 }
 
 void deinitWorld()
