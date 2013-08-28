@@ -11,7 +11,6 @@
 #endif
 
 #define CELL_MAX_LAYERS 2 // 
-#define CELL_SIZE 16 // each cell is CELL_SIZExCELL_SIZE blocks, each block is 1.0 in size
 
 // pixel-to-block mapping (RGB values in .png denote block type)
 // TODO these should probably be in a separate Block.h
@@ -35,8 +34,7 @@ enum BlockType
 
 class Cell {
  public:
-    Cell();
-    Cell(int n);
+    Cell(int nl, int cs);
 
     void load(char *fname, int layer); // stream in, generate map
     void unload(); // stream out
@@ -48,7 +46,8 @@ class Cell {
     int getBlockAt(int x, int y, int layer);
     void setBlock(int x, int y, int layer, int block);
     GLuint getTextureForBlock(int);
-
+    
+    int cellSize;
     int numLayers;
     float x, y;
     char *fname;

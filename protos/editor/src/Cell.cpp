@@ -1,4 +1,4 @@
-#include <assert.h>§
+#include <assert.h>
 #include "Cell.h"
 #define STBI_HEADER_FILE_ONLY
 #include "stb_image.c"
@@ -7,29 +7,19 @@
 
 extern TextureManager *textures;
 
-Cell::Cell() {
-    numLayers = 1;
-    displayList = new GLuint[numLayers];
-    inMemory = false;
+Cell::Cell(int nl, int cs) {
+    cellSize = cs;
+    numLayers = nl;
     x = y = 0.0f;
 
-    mapData = new unsigned char*[CELL_MAX_LAYERS];
-}
-
-Cell::Cell(int n) {
-    numLayers = n;
-    displayList = new GLuint[numLayers];
-    inMemory = false;
-    x = y = 0.0f;
-
-    mapData = new unsigned char*[CELL_MAX_LAYERS];
+    mapData = new unsigned char*[numLayers];
 }
 
 // reset layer0=random, other layers=blank
 void Cell::reset() {
     for (int i = 0; i < numLayers; i++) {
-	mapData[i] = new unsigned char[CELL_SIZE*CELL_SIZE];
-	for (int j = 0; j < CELL_SIZE*CELL_SIZE; j++)
+	mapData[i] = new unsigned char[cellSize*cellSize];
+	for (int j = 0; j < cellSize*cellSize; j++)
 	    mapData[i][j] = i == 0 ? 1+(rand()%(BT_LASTBLOCK-1)) : BT_BLANK;
     }
 }
@@ -37,7 +27,7 @@ void Cell::reset() {
 int Cell::getBlockAt(int x, int y, int layer) {
     assert(x >= 0 && y >= 0 && layer >= 0);
 
-    int ofs = (y * CELL_SIZE + x) * 3;
+    int ofs = (y * cellSize + x) * 3;
     int r = mapData[layer][ofs++];
     int g = mapData[layer][ofs++];
     int b = mapData[layer][ofs++];
@@ -48,10 +38,10 @@ int Cell::getBlockAt(int x, int y, int layer) {
 void Cell::setBlock(int x, int y, int layer, int block) 
 {
     assert(block >= 0 && block < BT_LASTBLOCK);
-    assert(x >= 0 && x < CELL_SIZE && y >= 0 && y < CELL_SIZE);
+    assert(x >= 0 && x < cellSize && y >= 0 && y < cellSize);
     assert(layer >= 0 && layer < numLayers);
 
-    mapData[layer][y*CELL_SIZE+x] = block;
+    mapData[layer][y*cellSize+x] = block;
 }
 
 void Cell::load(char *fname, int layer) {
@@ -61,13 +51,13 @@ void Cell::load(char *fname, int layer) {
     
     mapData[layer] = stbi_load(fname, &mapWidth, &mapHeight, &bpp, 3);
 
-    assert(mapWidth==CELL_SIZE && mapHeight==CELL_SIZE);
+    assert(mapWidth==cellSize && mapHeight==cellSize);
 
     displayList[layer] = glGenLists(1);
     glNewList(displayList[layer], GL_COMPILE);
 
-    for (int y = 0; y < CELL_SIZE; y++) {
-	for (int x = 0; x < CELL_SIZE; x++) {
+    for (int y = 0; y < cellSize; y++) {
+	for (int x = 0; x < cellSize; x++) {
 
 	    int p = getBlockAt(x, y, layer);
 
@@ -130,9 +120,9 @@ void Cell::renderRaw()
     for (int layer = 0; layer < numLayers; layer++)
     {
 	int ofs = 0;
-	for (int j = 0; j < CELL_SIZE; j++) 
+	for (int j = 0; j < cellSize; j++) 
 	{
-	    for (int i = 0; i < CELL_SIZE; i++, ofs++) 
+	    for (int i = 0; i < cellSize; i++, ofs++) 
 	    {
 		unsigned char block = mapData[layer][ofs];
 		if (block == BT_BLANK) 

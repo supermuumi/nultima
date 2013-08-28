@@ -14,7 +14,7 @@ World::World(int w, int h, int cs)
     {
 	for (int i = 0; i < m_cellWidth; i++)
 	{
-	    Cell *c = new Cell(2);
+	    Cell *c = new Cell(2, m_cellSize);
 	    c->move((float)i*m_cellSize, (float)-j*m_cellSize);
 	    c->reset();
 	    m_cells.push_back(c);

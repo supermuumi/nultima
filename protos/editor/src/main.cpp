@@ -288,18 +288,6 @@ void initWorld()
     paintMode = false;
 
     g_world = new World(4, 4, 16);
-
-/*
-    for (int i = 0; i < WORLD_SIZE; i++) 
-    {
-	Cell *c = new Cell(2);
-	int x = i % WORLD_WIDTH;
-	int y = -i / WORLD_WIDTH;
-	c->move((float)x*CELL_SIZE, (float)y*CELL_SIZE);
-	c->reset();
-	cells.push_back(c);
-    }
-*/
 }
 
 void deinitWorld()
