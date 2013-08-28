@@ -1,8 +1,14 @@
 #include <iostream>
 #include "World.h"
 #include "Cell.h"
+#include <stdio.h>
 
 using namespace std;
+
+World::World()
+{
+    m_worldInvalid = true;
+}
 
 World::World(int w, int h, int cs) 
 {
@@ -20,6 +26,17 @@ World::World(int w, int h, int cs)
 	    m_cells.push_back(c);
 	}
     }
+    m_worldInvalid = false;
+}
+
+World::~World()
+{
+    while (m_cells.size())
+    {
+	Cell* c = m_cells.back();
+	delete c;
+	m_cells.pop_back();
+    }
 }
 
 int World::getWidth()
@@ -35,8 +52,7 @@ int World::getHeight()
 Cell* World::getCellAt(int x, int y) 
 {
     int idx = y/m_cellSize*m_cellWidth + x/m_cellSize;
-    printf("cellAt(%d, %d) = %d\n", x, y, idx);
-    return m_cells.at(idx);
+     return m_cells.at(idx);
 }
 
 int World::getBlockAt(int x, int y, int layer)
@@ -53,6 +69,9 @@ void World::setBlockAt(int x, int y, int layer, int block)
 
 void World::render(Camera *cam)
 {
+    if (m_worldInvalid)
+	return;
+
     for (std::vector<Cell*>::iterator it = m_cells.begin(); it != m_cells.end(); ++it)
     {	
 	if (cam->cubeInFrustum((*it)->x+m_cellSize/2.0f, 
@@ -64,8 +83,53 @@ void World::render(Camera *cam)
     }
 }
 
-ostream& operator<<(ostream &os, const World& w) 
+void World::save(char* fname) 
 {
-    os << "123";
-    return os;
+    m_worldInvalid = true;
+
+    FILE *fp = fopen(fname, "wb");
+
+    fwrite(&m_cellWidth, sizeof(int), 1, fp);
+    fwrite(&m_cellHeight, sizeof(int), 1, fp);
+    fwrite(&m_cellSize, sizeof(int), 1, fp);
+
+    int n = 1;
+    for (std::vector<Cell*>::iterator it = m_cells.begin(); it != m_cells.end(); ++it)
+    {
+	(*it)->writeToFile(fp);
+	printf("wrote cell #%d\n", n);
+	n++;
+    }
+
+    fclose(fp);
+
+    m_worldInvalid = false;
+}
+
+void World::load(char* fname)
+{
+    m_worldInvalid = true;
+
+    FILE *fp = fopen(fname, "rb");
+
+    fread(&m_cellWidth, sizeof(int), 1, fp);
+    fread(&m_cellHeight, sizeof(int), 1, fp);
+    fread(&m_cellSize, sizeof(int), 1, fp);
+
+    m_cells.clear();
+    printf("loading %d cells...\n", m_cellWidth*m_cellHeight);
+    for (int i = 0; i < m_cellWidth*m_cellHeight; i++)
+    {
+	printf("\tloading cell %d...\n", i+1);
+	Cell* c = new Cell();
+	c->readFromFile(fp);
+	printf("\tadding cell %d to list...\n", i+1);
+	m_cells.push_back(c);
+	printf("\tdone\n");
+    }
+    printf("loading world done!\n");
+
+    fclose(fp);
+
+    m_worldInvalid = false;
 }

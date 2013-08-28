@@ -10,6 +10,8 @@
 #include <GL/glut.h>
 #endif
 
+#include <stdio.h>
+
 #define CELL_MAX_LAYERS 2 // 
 
 // pixel-to-block mapping (RGB values in .png denote block type)
@@ -34,6 +36,7 @@ enum BlockType
 
 class Cell {
  public:
+    Cell();
     Cell(int nl, int cs);
 
     void load(char *fname, int layer); // stream in, generate map
@@ -46,6 +49,9 @@ class Cell {
     int getBlockAt(int x, int y, int layer);
     void setBlock(int x, int y, int layer, int block);
     GLuint getTextureForBlock(int);
+
+    void readFromFile(FILE* fp);
+    void writeToFile(FILE* fp);
     
     int cellSize;
     int numLayers;

@@ -11,9 +11,13 @@ using namespace std;
 class World
 {
 public:
+    World();
     World(int, int, int);
+    ~World();
 
-    friend ostream& operator<<(ostream &os, const World& w);
+    void save(char *fname);
+    void load(char *fname);
+
 
     Cell* getCellAt(int x, int y);
     int getBlockAt(int x, int y, int layer);
@@ -27,6 +31,7 @@ private:
     int m_cellWidth;
     int m_cellHeight;
     int m_cellSize;
+    bool m_worldInvalid;
     vector<Cell*> m_cells;
 
 };

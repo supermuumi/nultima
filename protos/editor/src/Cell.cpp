@@ -7,6 +7,10 @@
 
 extern TextureManager *textures;
 
+Cell::Cell() 
+{
+}
+
 Cell::Cell(int nl, int cs) {
     cellSize = cs;
     numLayers = nl;
@@ -149,7 +153,34 @@ GLuint Cell::getTextureForBlock(int block)
     if (block == BT_WOOD) return textures->get("wood"); 
 }
 
-void Cell::move(float _x, float _y) {
+void Cell::move(float _x, float _y) 
+{
     x = _x;
     y = _y;
+}
+
+void Cell::writeToFile(FILE* fp)
+{
+    fwrite(&cellSize, sizeof(int), 1, fp);
+    fwrite(&numLayers, sizeof(int), 1, fp);
+    fwrite(&x, sizeof(float), 1, fp);
+    fwrite(&y, sizeof(float), 1, fp);
+    printf("wrote cell: size=%d, %d layers, x=%.2f, y=%.2f\n", cellSize, numLayers, x, y);
+    for (int i = 0; i < numLayers; i++)
+	fwrite(&mapData[i], sizeof(unsigned char*), cellSize*cellSize, fp);
+}
+
+void Cell::readFromFile(FILE* fp)
+{
+    fread(&cellSize, sizeof(int), 1, fp);
+    fread(&numLayers, sizeof(int), 1, fp);
+    fread(&x, sizeof(float), 1, fp);
+    fread(&y, sizeof(float), 1, fp);
+
+    printf("read cell: size=%d, %d layers, x=%.2f, y=%.2f\n", cellSize, numLayers, x, y);
+    mapData = new unsigned char*[numLayers];
+    for (int i = 0; i < numLayers; i++) {
+	mapData[i] = new unsigned char[cellSize*cellSize];
+	fread(&mapData[i], sizeof(unsigned char*), cellSize*cellSize, fp);
+    }
 }

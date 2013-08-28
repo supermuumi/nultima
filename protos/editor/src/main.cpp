@@ -218,6 +218,9 @@ void keyPressed(unsigned char key, int x, int y)
 
     if (key == 'k' && activeLayer > 0) activeLayer--;
     if (key == 'l' && activeLayer < 1) activeLayer++;
+
+    if (key == '1') g_world->save("dada");
+    if (key == '2') { delete g_world; g_world = new World(); g_world->load("dada"); }
 }
 
 void keyReleased(unsigned char key, int x, int y) 
