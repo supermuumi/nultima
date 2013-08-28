@@ -22,6 +22,7 @@
 #include "textures.h"
 #include "keyboard.h"
 #include "Cell.h"
+#include "World.h"
 
 #define FRAND() ((float)rand() / RAND_MAX)
 
@@ -40,10 +41,6 @@ double fps = 12.f;
 double timerDelta = 0.f;
 double lastFrame = 0.f;
 
-#define WORLD_WIDTH  16
-#define WORLD_HEIGHT 16
-#define WORLD_SIZE   (WORLD_WIDTH*WORLD_HEIGHT)
-
 // editor stuff
 int activeCellX;
 int activeCellY;
@@ -51,6 +48,7 @@ int activeBlock;
 int activeLayer;
 bool paintMode;
 
+World *g_world;
 Camera *g_cam;
 Light *g_sun;
 
@@ -58,7 +56,7 @@ bool g_inventoryVisible;
 
 TextureManager *textures;
 
-std::vector<Cell*> cells; //[WORLD_SIZE];
+//std::vector<Cell*> cells; //[WORLD_SIZE];
 
 static void drawString(char *string, int x, int y)
 {
@@ -129,13 +127,7 @@ void display(void)
     g_cam->setView();
 
     // render world
-    for (int i = 0; i < WORLD_SIZE; i++) 
-    {
-	if (g_cam->cubeInFrustum(cells[i]->x+CELL_SIZE/2.0f, cells[i]->y+CELL_SIZE/2.0f, 0.0f, CELL_SIZE/2.0f)) 
-	{
-	    cells[i]->renderRaw();
-	}
-    }
+    g_world->render(g_cam);
 
     // draw cursor
     glPushMatrix();
@@ -153,10 +145,12 @@ void display(void)
     }
     else
     {
+// TODO fix proper
+/*
 	glBindTexture(GL_TEXTURE_2D, cells[0]->getTextureForBlock(activeBlock));
 	texturedCube(1.0);
+*/
     }
-	
 
 
     glPopMatrix();
@@ -178,19 +172,17 @@ void idle(void)
 
 void paintCurrentBlock()
 {
+/*
     int     cellId  = activeCellY/CELL_SIZE*WORLD_WIDTH + activeCellX/CELL_SIZE;
     Cell*   c       = cells.at(cellId);
-
-    c->setBlock(activeCellX % CELL_SIZE, activeCellY % CELL_SIZE, activeLayer, activeBlock);
+*/
+    g_world->setBlockAt(activeCellX, activeCellY, activeLayer, activeBlock);
 }
 
 
 void eraseCurrentBlock()
 {
-    int     cellId  = activeCellY/CELL_SIZE*WORLD_WIDTH + activeCellX/CELL_SIZE;
-    Cell*   c       = cells.at(cellId);
-
-    c->setBlock(activeCellX % CELL_SIZE, activeCellY % CELL_SIZE, activeLayer, BT_BLANK);
+    g_world->setBlockAt(activeCellX, activeCellY, activeLayer, BT_BLANK);
 }
 
 
@@ -248,9 +240,9 @@ void handleKeys()
 void specialKeyPressed(int key, int x, int y) 
 {
     if (key == GLUT_KEY_LEFT && activeCellX > 0) activeCellX--; 
-    if (key == GLUT_KEY_RIGHT && activeCellX < WORLD_WIDTH*CELL_SIZE-1) activeCellX++;
+    if (key == GLUT_KEY_RIGHT && activeCellX < g_world->getWidth()-1) activeCellX++;
     if (key == GLUT_KEY_UP && activeCellY > 0) activeCellY--; 
-    if (key == GLUT_KEY_DOWN && activeCellY < WORLD_WIDTH*CELL_SIZE-1) activeCellY++;
+    if (key == GLUT_KEY_DOWN && activeCellY < g_world->getHeight()-1) activeCellY++;
 
     if (paintMode) 
 	paintCurrentBlock();
@@ -295,6 +287,9 @@ void initWorld()
     activeBlock = BT_BLANK+1;
     paintMode = false;
 
+    g_world = new World(4, 4, 16);
+
+/*
     for (int i = 0; i < WORLD_SIZE; i++) 
     {
 	Cell *c = new Cell(2);
@@ -304,6 +299,12 @@ void initWorld()
 	c->reset();
 	cells.push_back(c);
     }
+*/
+}
+
+void deinitWorld()
+{
+    delete g_world;
 }
 
 extern void             stbi_image_free (void *retval_from_stbi_load);
@@ -372,17 +373,13 @@ void deinitGame()
     deinitLighting();
     deinitCamera();
 
-    while (cells.size())
-    {
-	Cell* c = cells.back();
-	delete c;
-	cells.pop_back();
-    }
+    deinitWorld();
 }
 
 // TODO fix memleaks :-)
 int main(int argc, char** argv) 
 {
+
     srand((unsigned)time(NULL));
 
     glutInit(&argc, argv);
