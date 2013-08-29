@@ -27,10 +27,10 @@ protos/tilemap/tilemap
 *.idb
 *.ipch
 
-
 protos/combat/combat
-
 protos/dialogue/dialogue
-
 protos/editor/editor
-
+Nultima.sln
+bin
+build/vs2010
+intermediates
