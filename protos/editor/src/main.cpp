@@ -155,11 +155,14 @@ void display(void)
 
     glPopMatrix();
 
-    char string[128];
-    sprintf(string, "fps: %4.0f (%4.1f ms) (%.4f) / cam=[%.2f,%.2f,%.2f]", 1000/fps, timerDelta, g_cam->pos.x, g_cam->pos.y, g_cam->pos.z);
-    drawString(string, 20, wHeight-20);
+    char str[128];
+    sprintf(str, "fps: %4.0f (%4.1f ms) (%.4f) / cam=[%.2f,%.2f,%.2f]", 1000/fps, timerDelta, g_cam->pos.x, g_cam->pos.y, g_cam->pos.z);
+    drawString(str, 20, wHeight-20);
     char *helptext = "p=paint on/off   o=paint current   kl=prev/next layer   .,=prev/next block   arrows=move";
     drawString(helptext, 20, wHeight-34);
+    memset(str, 0, 128); 
+    sprintf(str, "cell=[%d, %d]  layer=%d   tile=%d", activeCellX, activeCellY, activeLayer, activeBlock);
+    drawString(str, 20, wHeight-48);
    
     glutSwapBuffers();
     glutPostRedisplay();
@@ -195,6 +198,8 @@ void keyPressed(unsigned char key, int x, int y)
     if (key == 'p') 
     {
 	paintMode = !paintMode;
+	if (paintMode)
+	    paintCurrentBlock();
     }
     if (key == 'o')
     {
