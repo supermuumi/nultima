@@ -26,3 +26,12 @@
 #else
 #   error Platofrm not supported!
 #endif
+
+namespace Nultima
+{
+
+typedef unsigned char   NuUInt8;
+typedef signed char     NuInt8;
+typedef unsigned int    NuUInt32;
+typedef int             NuInt32;
+};

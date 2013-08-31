@@ -5,6 +5,10 @@
 namespace Nultima
 {
 
+class World;
+class GameState;
+class Player;
+
 class Game
 {
 public:
@@ -16,6 +20,10 @@ public:
 
 private:
     void handleKeyboard();
+
+    World*      m_world;
+    GameState*  m_state;
+    Player*     m_player;
 };
 
 }; // namespace
