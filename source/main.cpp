@@ -1,12 +1,23 @@
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <stdlib.h>
-#define GLUT_DISABLE_ATEXIT_HACK
-#include "GL/glut.h"
+#include "nuContext.h"
+#include "nuGame.h"
 
-#include <stdio.h>
+using namespace Nultima;
 
-int main ()
+int main (int argc, char** argv)
 {
-    printf("Hello world!\n");
+    // Context
+    Context* context = Context::get();
+    context->init(argc, argv);
+
+    // Create World
+    Game* game = new Game(context->getWorldFile(), context->getStateFile());
+
+    // Start update loop
+    game->mainloop();
+
+    // Cleanup
+    context->deinit();
+
+    delete game;
+    context->release();
 }
