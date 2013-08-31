@@ -16,6 +16,7 @@
     <ClCompile Include="src\color.cpp" />
     <ClCompile Include="src\gl_utils.cpp" />
     <ClCompile Include="src\inhabitant.cpp" />
+    <ClCompile Include="src\Inventory.cpp" />
     <ClCompile Include="src\keyboard.cpp" />
     <ClCompile Include="src\light.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -30,6 +31,7 @@
     <ClInclude Include="src\color.h" />
     <ClInclude Include="src\gl_utils.h" />
     <ClInclude Include="src\inhabitant.h" />
+    <ClInclude Include="src\Inventory.h" />
     <ClInclude Include="src\keyboard.h" />
     <ClInclude Include="src\light.h" />
     <ClInclude Include="src\object3d.h" />

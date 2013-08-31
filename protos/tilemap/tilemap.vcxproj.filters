@@ -13,6 +13,7 @@
     <ClCompile Include="src\vec3.cpp" />
     <ClCompile Include="src\inhabitant.cpp" />
     <ClCompile Include="src\keyboard.cpp" />
+    <ClCompile Include="src\Inventory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.h" />
@@ -26,5 +27,6 @@
     <ClInclude Include="src\vec3.h" />
     <ClInclude Include="src\inhabitant.h" />
     <ClInclude Include="src\keyboard.h" />
+    <ClInclude Include="src\Inventory.h" />
   </ItemGroup>
 </Project>
