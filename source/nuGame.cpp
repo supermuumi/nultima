@@ -8,11 +8,17 @@
 #include "nuGameState.h"
 #include "nuPlayer.h"
 #include "nuMapLocation.h"
+#include "nuCamera.h"
 
 using namespace Nultima;
 
 // TODO [sampo] tsk tsk, should not do allocations in constructor
-Game::Game(std::string worldFile, std::string stateFile)
+Game::Game(std::string worldFile, std::string stateFile) :
+    m_world(NULL),
+    m_state(NULL),
+    m_player(NULL),
+    m_editorCamera(NULL),
+    m_isEditorMode(false)
 {
     m_world = new World(worldFile);
     m_state = new GameState(stateFile);
@@ -22,10 +28,13 @@ Game::Game(std::string worldFile, std::string stateFile)
         m_world->getPlayerStart(playerLocation);
 
     m_player = new Player(playerLocation);
+
+    m_editorCamera = new Camera();
 }
 
 Game::~Game()
 {
+    delete m_editorCamera;
     delete m_player;
     delete m_state;
     delete m_world;
@@ -37,19 +46,34 @@ void Game::mainloop()
     GLUT::mainloop(this, graphics);
 }
 
-void Game::display()
+void Game::tick()
 {
-    Graphics* graphics = Context::get()->getGraphics();
-
     // Handle input
-    // TODO [sampo] This is not really related to rendering, do earlier?
     handleKeyboard();
 
-    // Clear
-    graphics->clear();
+    // Streaming
+}
+
+void Game::display()
+{
+    // prepare
+    beginFrame();
 
     // render
-    m_player->render();
+    m_player->render(m_world, m_isEditorMode ? m_editorCamera : NULL);
+
+    endFrame();
+}
+
+void Game::beginFrame()
+{
+    Graphics* graphics = Context::get()->getGraphics();
+    graphics->clear();
+}
+
+void Game::endFrame()
+{
+    Graphics* graphics = Context::get()->getGraphics();
 
     // Swap
     graphics->swap();

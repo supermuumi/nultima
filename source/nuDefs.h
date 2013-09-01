@@ -3,6 +3,9 @@
 #include <stddef.h>
 #include <assert.h>
 
+#define NU_CELL_WIDTH   16
+#define NU_CELL_HEIGHT  16
+
 #define NU_UNREF(X) (void)X
 
 #if defined(_DEBUG)

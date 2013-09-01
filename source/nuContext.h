@@ -22,7 +22,7 @@ public:
 
     std::string     getWorldFile();
     std::string     getStateFile();
-    Graphics*       getGraphics()   { return m_graphics; };
+    Graphics*       getGraphics()   { return m_graphics; }
     Keyboard*       getKeyboard()   { return m_keyboard; }
 
 private:

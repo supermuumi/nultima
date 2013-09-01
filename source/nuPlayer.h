@@ -5,13 +5,19 @@
 namespace Nultima
 {
 
+class World;
+class Camera;
+
 class Player
 {
 public:
-    Player(MapLocation location) {};
+    Player(MapLocation location);
     ~Player() {};
 
-    void render() {};
+    void render(World* world, Camera* camera);
+
+private:
+    MapLocation m_location;
 };
 
 };

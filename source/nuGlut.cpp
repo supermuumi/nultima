@@ -22,6 +22,7 @@ Graphics* g_graphics = NULL;
 static void display()
 {
     NU_ASSERT(g_currentGame);
+    g_currentGame->tick();
     g_currentGame->display();
 }
 
