@@ -24,6 +24,8 @@
 #include "Cell.h"
 #include "World.h"
 
+#include "Tilemap.h"
+
 #define FRAND() ((float)rand() / RAND_MAX)
 
 using namespace std;
@@ -48,9 +50,10 @@ int activeBlock;
 int activeLayer;
 bool paintMode;
 
-World *g_world;
-Camera *g_cam;
-Light *g_sun;
+World* g_world;
+Camera* g_cam;
+Light* g_sun;
+Tilemap* g_tilemap;
 
 bool g_inventoryVisible;
 
@@ -127,7 +130,7 @@ void display(void)
     g_cam->setView();
 
     // render world
-    g_world->render(g_cam);
+    g_world->render(g_cam, g_tilemap);
 
     // draw cursor
     glPushMatrix();
@@ -156,7 +159,7 @@ void display(void)
     glPopMatrix();
 
     char str[128];
-    sprintf(str, "fps: %4.0f (%4.1f ms) (%.4f) / cam=[%.2f,%.2f,%.2f]", 1000/fps, timerDelta, g_cam->pos.x, g_cam->pos.y, g_cam->pos.z);
+    sprintf(str, "fps: %4.0f (%4.1f ms) / cam=[%.2f,%.2f,%.2f]", 1000/fps, timerDelta, g_cam->pos.x, g_cam->pos.y, g_cam->pos.z);
     drawString(str, 20, wHeight-20);
     char *helptext = "p=paint on/off   o=paint current   kl=prev/next layer   .,=prev/next block   arrows=move";
     drawString(helptext, 20, wHeight-34);
@@ -211,14 +214,14 @@ void keyPressed(unsigned char key, int x, int y)
     if (key == '.') 
     {
 	activeBlock++;
-	if (activeBlock == BT_LASTBLOCK)
-	    activeBlock = BT_BLANK+1;
+	if (activeBlock == 512) //BT_LASTBLOCK)
+	    activeBlock = 0; //BT_BLANK+1;
     }
     if (key == ',') 
     {
 	activeBlock--;
 	if (activeBlock < 0)
-	    activeBlock = BT_LASTBLOCK-1;
+	    activeBlock = 511; //BT_LASTBLOCK-1;
     }
 
     if (key == 'k' && activeLayer > 0) activeLayer--;
@@ -306,14 +309,6 @@ void deinitWorld()
 extern void             stbi_image_free (void *retval_from_stbi_load);
 extern unsigned char    *stbi_load      (char const *filename,     int *x, int *y, int *comp, int req_comp);
 
-void loadTextures() 
-{
-    textures = new TextureManager();
-    textures->addTexture("rock", "rock.jpg");
-    textures->addTexture("wood", "wood.jpg");
-    textures->addTexture("grass", "grass.jpg");
-    textures->addTexture("water", "water.gif");
-}
 
 void initLighting() 
 {
@@ -343,7 +338,6 @@ void setupOpenGL()
     // textures
     glShadeModel(GL_FLAT);
     glEnable(GL_TEXTURE_2D);
-    loadTextures();
 
     // enable culling
     glEnable(GL_DEPTH_TEST);
@@ -352,8 +346,20 @@ void setupOpenGL()
     glFrontFace(GL_CCW);
 }
 
+void initTilemap()
+{
+    g_tilemap = new Tilemap();
+    g_tilemap->load("tilemap.json");
+}
+
+void deinitTilemap()
+{
+    delete g_tilemap;
+}
+
 void initGame()
 {
+    initTilemap();
     initWorld();
 
     initCamera();
@@ -370,18 +376,18 @@ void deinitGame()
     deinitCamera();
 
     deinitWorld();
+    deinitTilemap();
 }
 
 // TODO fix memleaks :-)
 int main(int argc, char** argv) 
 {
-
     srand((unsigned)time(NULL));
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(wWidth, wHeight);
-    int win = glutCreateWindow("tilemap proto");
+    int win = glutCreateWindow("editor proto");
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPressed);
     glutKeyboardUpFunc(keyReleased);

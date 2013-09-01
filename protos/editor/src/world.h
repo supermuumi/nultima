@@ -25,7 +25,7 @@ public:
     Cell* getCellAt(int x, int y);
     int getBlockAt(int x, int y, int layer);
     void setBlockAt(int x, int y, int layer, int block);
-    void render(Camera* cam);
+    void render(Camera* cam, Tilemap* tilemap);
 
     int getWidth();
     int getHeight();

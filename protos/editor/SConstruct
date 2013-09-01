@@ -1,4 +1,7 @@
 Program('editor', 
         Glob('src/*.cpp'), 
+	CPPPATH=['../dialogue/libjson'],
+	LIBPATH=['../dialogue/libjson'],
+	LIBS=['libjson'],
         FRAMEWORKS=['GLUT', 'OpenGL'],
         )

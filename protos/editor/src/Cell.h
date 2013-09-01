@@ -11,6 +11,7 @@
 #endif
 
 #include <stdio.h>
+#include "Tilemap.h"
 
 #define CELL_MAX_LAYERS 2 // 
 
@@ -42,7 +43,7 @@ class Cell {
     void load(char *fname, int layer); // stream in, generate map
     void unload(); // stream out
     void render();
-    void renderRaw();
+    void renderRaw(Tilemap* tilemap);
     void move(float, float);
     void reset();
 

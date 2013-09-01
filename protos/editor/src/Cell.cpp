@@ -2,6 +2,7 @@
 #include "Cell.h"
 #include "textures.h"
 #include "gl_utils.h"
+#include "Tilemap.h"
 
 extern TextureManager *textures;
 
@@ -39,14 +40,14 @@ int Cell::getBlockAt(int x, int y, int layer) {
 
 void Cell::setBlock(int x, int y, int layer, int block) 
 {
-    assert(block >= 0 && block < BT_LASTBLOCK);
+    //assert(block >= 0 && block < BT_LASTBLOCK);
     assert(x >= 0 && x < cellSize && y >= 0 && y < cellSize);
     assert(layer >= 0 && layer < numLayers);
 
     mapData[layer][y*cellSize+x] = block;
 }
 
-void Cell::renderRaw() 
+void Cell::renderRaw(Tilemap* tilemap) 
 {
     for (int layer = 0; layer < numLayers; layer++)
     {
@@ -56,16 +57,13 @@ void Cell::renderRaw()
 	    for (int i = 0; i < cellSize; i++, ofs++) 
 	    {
 		unsigned char block = mapData[layer][ofs];
-		if (block == BT_BLANK) 
-		    continue;
 
-		glBindTexture(GL_TEXTURE_2D, getTextureForBlock(block));
 		glPushMatrix();
 		glTranslatef(x+i, y-j, (layer == 0) ? 0.0f : layer-0.5f);
 		if (layer == 0)
-		    texturedPlane(1.0);
-		else 
-		    texturedCube(1.0);
+		    tilemap->texturedPlane(block, 1.0);
+		//else 
+		//    texturedCube(1.0);
 		glPopMatrix();
 	    }
 	}    

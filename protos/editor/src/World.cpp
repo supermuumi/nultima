@@ -67,18 +67,19 @@ void World::setBlockAt(int x, int y, int layer, int block)
     c->setBlock(x % m_cellSize, y % m_cellSize, layer, block);
 }
 
-void World::render(Camera *cam)
+void World::render(Camera* cam, Tilemap* tilemap)
 {
     if (m_worldInvalid)
 	return;
 
+    glBindTexture(GL_TEXTURE_2D, tilemap->getTextureId()); //getTextureForBlock(block));
     for (std::vector<Cell*>::iterator it = m_cells.begin(); it != m_cells.end(); ++it)
     {	
 	if (cam->cubeInFrustum((*it)->x+m_cellSize/2.0f, 
 			       (*it)->y+m_cellSize/2.0f, 
 			       0.0f, m_cellSize/2.0f))
 	{
-	    (*it)->renderRaw();
+	    (*it)->renderRaw(tilemap);
 	}
     }
 }
