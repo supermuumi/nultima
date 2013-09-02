@@ -8,7 +8,6 @@
 doc/.#goals.txt
 protos/tilemap/tilemap
 *.pdb
-*.exe
 *.suo
 *.opensdf
 *.sdf
@@ -26,7 +25,6 @@ protos/tilemap/tilemap
 *.rc
 *.idb
 *.ipch
-
 protos/combat/combat
 protos/dialogue/dialogue
 protos/editor/editor
@@ -34,3 +32,5 @@ Nultima.sln
 bin
 build/vs2010
 intermediates
+!*.premake4.exe
+*.exe
