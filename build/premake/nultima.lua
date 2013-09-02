@@ -2,7 +2,9 @@
 
 projectsettings("Nultima")	
 platforms{"x32", "x64"}
+configuration { "Debug or Release" }
 kind "ConsoleApp"
+
 files { "source/*.cpp", "source/*.h" }
 flags { "ExtraWarnings", "FatalWarnings" }
 
