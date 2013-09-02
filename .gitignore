@@ -34,3 +34,7 @@ Nultima.sln
 bin
 build/vs2010
 intermediates
+
+Makefile
+
+*.lua#
