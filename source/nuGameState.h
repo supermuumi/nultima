@@ -13,7 +13,7 @@ public:
     GameState(std::string filename) {};
     ~GameState() {};
 
-    bool getPlayerLocation(MapLocation& location) { (void)location; return true; }
+    bool getPlayerLocation(MapLocation& location) { (void)location; return false; }
 };
 
 };

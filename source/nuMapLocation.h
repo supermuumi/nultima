@@ -1,6 +1,8 @@
 #pragma once
 
 #include "nuDefs.h"
+#include "nuVec2.h"
+
 #include <fstream>
 
 namespace Nultima
@@ -9,24 +11,17 @@ namespace Nultima
 class MapLocation
 {
 public:
-    MapLocation() {};
+    MapLocation();
+    MapLocation(unsigned int cellIdx, int blockX, int blockY, int layer);
     ~MapLocation() {};
 
-    unsigned int getCellIdx () { return m_cellIdx; }
-    int getBlockX           () { return m_blockX; }
-    int getBlockY           () { return m_blockY; }
-    int getLayer            () { return m_layer; }
-
-    void    setCellIdx  (unsigned int cellIdx)  { m_cellIdx = cellIdx; }
-    void    setBlockX   (int blockX)            { m_blockX = blockX; }
-    void    setBlockY   (int blockY)            { m_blockY = blockY; }
-    void    setLayer    (int layer)             { m_layer = layer; }
-
-    int     getCellX    ();
-    int     getCellY    ();
+    void    getCoordinate   (Vec2i& coord);
+    void    serialize       (std::ofstream* stream);
+    void    deserialize     (std::ifstream* stream);
 
 private:
-    friend std::ifstream& operator>> (std::ifstream& stream, MapLocation& location);
+
+    Vec2i           m_coordinate;
 
     unsigned int    m_cellIdx;
     int             m_blockX;

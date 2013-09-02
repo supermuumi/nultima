@@ -10,12 +10,7 @@ using namespace Nultima;
 
 Player::Player(MapLocation location)
 {
-    m_location.setCellIdx   (location.getCellIdx());
-    m_location.setBlockX    (location.getBlockX ());
-    m_location.setBlockY    (location.getBlockY ());
-    m_location.setLayer     (location.getLayer  ());
-
-    m_layer = 0;
+    m_location = location;
 }
 
 // TODO [sampo] frustum culling

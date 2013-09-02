@@ -1,5 +1,10 @@
 #pragma once
 
+#include "nuDefs.h"
+#include "nuBlock.h"
+
+#include <fstream>
+
 namespace Nultima
 {
 
@@ -8,13 +13,20 @@ class Block;
 class Cell
 {
 public:
-    Cell();
+    Cell() {};
+    Cell(int x, int y);
     ~Cell();
 
-    const Block* getBlock(int x, int y, int layer) { return m_blocks[layer][y][x]; }
+    const Block*    getBlock    (int x, int y, int layer) { return m_blocks[layer][y][x]; }
+    void            insertBlock (char type, int x, int y, int layer);
+
+    void            serialize   (std::ofstream* stream);
+    void            deserialize (std::ifstream* stream);
 
 private:
-    Block* m_blocks[NU_MAX_LAYERS][NU_CELL_WIDTH][NU_CELL_HEIGHT];
+    int     m_x;
+    int     m_y;
+    Block*  m_blocks[NU_MAX_LAYERS][NU_CELL_HEIGHT][NU_CELL_WIDTH];
 };
 
 };

@@ -20,12 +20,12 @@ Game::Game(std::string worldFile, std::string stateFile) :
     m_editorCamera(NULL),
     m_isEditorMode(false)
 {
-    m_world = new World(worldFile);
+    m_world = new World("foo.world");
     m_state = new GameState(stateFile);
 
     MapLocation playerLocation;
     if (!m_state->getPlayerLocation(playerLocation))
-        m_world->getPlayerStart(playerLocation);
+        playerLocation = m_world->getPlayerStart();
 
     m_player = new Player(playerLocation);
 
