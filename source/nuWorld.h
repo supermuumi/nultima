@@ -16,9 +16,11 @@ public:
     ~World() {}
 
     bool getPlayerStart(MapLocation& location) { (void)location; return true; }
+    std::vector<Cell*> getCells() { return m_loadedCells; }
 
 private:
     std::unordered_map<unsigned int, Cell*> m_cellMap;
+    std::vector<Cell*>                      m_loadedCells;
 };
 
 }; // namespace

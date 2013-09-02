@@ -5,6 +5,7 @@
 
 #define NU_CELL_WIDTH   16
 #define NU_CELL_HEIGHT  16
+#define NU_MAX_LAYERS   8
 
 #define NU_UNREF(X) (void)X
 
