@@ -38,3 +38,9 @@ intermediates
 Makefile
 
 *.lua#
+
+build/premake/.#glut.lua
+
+*.cpp#
+
+protos/tilemap/src/.#main.cpp

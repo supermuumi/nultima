@@ -4,7 +4,12 @@
 #include "nuCell.h"
 
 #include <string>
+// TODO - tr1 seems to be required on osx at least
+#if defined(__APPLE__) || defined(MACOSX)
+#include <tr1/unordered_map>
+#else
 #include <unordered_map>
+#endif
 
 namespace Nultima
 {
