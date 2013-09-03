@@ -18,7 +18,10 @@ public:
     ~Cell();
 
     const Block*    getBlock    (int x, int y, int layer) { return m_blocks[layer][y][x]; }
-    void            insertBlock (char type, int x, int y, int layer);
+    void            insertBlock (char type, Vec2i coords, int layer);
+
+    void            beginRendering  ();
+    void            endRendering    ();
 
     void            serialize   (std::ofstream* stream);
     void            deserialize (std::ifstream* stream);

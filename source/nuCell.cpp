@@ -5,6 +5,12 @@
 
 #include <cstring>
 
+#if NU_OS == NU_OS_WINDOWS
+#   include <windows.h>
+#endif
+#include <GL/gl.h>
+#include <GL/glu.h>
+
 using namespace Nultima;
 
 Cell::Cell(int x, int y) :
@@ -76,7 +82,19 @@ void Cell::deserialize(std::ifstream* stream)
     stream->seekg(-1, std::ios_base::cur); 
 }
 
-void Cell::insertBlock(char type, int x, int y, int layer)
+void Cell::insertBlock(char type, Vec2i coords, int layer)
 {
-    m_blocks[layer][y][x] = new Block(type);
+    m_blocks[layer][coords.m_y][coords.m_x] = new Block(type, coords, layer);
+}
+
+// TODO [sampo] move GL calls to gfx
+void Cell::beginRendering()
+{
+    glPushMatrix();
+	glTranslatef((GLfloat)m_x, (GLfloat)m_y, 0);
+}
+
+void Cell::endRendering()
+{
+    glPopMatrix();
 }

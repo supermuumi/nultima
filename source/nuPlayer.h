@@ -18,7 +18,6 @@ public:
 
 private:
     MapLocation m_location;
-    int         m_layer;
 };
 
 };

@@ -26,30 +26,31 @@ void Player::render(World* world, Camera* inCamera)
 
     std::vector<Cell*> cells = world->getCells();
 
-    std::vector<Object*> visible;
-
     // loop cells
     for (std::vector<Cell*>::iterator it = cells.begin(); it != cells.end(); ++it)
     // loop layers
-    for (int i=0; i<=m_layer; i++)
+    for (int i=0; i<=m_location.getLayer(); i++)
     {
-        Cell* cell = *it;
-
+        Cell* cell = (*it);
+        cell->beginRendering();
         // loop blocks
         for (int x=0; x<NU_CELL_WIDTH; x++)
         for (int y=0; y<NU_CELL_HEIGHT; y++)
-            visible.push_back((Object*)cell->getBlock(x, y, i));
+        {
+            const Block* block = cell->getBlock(x, y, i);
+            block->render();
+        }
+        cell->endRendering();
     }
 
     // TODO [sampo] loop inhabitants
-    //     enqueu inhabitant
+    //     render inhabitant
+
+    // TODO [sampo] loop props
+    //     render props
 
     // TODO [sampo] loop monsters
-    //   enqueue monster
-
-    // render queue
-    for (std::vector<Object*>::iterator it = visible.begin(); it != visible.end(); ++it)
-        (*it)->render();
+    //   render monster
 
     // TODO [sampo] render hud
 }

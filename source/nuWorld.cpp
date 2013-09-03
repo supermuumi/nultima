@@ -31,7 +31,7 @@ World::World(std::string fileName)
         Cell cell(0, 0);
         for (int x=0; x<NU_CELL_WIDTH; x++)
         for (int y=0; y<NU_CELL_HEIGHT; y++)
-            cell.insertBlock(Block::GRASS, x, y, 0);
+            cell.insertBlock(Block::GRASS, Vec2i(x, y), 0);
         cell.serialize(&outFile);
 
         cWrite = WORLD_TAG_END;
@@ -65,8 +65,10 @@ World::World(std::string fileName)
 
         case WORLD_TAG_CELL:
             {
-                Cell cell;
-                cell.deserialize(&worldFile);
+                Cell* cell = new Cell();
+                cell->deserialize(&worldFile);
+                m_loadedCells.push_back(cell);
+                // TODO [sampo] m_cellMap and streaming
                 break;
             }
 

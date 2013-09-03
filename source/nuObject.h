@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 namespace Nultima
 {
 
@@ -10,7 +11,7 @@ public:
     Object() {}
     ~Object() {}
 
-    void render();
+    virtual void render() const = 0;
 };
 
 }; // namespace

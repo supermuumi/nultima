@@ -18,6 +18,7 @@ public:
     void    getCoordinate   (Vec2i& coord);
     void    serialize       (std::ofstream* stream);
     void    deserialize     (std::ifstream* stream);
+    int     getLayer        () { return m_layer; }
 
 private:
 
