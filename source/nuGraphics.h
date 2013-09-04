@@ -17,11 +17,11 @@ public:
     void deinit();
 
     // Geometry
-    void*   createIndexBuffer   (unsigned int* tris, int numTris);
-    void    bindIndexBuffer     (void* buffer);
-    void*   createVertexBuffer  (float* verts, int numVerts);
-    void    bindVertexBuffer    (void* buffer);
-    void    drawElements        (int count);
+    unsigned int createIndexBuffer   (unsigned int* tris, int numTris);
+    void         bindIndexBuffer     (unsigned int buffer);
+    unsigned int createVertexBuffer  (float* verts, int numVerts);
+    void         bindVertexBuffer    (unsigned int buffer);
+    void         drawElements        (int count);
 
     // Render target ops
     void resize (int x, int y);

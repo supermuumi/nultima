@@ -102,30 +102,30 @@ void Graphics::popMatrix()
     glPopMatrix();
 }
 
-void* Graphics::createIndexBuffer(unsigned int* tris, int numTris)
+unsigned int Graphics::createIndexBuffer(unsigned int* tris, int numTris)
 {
     GLuint indexBufferObject;
     glGenBuffers(1, &indexBufferObject);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*numTris*3, tris, GL_STATIC_DRAW);
-    return (void*)indexBufferObject;
+    return indexBufferObject;
 }
 
-void Graphics::bindIndexBuffer(void* buffer)
+void Graphics::bindIndexBuffer(unsigned int buffer)
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (GLuint)buffer);
 }
 
-void* Graphics::createVertexBuffer(float* verts, int numVerts)
+unsigned int Graphics::createVertexBuffer(float* verts, int numVerts)
 {
     GLuint vertexBufferObject;
     glGenBuffers(1, &vertexBufferObject);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
     glBufferData(GL_ARRAY_BUFFER, numVerts*sizeof(float)*3, verts, GL_STATIC_DRAW);
-    return (void*)vertexBufferObject;
+    return vertexBufferObject;
 }
 
-void Graphics::bindVertexBuffer(void* buffer)
+void Graphics::bindVertexBuffer(unsigned int buffer)
 {
     glBindBuffer(GL_ARRAY_BUFFER, (GLuint)buffer);
     glEnableClientState(GL_VERTEX_ARRAY);

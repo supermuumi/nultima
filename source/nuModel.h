@@ -27,10 +27,10 @@ public:
 private:
     void createUnitPlane();
     void createUnitBox();
-
-    void*   m_indexBuffer;
-    void*   m_vertexBuffer;
-    int     m_numTriangles;
+    
+    unsigned int m_indexBuffer;
+    unsigned int m_vertexBuffer;
+    int          m_numTriangles;
 };
 
 }; // namespace
