@@ -6,6 +6,7 @@ includedirs { "external/glew/include" }
 links { "opengl32" }
 defines { "GLEW_STATIC", "_CRT_SECURE_NO_WARNINGS" }
 
+configuration { "windows" }
 files { "external/glew/include/GL/*.h" }
 files { "external/glew/src/*.c" }
 excludes {

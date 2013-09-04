@@ -1,14 +1,14 @@
 -- Nultima
 
 projectsettings("Nultima")	
-platforms{"native","x32", "x64"}
+platforms{"native", "x32", "x64"}
 configuration {"Debug or Release"}
 kind "ConsoleApp"
-files { "source/*.cpp", "source/*.h" }
 flags { "ExtraWarnings", "FatalWarnings" }
 
 configuration { "windows" }
-defines { "GLUT_NO_LIB_PRAGMA", "GLEW_STATIC" }
+defines { "GLUT_BUILDING_LIB", "GLUT_NO_LIB_PRAGMA", "GLEW_STATIC" }
+files { "source/*.cpp", "source/*.h" }
 links { "glut", "opengl32", "glu32", "glew" }
 includedirs { "external/glut/include", "external/glew/include" }
 
