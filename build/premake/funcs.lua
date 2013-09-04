@@ -28,10 +28,7 @@ function solutionsettings(_name)
 	language "C++"
 	flags { "Symbols", "NoPCH", "NoEditAndContinue",
 	        "NoMinimalRebuild", "NoRTTI", "NoManifest" }
-	configuration { "x32 or x64", "macosx" }
-		local sdk_path = "/Developer/SDKs/MacOSX10.6.sdk/"
-		buildoptions { "-isysroot " .. sdk_path, "-mmacosx-version-min=10.6"}
-		linkoptions {  "-isysroot " .. sdk_path, "-mmacosx-version-min=10.6"}
+
 	configuration "Debug"
 	defines { "DEBUG", "_DEBUG" }
 	targetsuffix "_d"
@@ -47,4 +44,7 @@ function solutionsettings(_name)
 	targetsuffix "32"
 	configuration { "Release", "x64" }
 	targetsuffix "64"
+
+	configuration { "macosx" }
+	targetsuffix ""
 end

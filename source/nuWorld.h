@@ -4,7 +4,12 @@
 #include "nuCell.h"
 
 #include <string>
+#include <vector>
+#if defined(__APPLE__) || defined(MACOSX)
+#include <tr1/unordered_map>
+#else
 #include <unordered_map>
+#endif
 
 namespace Nultima
 {
@@ -29,7 +34,7 @@ public:
     std::vector<Cell*>  getCells        ()  { return m_loadedCells; }
 
 private:
-    std::unordered_map<unsigned int, Cell*> m_cellMap;
+    std::tr1::unordered_map<unsigned int, Cell*> m_cellMap;
     std::vector<Cell*>                      m_loadedCells;
     MapLocation                             m_playerStart;
 };
