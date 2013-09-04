@@ -2,7 +2,6 @@
 
 #include "nuObject.h"
 #include "nuVec2.h"
-
 #include <fstream>
 
 namespace Nultima
