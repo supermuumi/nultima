@@ -2,6 +2,7 @@
 #include "nuGraphics.h"
 #include "nuDefs.h"
 #include "nuKeyboard.h"
+#include "nuModel.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -40,6 +41,8 @@ void Context::init(int argc, char** argv)
     m_graphics->init(argc, argv);
 
     m_keyboard = new Keyboard();
+
+    m_models.resize(Model::NUM_MODELS, NULL);
 }
 
 void Context::deinit()
@@ -66,4 +69,13 @@ std::string Context::getWorldFile()
 std::string Context::getStateFile()
 {
     return "";
+}
+
+const Model* Context::getModel(int type)
+{
+    // lazy create
+    if (!m_models[type])
+        m_models[type] = new Model(type);
+
+    return m_models[type];
 }

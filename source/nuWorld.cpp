@@ -12,7 +12,7 @@ using namespace Nultima;
 
 World::World(std::string fileName)
 {
-#if 0
+#if 1
     std::ofstream outFile("foo.world", std::ios_base::binary);
     if (outFile.is_open())
     {
@@ -26,13 +26,45 @@ World::World(std::string fileName)
         MapLocation playerStart(0, 1, 3, 0);
         playerStart.serialize(&outFile);
 
-        cWrite = WORLD_TAG_CELL;
-        outFile.write(&cWrite, 1);
-        Cell cell(0, 0);
-        for (int x=0; x<NU_CELL_WIDTH; x++)
-        for (int y=0; y<NU_CELL_HEIGHT; y++)
-            cell.insertBlock(Block::GRASS, Vec2i(x, y), 0);
-        cell.serialize(&outFile);
+        {
+            cWrite = WORLD_TAG_CELL;
+            outFile.write(&cWrite, 1);
+            Cell cell(0, 0);
+            for (int x=0; x<NU_CELL_WIDTH; x++)
+            for (int y=0; y<NU_CELL_HEIGHT; y++)
+                cell.insertBlock(Block::GRASS, Vec2i(x, y), 0);
+            cell.serialize(&outFile);
+        }
+
+        {
+            cWrite = WORLD_TAG_CELL;
+            outFile.write(&cWrite, 1);
+            Cell cell(-1, -1);
+            for (int x=0; x<NU_CELL_WIDTH; x++)
+            for (int y=0; y<NU_CELL_HEIGHT; y++)
+                cell.insertBlock(Block::WATER, Vec2i(x, y), 0);
+            cell.serialize(&outFile);
+        }
+
+        {
+            cWrite = WORLD_TAG_CELL;
+            outFile.write(&cWrite, 1);
+            Cell cell(-2, -2);
+            for (int x=0; x<NU_CELL_WIDTH; x++)
+            for (int y=0; y<NU_CELL_HEIGHT; y++)
+                cell.insertBlock(Block::GRASS, Vec2i(x, y), 0);
+            cell.serialize(&outFile);
+        }
+
+        {
+            cWrite = WORLD_TAG_CELL;
+            outFile.write(&cWrite, 1);
+            Cell cell(1, 1);
+            for (int x=0; x<NU_CELL_WIDTH; x++)
+            for (int y=0; y<NU_CELL_HEIGHT; y++)
+                cell.insertBlock(Block::WATER, Vec2i(x, y), 0);
+            cell.serialize(&outFile);
+        }
 
         cWrite = WORLD_TAG_END;
         outFile.write(&cWrite, 1);

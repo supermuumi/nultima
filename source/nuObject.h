@@ -4,6 +4,8 @@
 namespace Nultima
 {
 
+class Model;
+
 class Object
 {
 public:
@@ -12,6 +14,9 @@ public:
     ~Object() {}
 
     virtual void render() const = 0;
+
+protected:
+    const Model* m_model;
 };
 
 }; // namespace

@@ -14,7 +14,8 @@ public:
 
     enum Type
     {
-        GRASS = 0
+        GRASS = 0,
+        WATER
     };
 
     Block() {}
@@ -25,6 +26,9 @@ public:
     void deserialize    (std::ifstream* stream);
 
     void render         () const;
+
+    void determineModel ();
+
 private:
     char    m_type;
     Vec2i   m_blockCoords;

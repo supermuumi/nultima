@@ -10,16 +10,6 @@ function projectsettings(_name)
 	configuration { "macosx", "SharedLib" }
 	targetdir("bin/Frameworks")
 	
-	-- TODO: get these from somewhere instead of assuming libumbraXYZ(32|64)(_d).dylib
-	configuration { "macosx", "SharedLib", "Release", "x32" }
-	linkoptions { "-install_name @executable_path/../Frameworks/libumbra" .. _name .."32.dylib" }
-	configuration { "macosx", "SharedLib", "Release", "x64" }
-	linkoptions { "-install_name @executable_path/../Frameworks/libumbra" .. _name .."64.dylib" }
-	configuration { "macosx", "SharedLib", "Debug", "x32" }
-	linkoptions { "-install_name @executable_path/../Frameworks/libumbra" .. _name .."32_d.dylib" }
-	configuration { "macosx", "SharedLib", "Debug", "x64" }
-	linkoptions { "-install_name @executable_path/../Frameworks/libumbra" .. _name .."64_d.dylib" }
-
 	configuration("windows", "not StaticLib")
 	targetdir("bin/windows/") 
 	

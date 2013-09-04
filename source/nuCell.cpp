@@ -2,14 +2,10 @@
 #include "nuBlock.h"
 #include "nuWorld.h"
 #include "nuDefs.h"
+#include "nuContext.h"
+#include "nuGraphics.h"
 
 #include <cstring>
-
-#if NU_OS == NU_OS_WINDOWS
-#   include <windows.h>
-#endif
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 using namespace Nultima;
 
@@ -87,14 +83,15 @@ void Cell::insertBlock(char type, Vec2i coords, int layer)
     m_blocks[layer][coords.m_y][coords.m_x] = new Block(type, coords, layer);
 }
 
-// TODO [sampo] move GL calls to gfx
 void Cell::beginRendering()
 {
-    glPushMatrix();
-	glTranslatef((GLfloat)m_x, (GLfloat)m_y, 0);
+    Graphics* graphics = Context::get()->getGraphics();
+    graphics->pushMatrix();
+    graphics->translate((float)m_x*NU_CELL_WIDTH, (float)m_y*NU_CELL_HEIGHT, 0);
 }
 
 void Cell::endRendering()
 {
-    glPopMatrix();
+    Graphics* graphics = Context::get()->getGraphics();
+    graphics->popMatrix();
 }

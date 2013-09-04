@@ -6,6 +6,7 @@
 #   include <Windows.h>
 #endif
 
+#include "GL/glew.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -26,6 +27,8 @@ void Graphics::init(int argc, char** argv)
 {
     m_GLUT = new GLUT();
     m_GLUT->init(argc, argv, m_wWidth, m_wHeight);
+
+    glewInit();
 }
 
 void Graphics::deinit()
@@ -72,4 +75,55 @@ void Graphics::lookAt(Vec3 pos, Vec3 center, Vec3 up)
         pos.m_x, pos.m_y, pos.m_z,
         center.m_x, center.m_y, center.m_z,
         up.m_x, up.m_y, up.m_z);
+}
+
+void Graphics::translate(float x, float y, float z)
+{
+	glTranslatef(x, y, z);
+}
+
+void Graphics::pushMatrix()
+{
+    glPushMatrix();
+}
+
+void Graphics::popMatrix()
+{
+    glPopMatrix();
+}
+
+void* Graphics::createIndexBuffer(unsigned int* tris, int numTris)
+{
+    GLuint indexBufferObject;
+    glGenBuffers(1, &indexBufferObject);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*numTris*3, tris, GL_STATIC_DRAW);
+    return (void*)indexBufferObject;
+}
+
+void Graphics::bindIndexBuffer(void* buffer)
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (GLuint)buffer);
+}
+
+void* Graphics::createVertexBuffer(float* verts, int numVerts)
+{
+    GLuint vertexBufferObject;
+    glGenBuffers(1, &vertexBufferObject);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+    glBufferData(GL_ARRAY_BUFFER, numVerts*sizeof(float)*3, verts, GL_STATIC_DRAW);
+    return (void*)vertexBufferObject;
+}
+
+void Graphics::bindVertexBuffer(void* buffer)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, (GLuint)buffer);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(float)*3, 0);
+}
+
+void Graphics::drawElements(int count)
+{
+    glDrawElements(GL_TRIANGLES, count*3, GL_UNSIGNED_INT, 0);
+    glDisableClientState(GL_VERTEX_ARRAY);
 }

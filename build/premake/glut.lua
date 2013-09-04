@@ -1,7 +1,7 @@
 -- Glut
 
 if os.is("windows") then
-projectsettings("glut", true)
+projectsettings("glut")
 platforms { "x32", "x64" }
 kind "SharedLib"
 includedirs { "external/glut/include" }
