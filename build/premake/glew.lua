@@ -15,6 +15,7 @@ excludes {
 }
 
 configuration { "macosx" }
+defines { "GLEW_STATIC", "_CRT_SECURE_NO_WARNINGS" }
 files { "external/glew/include/GL/*.h" }
 files { "external/glew/src/*.c" }
 excludes {

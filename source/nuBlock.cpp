@@ -8,8 +8,14 @@
 #   include <windows.h>
 #endif
 
+#if defined(__APPLE__) || defined(MACOSX)
+#include <OpenGL/glu.h>
+#include <OpenGL/glext.h>
+#include <GLUT/glut.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 
 using namespace Nultima;
 
