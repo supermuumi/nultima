@@ -3,6 +3,7 @@
 #include "nuDefs.h"
 #include "nuKeyboard.h"
 #include "nuModel.h"
+#include "nuTexManager.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -43,6 +44,8 @@ void Context::init(int argc, char** argv)
     m_keyboard = new Keyboard();
 
     m_models.resize(Model::NUM_MODELS, NULL);
+
+    m_texManager = new TexManager();
 }
 
 void Context::deinit()
@@ -53,6 +56,9 @@ void Context::deinit()
 
     delete m_keyboard;
     m_keyboard = NULL;
+
+    delete m_texManager;
+    m_texManager = NULL;
 }
 
 void Context::release()
@@ -78,4 +84,9 @@ const Model* Context::getModel(int type)
         m_models[type] = new Model(type);
 
     return m_models[type];
+}
+
+unsigned int Context::getTexture(std::string name)
+{
+    return m_texManager->getTexture(name);
 }

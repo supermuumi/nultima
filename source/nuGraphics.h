@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nuVec3.h"
+#include <string>
 
 namespace Nultima
 {
@@ -17,11 +18,15 @@ public:
     void deinit();
 
     // Geometry
-    unsigned int createIndexBuffer   (unsigned int* tris, int numTris);
-    void         bindIndexBuffer     (unsigned int buffer);
-    unsigned int createVertexBuffer  (float* verts, int numVerts);
-    void         bindVertexBuffer    (unsigned int buffer);
-    void         drawElements        (int count);
+    unsigned int createIndexBuffer  (unsigned int* tris, int numTris);
+    void         bindIndexBuffer    (unsigned int buffer);
+    unsigned int createVertexBuffer (float* verts, int numVerts);
+    void         bindVertexBuffer   (unsigned int buffer);
+    void         drawElements       (int count);
+
+    // Texturing
+    void            bindTexture (unsigned int id);
+    unsigned int    loadTexture (std::string filename);
 
     // Render target ops
     void resize (int x, int y);

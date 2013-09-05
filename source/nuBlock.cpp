@@ -25,6 +25,7 @@ Block::Block(char type, Vec2i coords, int layer) :
     m_layer(layer)
 {
     determineModel();
+    determineTexName();
 }
 
 void Block::determineModel()
@@ -34,6 +35,21 @@ void Block::determineModel()
         m_model = context->getModel(Model::UNIT_PLANE);
     else
         m_model = context->getModel(Model::UNIT_BOX);
+}
+
+void Block::determineTexName()
+{
+    switch (m_type)
+    {
+    case GRASS:
+        m_texName = "grass";
+        break;
+    case WATER:
+        m_texName = "water";
+        break;
+    default:
+        NU_ASSERT(!"Unkown block type");
+    }
 }
 
 void Block::serialize(std::ofstream* stream)
@@ -50,40 +66,19 @@ void Block::deserialize(std::ifstream* stream)
     stream->read((char*)&m_layer, 4);
 
     determineModel();
+    determineTexName();
 }
 
 void Block::render() const
 {
-    Graphics* graphics = Context::get()->getGraphics();
-	graphics->pushMatrix();
+    Context* context = Context::get();
+    Graphics* graphics = context->getGraphics();
+
+    graphics->pushMatrix();
     graphics->translate((float)m_blockCoords.m_x, (float)m_blockCoords.m_y, 0);
+    graphics->bindTexture(context->getTexture(m_texName));
 
-    switch (m_type)
-    {
-    case GRASS:
-        glColor4f(0, 1, 0, 1);
-        break;
-
-    case WATER:
-        glColor4f(0, 0, 1, 1);
-        break;
-
-    default:
-        NU_ASSERT(!"Unkonwn block type");
-    }
-
-#if 1
     m_model->render();
-#else
-    // TODO [sampo] Vertex buffer
-    glBegin(GL_QUADS);
-    glNormal3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(0, 0, 0.0f);
-    glVertex3f(1, 0, 0.0f);
-    glVertex3f(1, 1, 0.0f);
-    glVertex3f(0, 1, 0.0f);
-    glEnd();
-#endif
 
     graphics->popMatrix();
 }

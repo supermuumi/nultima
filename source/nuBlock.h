@@ -26,12 +26,14 @@ public:
 
     void render         () const;
 
-    void determineModel ();
-
 private:
-    char    m_type;
-    Vec2i   m_blockCoords;
-    int     m_layer;
+    void determineModel     ();
+    void determineTexName   ();
+
+    char        m_type;
+    Vec2i       m_blockCoords;
+    int         m_layer;
+    std::string m_texName;
 };
 
 };

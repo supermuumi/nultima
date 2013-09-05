@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nuVec3.h"
+#include "nuVec2.h"
 
 #include <vector>
 
@@ -25,6 +26,13 @@ public:
     void render() const;
 
 private:
+    typedef struct
+    {
+        Vec3 coords;
+        Vec3 normal;
+        Vec2 texCoord;
+    } Vertex;
+
     void createUnitPlane();
     void createUnitBox();
     

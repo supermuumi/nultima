@@ -9,6 +9,7 @@ namespace Nultima
 class Graphics;
 class Keyboard;
 class Model;
+class TexManager;
 
 class Context
 {
@@ -27,6 +28,7 @@ public:
     Graphics*       getGraphics ()                  { return m_graphics; }
     Keyboard*       getKeyboard ()                  { return m_keyboard; }
     const Model*    getModel    (int type);
+    unsigned int    getTexture  (std::string name);
 
 private:
     int                 m_argc;
@@ -34,6 +36,7 @@ private:
     Graphics*           m_graphics;
     Keyboard*           m_keyboard;
     std::vector<Model*> m_models;
+    TexManager*         m_texManager;
 };
 
 }; // namespace
