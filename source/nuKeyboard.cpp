@@ -1,4 +1,5 @@
 #include "nuKeyboard.h"
+#include <list>
 
 using namespace Nultima;
 
@@ -11,9 +12,29 @@ Keyboard::Keyboard()
 void Keyboard::setKeyPressed(unsigned int key, bool down)
 {
     m_keysDown[key] = down;
+	if (down)
+		m_keyPressBuffer.push_back(key);
 }
 
 bool Keyboard::isKeyPressed(unsigned int key) 
 {
     return m_keysDown[key];
 }
+
+void Keyboard::resetKeypressBuffer()
+{
+	m_keyPressBuffer.clear();
+}
+
+bool Keyboard::hasKeyPresses()
+{
+	return !m_keyPressBuffer.empty();
+}
+
+int Keyboard::processKeyPress()
+{
+	int key = m_keyPressBuffer.front();
+	m_keyPressBuffer.pop_front();
+	return key; 
+}
+

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <list>
+
 namespace Nultima
 {
 
@@ -16,9 +18,13 @@ public:
 
     void setKeyPressed(unsigned int key, bool down);
     bool isKeyPressed(unsigned int key);
+	void resetKeypressBuffer();
+	bool hasKeyPresses();
+	int  processKeyPress();
 
 private:
     bool m_keysDown[512];
+	std::list<int> m_keyPressBuffer;
 };
 
 };
