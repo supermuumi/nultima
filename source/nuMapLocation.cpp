@@ -48,3 +48,11 @@ void MapLocation::getCoordinate(Vec2i& coord)
     coord.m_x = x;
     coord.m_y = y;
 }
+
+void MapLocation::move(int dx, int dy) 
+{
+    // TODO [muumi] - asserts
+
+    m_blockX += dx;
+    m_blockY += dy;
+}

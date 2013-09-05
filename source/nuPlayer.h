@@ -14,7 +14,9 @@ public:
     Player(MapLocation location);
     ~Player() {};
 
-    void render(World* world, Camera* camera);
+    void        render(World* world, Camera* camera);
+
+    MapLocation getLocation() { return m_location; }
 
 private:
     MapLocation m_location;

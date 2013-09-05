@@ -83,4 +83,18 @@ void Game::handleKeyboard()
 {
     Keyboard* keyboard = Context::get()->getKeyboard();
     NU_UNREF(keyboard);
+
+    int dx = 0;
+    int dy = 0;
+    if (keyboard->isKeyPressed(NU_KEY_LEFT))
+	dx = -1;
+    if (keyboard->isKeyPressed(NU_KEY_RIGHT))
+	dx = 1;
+    if (keyboard->isKeyPressed(NU_KEY_UP))
+	dy = -1;
+    if (keyboard->isKeyPressed(NU_KEY_DOWN))
+	dy = 1;
+
+    MapLocation loc = m_player->getLocation();
+    loc.move(dx, dy);
 }

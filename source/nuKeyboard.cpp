@@ -8,7 +8,12 @@ Keyboard::Keyboard()
         m_keysDown[i] = false;
 }
 
-void Keyboard::setKeyPressed(unsigned char key, bool down)
+void Keyboard::setKeyPressed(unsigned int key, bool down)
 {
     m_keysDown[key] = down;
+}
+
+bool Keyboard::isKeyPressed(unsigned int key) 
+{
+    return m_keysDown[key];
 }
