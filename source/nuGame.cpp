@@ -89,7 +89,7 @@ void Game::handleKeyboard()
     
 	while (keyboard->hasKeyPresses())
 	{
-		int key = keyboard->processKeyPress();
+		keyboard->processKeyPress();
 
 		if (keyboard->isKeyPressed(NU_KEY_LEFT))
 			dx--;
