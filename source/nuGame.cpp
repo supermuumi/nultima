@@ -9,6 +9,7 @@
 #include "nuPlayer.h"
 #include "nuMapLocation.h"
 #include "nuCamera.h"
+#include "nuEditor.h"
 
 using namespace Nultima;
 
@@ -17,25 +18,24 @@ Game::Game(std::string worldFile, std::string stateFile) :
     m_world(NULL),
     m_state(NULL),
     m_player(NULL),
-    m_editorCamera(NULL),
+    m_editor(NULL),
     m_isEditorMode(false),
     m_timeOfDay(0)
 {
     m_world = new World("foo.world");
     m_state = new GameState(stateFile);
+    m_editor = new Editor(m_world);
 
     MapLocation playerLocation;
     if (!m_state->getPlayerLocation(playerLocation))
         playerLocation = m_world->getPlayerStart();
 
     m_player = new Player(playerLocation);
-
-    m_editorCamera = new Camera();
 }
 
 Game::~Game()
 {
-    delete m_editorCamera;
+    delete m_editor;
     delete m_player;
     delete m_state;
     delete m_world;
@@ -83,7 +83,7 @@ void Game::endFrame()
 void Game::renderViewport()
 {
     // render world
-    m_player->render(m_world, m_isEditorMode ? m_editorCamera : NULL);
+    m_player->render(m_world, m_isEditorMode ? m_editor->getCamera() : NULL);
 
     renderHUD();
 }
@@ -115,7 +115,9 @@ void Game::handleKeyboard()
             case NU_KEY_UP:    dy++; break; 
             case NU_KEY_DOWN:  dy--; break;
 
+            case NU_KEY_TAB: m_isEditorMode != m_isEditorMode; break;
             // TODO process other keys like r=rest etc.
+
         }
     }
 

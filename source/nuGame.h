@@ -11,6 +11,7 @@ class World;
 class GameState;
 class Player;
 class Camera;
+class Editor;
 
 class Game
 {
@@ -36,7 +37,7 @@ private:
     World*      m_world;
     GameState*  m_state;
     Player*     m_player;
-    Camera*     m_editorCamera;
+    Editor*     m_editor;
     bool        m_isEditorMode;
 
     int         m_timeOfDay; // .16 fixed? :-P
