@@ -51,6 +51,9 @@ void Player::render(World* world, Camera* inCamera)
 
     // TODO [sampo] loop monsters
     //   render monster
+}
 
-    // TODO [sampo] render hud
+void Player::move(int dx, int dy)
+{
+    m_location.move(dx, dy);
 }

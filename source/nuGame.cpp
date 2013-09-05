@@ -9,6 +9,9 @@
 #include "nuPlayer.h"
 #include "nuMapLocation.h"
 #include "nuCamera.h"
+#include "nuVec2.h"
+
+#include <iostream>
 
 using namespace Nultima;
 
@@ -60,7 +63,7 @@ void Game::display()
     beginFrame();
 
     // render
-    m_player->render(m_world, m_isEditorMode ? m_editorCamera : NULL);
+    renderViewport();
 
     endFrame();
 }
@@ -79,28 +82,62 @@ void Game::endFrame()
     graphics->swap();
 }
 
+void Game::renderViewport()
+{
+    // render world
+    m_player->render(m_world, m_isEditorMode ? m_editorCamera : NULL);
+
+    renderHUD();
+}
+
+void Game::renderHUD()
+{
+    // TODO set ortho
+    // TODO render time of day
+    // TODO render party members & statuses
+}
+
 void Game::handleKeyboard()
 {
     Keyboard* keyboard = Context::get()->getKeyboard();
     NU_UNREF(keyboard);
 
-	int dx = 0;
+    int dx = 0;
     int dy = 0;
     
-	while (keyboard->hasKeyPresses())
-	{
-		keyboard->processKeyPress();
+    while (keyboard->hasKeyPresses())
+    {
+        int key = keyboard->processKeyPress();
 
-		if (keyboard->isKeyPressed(NU_KEY_LEFT))
-			dx--;
-		if (keyboard->isKeyPressed(NU_KEY_RIGHT))
-			dx++;
-		if (keyboard->isKeyPressed(NU_KEY_UP))
-			dy--;
-		if (keyboard->isKeyPressed(NU_KEY_DOWN))
-			dy++;
-	}
-	
-    MapLocation loc = m_player->getLocation();
-    loc.move(dx, dy);
+        switch(key)
+        {
+            // player movement
+            case NU_KEY_LEFT:  dx--; break;
+            case NU_KEY_RIGHT: dx++; break;
+            case NU_KEY_UP:    dy++; break; 
+            case NU_KEY_DOWN:  dy--; break;
+
+            // TODO process other keys like r=rest etc.
+        }
+    }
+
+#ifdef NU_ENABLE_KEYHOLD
+    if (keyboard->isKeyPressed(NU_KEY_LEFT)) dx--;
+    if (keyboard->isKeyPressed(NU_KEY_RIGHT)) dx++;
+    if (keyboard->isKeyPressed(NU_KEY_UP)) dy++;
+    if (keyboard->isKeyPressed(NU_KEY_DOWN)) dy--;
+#endif
+    if (dx != 0 || dy != 0)
+    {
+        m_player->move(dx, dy);
+        processTurn();
+    }
+}
+
+void Game::processTurn()
+{
+    // TODO move nearby monsters
+    // TODO move inhabitants
+    // TODO advance time of day
+    // TODO move sun
 }

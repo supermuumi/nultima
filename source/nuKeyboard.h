@@ -18,9 +18,9 @@ public:
 
     void setKeyPressed(unsigned int key, bool down);
     bool isKeyPressed(unsigned int key);
-	void resetKeypressBuffer();
-	bool hasKeyPresses();
-	int  processKeyPress();
+    void resetKeypressBuffer();
+    bool hasKeyPresses();
+    int  processKeyPress();
 
 private:
     bool m_keysDown[512];

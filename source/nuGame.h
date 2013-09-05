@@ -21,9 +21,16 @@ public:
     void tick();
 
 private:
-    void handleKeyboard();
+    // rendering
     void beginFrame();
     void endFrame();
+    void renderViewport();
+    void renderHUD();
+
+    // actual gameplay related
+    void handleKeyboard();
+    void processTurn();
+
 
     World*      m_world;
     GameState*  m_state;
