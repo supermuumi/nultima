@@ -9,9 +9,6 @@
 #include "nuPlayer.h"
 #include "nuMapLocation.h"
 #include "nuCamera.h"
-#include "nuVec2.h"
-
-#include <iostream>
 
 using namespace Nultima;
 
@@ -21,7 +18,8 @@ Game::Game(std::string worldFile, std::string stateFile) :
     m_state(NULL),
     m_player(NULL),
     m_editorCamera(NULL),
-    m_isEditorMode(false)
+    m_isEditorMode(false),
+    m_timeOfDay(0)
 {
     m_world = new World("foo.world");
     m_state = new GameState(stateFile);
@@ -138,6 +136,10 @@ void Game::processTurn()
 {
     // TODO move nearby monsters
     // TODO move inhabitants
-    // TODO advance time of day
-    // TODO move sun
+
+    // advance time of day
+    // TODO Muumi - This is now .16 fixed, I dunno why really.
+    m_timeOfDay += NU_GAME_TIMEPERTURN;
+
+    // TODO move sun, e.g. m_world->setTimeOfDay(m_timeOfDay/65536.0f);
 }

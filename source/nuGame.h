@@ -2,6 +2,8 @@
 
 #include <string>
 
+#define NU_GAME_TIMEPERTURN 2048
+
 namespace Nultima
 {
 
@@ -31,12 +33,14 @@ private:
     void handleKeyboard();
     void processTurn();
 
-
     World*      m_world;
     GameState*  m_state;
     Player*     m_player;
     Camera*     m_editorCamera;
     bool        m_isEditorMode;
+
+    int         m_timeOfDay; // .16 fixed? :-P
+
 };
 
 }; // namespace
