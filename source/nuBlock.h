@@ -14,7 +14,8 @@ public:
     enum Type
     {
         GRASS = 0,
-        WATER
+        WATER,
+        ROCK
     };
 
     Block() {}

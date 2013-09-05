@@ -29,7 +29,7 @@ void Player::render(World* world, Camera* inCamera)
     // loop cells
     for (std::vector<Cell*>::iterator it = cells.begin(); it != cells.end(); ++it)
     // loop layers
-    for (int i=0; i<=m_location.getLayer(); i++)
+    for (int i=0; i<NU_MAX_LAYERS; i++)
     {
         Cell* cell = (*it);
         cell->beginRendering();
@@ -38,7 +38,8 @@ void Player::render(World* world, Camera* inCamera)
         for (int y=0; y<NU_CELL_HEIGHT; y++)
         {
             const Block* block = cell->getBlock(x, y, i);
-            block->render();
+            if (block)
+                block->render();
         }
         cell->endRendering();
     }

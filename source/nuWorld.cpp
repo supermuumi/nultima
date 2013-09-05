@@ -33,6 +33,9 @@ World::World(std::string fileName)
             for (int x=0; x<NU_CELL_WIDTH; x++)
             for (int y=0; y<NU_CELL_HEIGHT; y++)
                 cell.insertBlock(Block::GRASS, Vec2i(x, y), 0);
+            for (int x=0; x<NU_CELL_WIDTH; x+=2)
+            for (int y=0; y<NU_CELL_HEIGHT; y+=2)
+                cell.insertBlock(Block::ROCK, Vec2i(x, y), 1);
             cell.serialize(&outFile);
         }
 

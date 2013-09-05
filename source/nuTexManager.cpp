@@ -9,6 +9,7 @@ TexManager::TexManager()
     // Fill the filename map
     m_textureFilenames["grass"] = "../../assets/textures/grass.jpg";
     m_textureFilenames["water"] = "../../assets/textures/water.gif";
+    m_textureFilenames["rock"] = "../../assets/textures/rock.jpg";
 }
 
 unsigned int TexManager::loadTexture(std::string name)

@@ -47,6 +47,9 @@ void Block::determineTexName()
     case WATER:
         m_texName = "water";
         break;
+    case ROCK:
+        m_texName = "rock";
+        break;
     default:
         NU_ASSERT(!"Unkown block type");
     }
