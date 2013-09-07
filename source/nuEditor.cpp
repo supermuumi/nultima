@@ -11,11 +11,13 @@
 
 using namespace Nultima;
 
-Editor::Editor(World *world)
+Editor::Editor(World *world) :
+    m_cameraOffset(0, 0, 5)
 {
     m_world = world;
     m_location = Vec3ui(0, 0, 0);
     m_camera = new Camera();
+    m_camera->moveTo(m_cameraOffset);
     m_editMode = EDITMODE_NONE;
     m_activeBlock = Block::ROCK;
     m_helpActive = false;
@@ -70,7 +72,7 @@ void Editor::moveSelection(int dx, int dy, int dz)
 
     m_cursor->moveTo(Vec2i(m_location.m_x, m_location.m_y));
     m_cursor->setLayer(m_location.m_z);
-    m_camera->moveTo(m_location + Vec3ui(0, 0, 5));
+    m_camera->moveTo(m_location + m_cameraOffset);
 
     if (m_editMode == EDITMODE_PAINT)
         paintCurrentBlock();

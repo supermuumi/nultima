@@ -52,11 +52,11 @@ private:
 
     Vec3ui   m_location; // TODO replace with a better data type
     Camera*  m_camera;
+    Vec3ui   m_cameraOffset;
     World*   m_world;
     EditMode m_editMode;
     int      m_activeBlock;
     bool     m_helpActive;
-
     Block*   m_cursor;
 };
 
