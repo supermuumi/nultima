@@ -98,7 +98,7 @@ void Block::render() const
     Graphics* graphics = context->getGraphics();
 
     graphics->pushMatrix();
-    graphics->translate((float)m_blockCoords.m_x, (float)m_blockCoords.m_y, 0);
+    graphics->translate((float)m_blockCoords.m_x, (float)m_blockCoords.m_y, m_layer>0 ? (float)(m_layer-1) : 0);
     graphics->bindTexture(context->getTexture(m_texName));
 
     m_model->render();
