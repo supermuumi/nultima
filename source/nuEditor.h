@@ -30,6 +30,8 @@ public:
     void    handleKeypress(int key);
     Camera* getCamera();
 
+    void    saveWorld();
+
 private:
     void    paintCurrentBlock();
     int     getBlocksetStart(int idx);

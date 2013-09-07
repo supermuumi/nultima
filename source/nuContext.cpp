@@ -69,7 +69,8 @@ void Context::release()
 
 std::string Context::getWorldFile()
 {
-    return "";
+    // TODO [sampo] parse from output? read from json?
+    return "../../assets/maps/kallio.world";
 }
 
 std::string Context::getStateFile()

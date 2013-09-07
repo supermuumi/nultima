@@ -22,7 +22,7 @@ Game::Game(std::string worldFile, std::string stateFile) :
     m_isEditorMode(false),
     m_timeOfDay(0)
 {
-    m_world = new World("foo.world");
+    m_world = new World(worldFile);
     m_state = new GameState(stateFile);
     m_editor = new Editor(m_world);
 

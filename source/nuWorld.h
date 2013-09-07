@@ -1,10 +1,11 @@
 #pragma once
 
 #include "nuMapLocation.h"
-#include "nuCell.h"
 
 #include <string>
 #include <vector>
+#include <fstream>
+
 #if defined(__APPLE__) || defined(MACOSX)
 #include <tr1/unordered_map>
 #else
@@ -13,6 +14,9 @@
 
 namespace Nultima
 {
+
+class Cell;
+class Block;
 
 class World
 {
@@ -32,6 +36,13 @@ public:
 
     MapLocation         getPlayerStart  ()  { return m_playerStart; }
     std::vector<Cell*>  getCells        ()  { return m_loadedCells; }
+
+    void                insertBlock     (MapLocation location, char block);
+    void                removeBlock     (MapLocation location);
+
+    void                serialize       (std::ofstream* stream);
+    void                deserialize     (std::ifstream* stream);
+
 
 private:
     std::tr1::unordered_map<unsigned int, Cell*> m_cellMap;

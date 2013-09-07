@@ -2,6 +2,7 @@
 #include "nuEditor.h"
 #include "nuKeyboard.h"
 #include "nuWorld.h"
+#include "nuContext.h"
 
 using namespace Nultima;
 
@@ -62,6 +63,9 @@ void Editor::handleKeypress(int key)
     if (key == 'q') m_activeBlock--;
     if (key == 'w') m_activeBlock++;
     if (key >= '1' && key <= '9') m_activeBlock = getBlocksetStart(key-'1');
+
+    if (key == '5') saveWorld();
+
 }
 
 void Editor::paintCurrentBlock()
@@ -77,4 +81,14 @@ int Editor::getBlocksetStart(int idx)
 {
     // TODO
     return 0;
+}
+
+void Editor::saveWorld()
+{
+    Context* context = Context::get();
+    std::string fileName = context->getWorldFile();
+    // TODO [sampo] use fileUtils
+    std::ofstream worldFile(fileName.c_str(), std::ios_base::binary);
+    m_world->serialize(&worldFile);
+    worldFile.close();
 }

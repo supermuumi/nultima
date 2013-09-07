@@ -27,6 +27,9 @@ Cell::~Cell()
 
 void Cell::serialize(std::ofstream* stream)
 {
+    char tag = World::WORLD_TAG_CELL;
+
+    stream->write(&tag, 1);
     stream->write((char*)&m_x, 4);
     stream->write((char*)&m_y, 4);
 
@@ -37,7 +40,7 @@ void Cell::serialize(std::ofstream* stream)
         Block* block = m_blocks[i][y][x];
         if (block)
         {
-            char tag = World::WORLD_TAG_BLOCK;
+            tag = World::WORLD_TAG_BLOCK;
             stream->write(&tag, 1);
             stream->write((char*)&i, 4);
             stream->write((char*)&y, 4);

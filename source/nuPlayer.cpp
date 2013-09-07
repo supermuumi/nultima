@@ -5,6 +5,7 @@
 #include "nuCamera.h"
 #include "nuObject.h"
 #include "nuBlock.h"
+#include "nuCell.h"
 
 using namespace Nultima;
 
@@ -43,6 +44,8 @@ void Player::render(World* world, Camera* inCamera)
         }
         cell->endRendering();
     }
+
+    // TODO [sampo] Render player
 
     // TODO [sampo] loop inhabitants
     //     render inhabitant
