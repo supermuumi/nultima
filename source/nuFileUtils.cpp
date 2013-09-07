@@ -1,7 +1,7 @@
 #include <string>
 #include <fstream>
-#include <stdio.h>
 #include "nuFileUtils.h"
+#include "document.h"
 
 using namespace Nultima;
 
@@ -22,4 +22,17 @@ char* FileUtils::readFile(std::string fname)
     }
 
     return buffer;
+}
+
+rapidjson::Document FileUtils::readJSON(std::string fname)
+{
+    rapidjson::Document doc;
+    char* jsonBlob;
+
+    jsonBlob = FileUtils::readFile(fname.c_str());
+    assert(jsonBlob != NULL);
+    doc.Parse<0>(jsonBlob);
+    delete jsonBlob;
+
+    return doc;
 }

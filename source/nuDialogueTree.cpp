@@ -12,15 +12,9 @@ DialogueTree::DialogueTree()
 {
 }
 
-void DialogueTree::load(std::string name)
+void DialogueTree::load(std::string fname)
 {
-    char* jsonBlob = FileUtils::readFile(name.c_str());
-    assert(jsonBlob != NULL);
-
-    rapidjson::Document doc;
-    doc.Parse<0>(jsonBlob);
-
-    delete jsonBlob;
+    rapidjson::Document doc = FileUtils::readJSON(fname);
 
     // assuming valid json
     assert(!doc.HasParseError());

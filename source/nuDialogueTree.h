@@ -11,7 +11,7 @@ class DialogueTree
 {
 public:
     DialogueTree();
-    void load(std::string name);
+    void load(std::string fname);
 
 private:
     std::vector<std::string> m_lines;

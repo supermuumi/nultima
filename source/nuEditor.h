@@ -25,14 +25,20 @@ public:
     Editor(World *w);
     ~Editor();
 
-    void    render   ();
-    void    move     (int dx, int dy);
+    void    render();
+    void    move(int dx, int dy);
+    void    handleKeypress(int key);
     Camera* getCamera() { return m_camera; }
 
 private:
+    int     getBlocksetStart(int idx);
+
+
     MapLocation m_location;
     Camera*     m_camera;
     World*      m_world;
+    bool        m_paintMode;
+    int         m_activeBlock;
 };
 
 };
