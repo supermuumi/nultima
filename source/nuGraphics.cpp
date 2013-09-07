@@ -187,3 +187,40 @@ unsigned int Graphics::loadTexture(std::string filename)
 
     return ret;
 }
+
+void Graphics::setColor(float r, float g, float b, float a)
+{
+    glColor4f(r, g, b, a);
+}
+
+// TODO ripped from protos/editor/main.cpp - needs sanity check!
+void Graphics::drawString(std::string str, float x, float y)
+{
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+
+    gluOrtho2D( 0.0, m_wWidth, 0.0, m_wHeight);
+
+    glRasterPos2i(x, m_wHeight-y);
+    
+    glDisable(GL_TEXTURE);
+    glDisable(GL_TEXTURE_2D);
+
+    int i, len;
+    for (i = 0, len = str.length(); i < len; i++)
+	glutBitmapCharacter(GLUT_BITMAP_8_BY_13, (int)str[i]);
+
+    glEnable(GL_TEXTURE);
+    glEnable(GL_TEXTURE_2D);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+}

@@ -35,11 +35,12 @@ Camera* Editor::getCamera()
 
 void Editor::render()
 {
+    Graphics* g = Context::get()->getGraphics();
+
     // draw active block over map (alternating every 300ms)
     int timer = (int)Utils::getCurrentTime();
     if (timer % 600 < 300)
     {
-        Graphics* g = Context::get()->getGraphics();
         g->pushMatrix();
         // offset cursor block slightly so it actually shows
         g->translate(0, 0, 0.1f);
@@ -52,6 +53,10 @@ void Editor::render()
     {
         // TODO render help
     }
+
+    // render stats
+    g->setColor(1.0, 1.0, 1.0, 1.0);
+    g->drawString("edit mode", 20, 20);
 }
 
 void Editor::moveSelection(int dx, int dy, int dz)

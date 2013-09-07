@@ -86,6 +86,9 @@ void Game::endFrame()
 
 void Game::renderViewport()
 {
+    Graphics* g = Context::get()->getGraphics();
+    g->setColor(1.0, 1.0, 1.0, 1.0);
+
     // render world
     m_player->render(m_world, m_isEditorMode ? m_editor->getCamera() : NULL);
 

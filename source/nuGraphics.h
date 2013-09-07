@@ -41,6 +41,10 @@ public:
     void popMatrix          ();
     void translate          (float x, float y, float z);
 
+    // rendering
+    void setColor(float r, float g, float b, float a);
+    void drawString(std::string str, float x, float y);
+
 private:
     int     m_wWidth;
     int     m_wHeight;
