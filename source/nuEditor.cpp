@@ -3,13 +3,12 @@
 #include "nuKeyboard.h"
 #include "nuWorld.h"
 
-
 using namespace Nultima;
 
 Editor::Editor(World *world)
 {
     m_world = world;
-    m_camera = new Camera();
+    m_camera = new Camera(m_location);
     m_paintMode = false;
     m_activeBlock = 0;
 }
@@ -17,6 +16,11 @@ Editor::Editor(World *world)
 Editor::~Editor()
 {
     delete m_camera;
+}
+
+Camera* Editor::getCamera()
+{
+    return m_camera;
 }
 
 void Editor::render()
@@ -28,14 +32,16 @@ void Editor::render()
 void Editor::move(int dx, int dy)
 {
     // TODO move active cell around
+    m_location.move(dx, dy);
+    m_camera->moveToLocation(m_location);
 }
 
 void Editor::handleKeypress(int key)
 {
-    if (key == NU_KEY_LEFT) m_location.move(-1, 0); 
-    if (key == NU_KEY_RIGHT) m_location.move(1, 0); 
-    if (key == NU_KEY_UP) m_location.move(0, 1); 
-    if (key == NU_KEY_DOWN) m_location.move(0, -1); 
+    if (key == NU_KEY_LEFT) move(-1, 0);
+    if (key == NU_KEY_RIGHT) move(1, 0); 
+    if (key == NU_KEY_UP) move(0, 1); 
+    if (key == NU_KEY_DOWN) move(0, -1); 
     
     // painting blocks
     if (key == 'p') m_paintMode = !m_paintMode;

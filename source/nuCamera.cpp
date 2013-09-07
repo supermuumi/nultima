@@ -14,6 +14,11 @@ Camera::Camera()
 
 Camera::Camera(MapLocation location)
 {
+    moveToLocation(location);
+}
+
+void Camera::moveToLocation(MapLocation location)
+{
     Vec2i coord;
     location.getCoordinate(coord);
 

@@ -13,6 +13,7 @@ public:
     Camera(MapLocation location);
     ~Camera() {};
 
+    void moveToLocation(MapLocation location);
     void setView();
 
 private:

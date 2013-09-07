@@ -49,10 +49,14 @@ void Game::mainloop()
 
 void Game::tick()
 {
+    m_advanceTurn = false;
     // Handle input
     handleKeyboard();
 
     // Streaming
+
+    if (m_advanceTurn)
+        processTurn();
 }
 
 void Game::display()
@@ -95,43 +99,57 @@ void Game::renderHUD()
     // TODO render party members & statuses
 }
 
+/*
+ * Process all buffered input
+ */
 void Game::handleKeyboard()
 {
     Keyboard* keyboard = Context::get()->getKeyboard();
     NU_UNREF(keyboard);
 
-    int dx = 0;
-    int dy = 0;
-    
     while (keyboard->hasKeyPresses())
     {
         int key = keyboard->processKeyPress();
 
-        switch(key)
+        // TODO this should be wrapped inside e.g. #ifdef NU_ENABLE_EDITOR 
+        if (key == NU_KEY_TAB) 
         {
-            // player movement
-            case NU_KEY_LEFT:  dx--; break;
-            case NU_KEY_RIGHT: dx++; break;
-            case NU_KEY_UP:    dy++; break; 
-            case NU_KEY_DOWN:  dy--; break;
-
-            case NU_KEY_TAB: m_isEditorMode != m_isEditorMode; break;
-            // TODO process other keys like r=rest etc.
-
+            m_isEditorMode = !m_isEditorMode;
+        }
+        else
+        {
+            if (m_isEditorMode)
+                m_editor->handleKeypress(key);
+            else
+                handleKeypress(key);
         }
     }
+}
 
-#ifdef NU_ENABLE_KEYHOLD
-    if (keyboard->isKeyPressed(NU_KEY_LEFT)) dx--;
-    if (keyboard->isKeyPressed(NU_KEY_RIGHT)) dx++;
-    if (keyboard->isKeyPressed(NU_KEY_UP)) dy++;
-    if (keyboard->isKeyPressed(NU_KEY_DOWN)) dy--;
-#endif
-    if (dx != 0 || dy != 0)
-    {
-        m_player->move(dx, dy);
-        processTurn();
-    }
+/*
+ * Handle all keypresses
+ */
+void Game::handleKeypress(int key)
+{
+    if (key == NU_KEY_LEFT)
+        movePlayer(-1, 0);
+    if (key == NU_KEY_RIGHT)
+        movePlayer(1, 0);
+    if (key == NU_KEY_UP)
+        movePlayer(0, 1);
+    if (key == NU_KEY_DOWN)
+        movePlayer(0, -1);
+
+    // TODO process other keys like r=rest etc.
+}
+
+/*
+ * Move player about in the world
+ */
+void Game::movePlayer(int dx, int dy) 
+{
+    m_player->move(dx, dy);
+    m_advanceTurn = true;
 }
 
 void Game::processTurn()

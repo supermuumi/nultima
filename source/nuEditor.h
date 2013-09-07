@@ -28,11 +28,10 @@ public:
     void    render();
     void    move(int dx, int dy);
     void    handleKeypress(int key);
-    Camera* getCamera() { return m_camera; }
+    Camera* getCamera();
 
 private:
     int     getBlocksetStart(int idx);
-
 
     MapLocation m_location;
     Camera*     m_camera;

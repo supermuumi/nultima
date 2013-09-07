@@ -31,7 +31,9 @@ private:
     void renderHUD();
 
     // actual gameplay related
+    void movePlayer(int dx, int dy);
     void handleKeyboard();
+    void handleKeypress(int key);
     void processTurn();
 
     World*      m_world;
@@ -39,7 +41,7 @@ private:
     Player*     m_player;
     Editor*     m_editor;
     bool        m_isEditorMode;
-
+    bool        m_advanceTurn;
     int         m_timeOfDay; // .16 fixed? :-P
 
 };
