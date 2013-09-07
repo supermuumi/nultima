@@ -43,7 +43,7 @@ public:
 
     // rendering
     void setColor(float r, float g, float b, float a);
-    void drawString(std::string str, float x, float y);
+    void drawString(char* str, float x, float y);
 
 private:
     int     m_wWidth;

@@ -194,7 +194,7 @@ void Graphics::setColor(float r, float g, float b, float a)
 }
 
 // TODO ripped from protos/editor/main.cpp - needs sanity check!
-void Graphics::drawString(std::string str, float x, float y)
+void Graphics::drawString(char* str, float x, float y)
 {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -212,7 +212,7 @@ void Graphics::drawString(std::string str, float x, float y)
     glDisable(GL_TEXTURE_2D);
 
     int i, len;
-    for (i = 0, len = str.length(); i < len; i++)
+    for (i = 0, len = strlen(str); i < len; i++)
 	glutBitmapCharacter(GLUT_BITMAP_8_BY_13, (int)str[i]);
 
     glEnable(GL_TEXTURE);

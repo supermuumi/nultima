@@ -53,12 +53,16 @@ void Editor::render()
     // TODO render hud
     if (m_helpActive)
     {
-        // TODO render help
+        // TODO set ortho view
+        // TODO display commands
+        // TODO set normal view
     }
 
     // render stats
+    char str[128];
+    sprintf(str, "Block=[%d,%d] layer=%d", m_location.m_x, m_location.m_y, m_location.m_z);
     g->setColor(1.0, 1.0, 1.0, 1.0);
-    g->drawString("edit mode", 20, 20);
+    g->drawString(str, 20, 20);
 }
 
 void Editor::moveSelection(int dx, int dy, int dz)
