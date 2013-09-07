@@ -7,6 +7,7 @@
 #include "nuCell.h"
 #include "nuModel.h"
 #include "nuGraphics.h"
+#include "nuUtils.h"
 
 using namespace Nultima;
 
@@ -15,7 +16,6 @@ Editor::Editor(World *world)
     m_world = world;
     m_location = Vec3ui(0, 0, 0);
     m_camera = new Camera();
-    m_camera->moveTo(m_location);
     m_editMode = EDITMODE_NONE;
     m_activeBlock = Block::ROCK;
     m_helpActive = false;
@@ -36,7 +36,7 @@ Camera* Editor::getCamera()
 void Editor::render()
 {
     // draw active block over map (alternating every 300ms)
-    int timer = (int)(clock() / (CLOCKS_PER_SEC / 1000.0));
+    int timer = (int)Utils::getCurrentTime();
     if (timer % 600 < 300)
     {
         Graphics* g = Context::get()->getGraphics();
@@ -106,7 +106,7 @@ void Editor::handleKeypress(int key)
     // change block type
     if (key == 'q') changeActiveBlockBy(-1);
     if (key == 'w') changeActiveBlockBy(1);
-    if (key >= '1' && key <= '9') m_activeBlock = getBlocksetStart(key-'1');
+    //if (key >= '1' && key <= '9') m_activeBlock = getBlocksetStart(key-'1');
 
     // saving & loading
     // TODO change to something that doesn't overlap with "blockset" selection
