@@ -24,6 +24,7 @@ Block::Block(char type, Vec2i coords, int layer) :
     m_blockCoords(coords),
     m_layer(layer)
 {
+    m_representation = AUTO;
     determineModel();
     determineTexName();
 }
@@ -51,10 +52,13 @@ void Block::setType(char type)
 void Block::determineModel()
 {
     Context* context = Context::get();
+
     if (m_layer == 0)
         m_model = context->getModel(Model::UNIT_PLANE);
-    else
+    else if (m_representation == AUTO)
         m_model = context->getModel(Model::UNIT_BOX);
+    else
+        m_model = context->getModel(m_representation == BLOCK ? Model::UNIT_BOX : Model::UNIT_PLANE);
 }
 
 void Block::determineTexName()
@@ -104,4 +108,10 @@ void Block::render() const
     m_model->render();
 
     graphics->popMatrix();
+}
+
+void Block::setRepresentation(NuUInt8 type)
+{
+    m_representation = type;
+    determineModel();
 }

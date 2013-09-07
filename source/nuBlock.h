@@ -1,5 +1,6 @@
 #pragma once
 
+#include "nuDefs.h"
 #include "nuObject.h"
 #include "nuVec2.h"
 #include <fstream>
@@ -18,6 +19,13 @@ public:
         ROCK
     };
 
+    typedef enum 
+    {
+        AUTO = 0,
+        PLANE,
+        BLOCK
+    } BlockRepresentation;
+
     Block() {}
     Block(char type, Vec2i coords, int layer);
     ~Block() {}
@@ -30,6 +38,7 @@ public:
     void moveTo(Vec2i);
     void setLayer(int);
     void setType(char);
+    void setRepresentation(NuUInt8);
 
 private:
     void determineModel     ();
@@ -39,6 +48,7 @@ private:
     Vec2i       m_blockCoords;
     int         m_layer;
     std::string m_texName;
+    NuUInt8     m_representation;
 };
 
 };
