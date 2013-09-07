@@ -2,13 +2,12 @@
 
 #include "nuDefs.h"
 #include "nuBlock.h"
+#include "nuVec2.h"
 
 #include <fstream>
 
 namespace Nultima
 {
-
-class Block;
 
 class Cell
 {
@@ -25,6 +24,8 @@ public:
 
     void            serialize   (std::ofstream* stream);
     void            deserialize (std::ifstream* stream);
+
+    Vec2i getPosition() { return Vec2i(m_x, m_y); }
 
 private:
     int     m_x;

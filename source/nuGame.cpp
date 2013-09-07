@@ -89,6 +89,11 @@ void Game::renderViewport()
     // render world
     m_player->render(m_world, m_isEditorMode ? m_editor->getCamera() : NULL);
 
+    if (m_isEditorMode) 
+    {
+        m_editor->render();
+    }
+
     renderHUD();
 }
 

@@ -97,7 +97,7 @@ void Graphics::lookAt(Vec3 pos, Vec3 center, Vec3 up)
 
 void Graphics::translate(float x, float y, float z)
 {
-	glTranslatef(x, y, z);
+    glTranslatef(x, y, z);
 }
 
 void Graphics::pushMatrix()
@@ -108,6 +108,11 @@ void Graphics::pushMatrix()
 void Graphics::popMatrix()
 {
     glPopMatrix();
+}
+
+void Graphics::loadIdentity()
+{
+    glLoadIdentity();
 }
 
 unsigned int Graphics::createIndexBuffer(unsigned int* tris, int numTris)

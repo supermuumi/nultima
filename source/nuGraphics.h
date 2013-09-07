@@ -34,6 +34,7 @@ public:
     void swap   ();
 
     // Matrix ops
+    void loadIdentity       ();
     void setViewProjection  ();
     void lookAt             (Vec3 pos, Vec3 center, Vec3 up);
     void pushMatrix         ();

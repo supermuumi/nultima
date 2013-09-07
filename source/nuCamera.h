@@ -13,8 +13,11 @@ public:
     Camera(MapLocation location);
     ~Camera() {};
 
+    void moveTo(Vec3ui v);
     void moveToLocation(MapLocation location);
     void setView();
+
+    Vec3 getPosition() { return m_pos; }
 
 private:
     Vec3 m_pos;

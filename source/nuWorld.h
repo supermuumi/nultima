@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nuMapLocation.h"
+#include "nuVec3.h"
 
 #include <string>
 #include <vector>
@@ -17,6 +18,7 @@ namespace Nultima
 
 class Cell;
 class Block;
+
 
 class World
 {
@@ -36,6 +38,8 @@ public:
 
     MapLocation         getPlayerStart  ()  { return m_playerStart; }
     std::vector<Cell*>  getCells        ()  { return m_loadedCells; }
+
+    Cell* getCellAt(Vec3ui);
 
     void                insertBlock     (MapLocation location, char block);
     void                removeBlock     (MapLocation location);

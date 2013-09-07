@@ -28,6 +28,26 @@ Block::Block(char type, Vec2i coords, int layer) :
     determineTexName();
 }
 
+void Block::moveTo(Vec2i v)
+{
+    m_blockCoords.m_x = v.m_x;
+    m_blockCoords.m_y = v.m_y;
+}
+
+void Block::setLayer(int n)
+{
+    assert(n >= 0 && n < NU_MAX_LAYERS);
+    m_layer = n;
+    determineModel();
+}
+
+void Block::setType(char type)
+{
+    // TODO set type
+    m_type = type;
+    determineTexName();
+}
+
 void Block::determineModel()
 {
     Context* context = Context::get();

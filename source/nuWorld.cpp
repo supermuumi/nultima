@@ -1,7 +1,9 @@
+#include "nuDefs.h"
 #include "nuWorld.h"
 #include "nuMapLocation.h"
 #include "nuBlock.h"
 #include "nuCell.h"
+#include "nuVec3.h"
 
 #include <fstream>
 
@@ -78,4 +80,28 @@ void World::deserialize(std::ifstream* stream)
             NU_ASSERT(!"Unkown World serialization tag");
         }
     }
+}
+
+void World::insertBlock(MapLocation location, char block)
+{
+    // TODO
+}
+
+void World::removeBlock(MapLocation location)
+{
+    // TODO
+}
+
+Cell* World::getCellAt(Vec3ui v)
+{
+    for (std::vector<Cell*>::iterator it = m_loadedCells.begin(); it != m_loadedCells.end(); ++it)
+    {
+        Cell* cell = *it;
+        Vec2i cellPos = cell->getPosition();
+        if (v.m_x >= cellPos.m_x && v.m_x < cellPos.m_x+NU_CELL_WIDTH &&
+            v.m_y >= cellPos.m_y && v.m_y < cellPos.m_y+NU_CELL_HEIGHT)
+            return cell;
+    }
+
+    return NULL;
 }

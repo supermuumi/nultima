@@ -1,12 +1,15 @@
 #pragma once
 
+#include "nuVec2.h"
+#include "nuBlock.h"
+#include "nuVec3.h"
+
 namespace Nultima
 {
 
     class Camera;
     class MapLocation;
     class World;
-
 
 /*
  * requirements:
@@ -21,12 +24,20 @@ namespace Nultima
  */
 class Editor
 {
+
+    typedef enum 
+    {
+        EDITMODE_NONE = 0,
+        EDITMODE_PAINT,
+        EDITMODE_ERASE
+    } EditMode;
+
 public:
     Editor(World *w);
     ~Editor();
 
     void    render();
-    void    move(int dx, int dy, int dz);
+    void    moveSelection(int dx, int dy, int dz);
     void    handleKeypress(int key);
     Camera* getCamera();
 
@@ -34,14 +45,19 @@ public:
 
 private:
     void    paintCurrentBlock();
+    void    eraseCurrentBlock();
+    void    changeActiveBlockBy(int);
+    void    changeEditMode(EditMode m);
     int     getBlocksetStart(int idx);
 
-    MapLocation m_location;
-    Camera*     m_camera;
-    World*      m_world;
-    bool        m_paintMode;
-    int         m_activeBlock;
-    bool        m_helpActive;
+    Vec3ui   m_location; // TODO replace with a better data type
+    Camera*  m_camera;
+    World*   m_world;
+    EditMode m_editMode;
+    int      m_activeBlock;
+    bool     m_helpActive;
+
+    Block*   m_cursor;
 };
 
 };

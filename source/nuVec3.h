@@ -24,6 +24,8 @@ public:
     Vec3ui(unsigned int x, unsigned int y, unsigned int z) : m_x(x), m_y(y), m_z(z) {}
     ~Vec3ui() {}
 
+    Vec3ui operator+(Vec3ui);
+
     unsigned int m_x;
     unsigned int m_y;
     unsigned int m_z;

@@ -27,6 +27,10 @@ public:
 
     void render         () const;
 
+    void moveTo(Vec2i);
+    void setLayer(int);
+    void setType(char);
+
 private:
     void determineModel     ();
     void determineTexName   ();

@@ -3,21 +3,29 @@
 #include "nuKeyboard.h"
 #include "nuWorld.h"
 #include "nuContext.h"
+#include "nuVec2.h"
+#include "nuCell.h"
+#include "nuModel.h"
+#include "nuGraphics.h"
 
 using namespace Nultima;
 
 Editor::Editor(World *world)
 {
     m_world = world;
-    m_camera = new Camera(m_location);
-    m_paintMode = false;
-    m_activeBlock = 0;
+    m_location = Vec3ui(0, 0, 0);
+    m_camera = new Camera();
+    m_camera->moveTo(m_location);
+    m_editMode = EDITMODE_NONE;
+    m_activeBlock = Block::ROCK;
     m_helpActive = false;
+    m_cursor = new Block(m_activeBlock, Vec2i(0, 0), 0);
 }
 
 Editor::~Editor()
 {
     delete m_camera;
+    delete m_cursor;
 }
 
 Camera* Editor::getCamera()
@@ -27,7 +35,18 @@ Camera* Editor::getCamera()
 
 void Editor::render()
 {
-    // TODO draw cursor over active block
+    // draw active block over map (alternating every 300ms)
+    int timer = (int)(clock() / (CLOCKS_PER_SEC / 1000.0));
+    if (timer % 600 < 300)
+    {
+        Graphics* g = Context::get()->getGraphics();
+        g->pushMatrix();
+        // offset cursor block slightly so it actually shows
+        g->translate(0, 0, 0.1f);
+        m_cursor->render();
+        g->popMatrix();
+    }
+
     // TODO render hud
     if (m_helpActive)
     {
@@ -35,42 +54,94 @@ void Editor::render()
     }
 }
 
-void Editor::move(int dx, int dy, int dz)
+void Editor::moveSelection(int dx, int dy, int dz)
 {
-    // TODO move active cell around
-    m_location.move(dx, dy, dz);
-    m_camera->moveToLocation(m_location);
+    m_location = m_location + Vec3ui(dx, dy, dz);
+    // TODO Vec3ui means we never go <0, but rather get -1>NU_MAX_LAYERS which makes layer switching wrap around
+    if (m_location.m_z < 0)
+        m_location.m_z = 0;
+    if (m_location.m_z >= NU_MAX_LAYERS)
+        m_location.m_z = NU_MAX_LAYERS-1;
+
+    m_cursor->moveTo(Vec2i(m_location.m_x, m_location.m_y));
+    m_cursor->setLayer(m_location.m_z);
+    m_camera->moveTo(m_location + Vec3ui(0, 0, 5));
+
+    if (m_editMode == EDITMODE_PAINT)
+        paintCurrentBlock();
+    if (m_editMode == EDITMODE_ERASE)
+        eraseCurrentBlock();
+}
+
+void Editor::changeActiveBlockBy(int delta) {
+    m_activeBlock += delta;
+    // TODO proper values
+    if (m_activeBlock < 0) 
+        m_activeBlock = 0;
+    if (m_activeBlock > Block::ROCK)
+        m_activeBlock = Block::ROCK;
+
+    m_cursor->setType(m_activeBlock);
 }
 
 void Editor::handleKeypress(int key)
 {
     // move cursor
-    if (key == NU_KEY_LEFT) move(-1, 0, 0);
-    if (key == NU_KEY_RIGHT) move(1, 0, 0); 
-    if (key == NU_KEY_UP) move(0, 1, 0); 
-    if (key == NU_KEY_DOWN) move(0, -1, 0);
-    if (key == '.') move(0, 0, 1);
-    if (key == ',') move(0, 0, -1);
+    if (key == NU_KEY_LEFT) moveSelection(-1, 0, 0);
+    if (key == NU_KEY_RIGHT) moveSelection(1, 0, 0); 
+    if (key == NU_KEY_UP) moveSelection(0, 1, 0); 
+    if (key == NU_KEY_DOWN) moveSelection(0, -1, 0);
+    if (key == '.') moveSelection(0, 0, 1);
+    if (key == ',') moveSelection(0, 0, -1);
 
     // misc
     if (key == 'h') m_helpActive = !m_helpActive;
     
     // painting blocks
-    if (key == 'p') m_paintMode = !m_paintMode;
+    if (key == 'p') changeEditMode(EDITMODE_PAINT);
+    if (key == 'e') changeEditMode(EDITMODE_ERASE);
     if (key == 's') paintCurrentBlock();
+    if (key == 'd') eraseCurrentBlock();
     
-    // selecting blocks
-    if (key == 'q') m_activeBlock--;
-    if (key == 'w') m_activeBlock++;
+    // change block type
+    if (key == 'q') changeActiveBlockBy(-1);
+    if (key == 'w') changeActiveBlockBy(1);
     if (key >= '1' && key <= '9') m_activeBlock = getBlocksetStart(key-'1');
 
+    // saving & loading
+    // TODO change to something that doesn't overlap with "blockset" selection
     if (key == '5') saveWorld();
 
 }
 
+void Editor::changeEditMode(EditMode newMode)
+{
+    if (newMode == EDITMODE_PAINT)
+    {
+        m_editMode = (m_editMode == EDITMODE_PAINT) ? EDITMODE_NONE : EDITMODE_PAINT;
+        if (m_editMode == EDITMODE_PAINT)
+            paintCurrentBlock();
+    }
+
+    if (newMode == EDITMODE_ERASE)
+    {
+        m_editMode = (m_editMode == EDITMODE_ERASE) ? EDITMODE_NONE : EDITMODE_ERASE;
+        if (m_editMode == EDITMODE_ERASE)
+            eraseCurrentBlock();
+    }
+}
+
 void Editor::paintCurrentBlock()
 {
-    // m_world->setBlock(m_location, m_activeBlock);
+    Cell* c = m_world->getCellAt(m_location);
+    if (c != NULL) {
+        c->insertBlock(m_activeBlock, Vec2i(m_location.m_x, m_location.m_y), m_location.m_z);
+    }
+}
+
+void Editor::eraseCurrentBlock()
+{
+    //m_world->removeBlock(m_location);
 }
 
 /*
