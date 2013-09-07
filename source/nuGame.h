@@ -31,7 +31,7 @@ private:
     void renderHUD();
 
     // actual gameplay related
-    void movePlayer(int dx, int dy);
+    void movePlayer(int dx, int dy, int dz);
     void handleKeyboard();
     void handleKeypress(int key);
     void processTurn();

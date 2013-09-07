@@ -26,11 +26,12 @@ public:
     ~Editor();
 
     void    render();
-    void    move(int dx, int dy);
+    void    move(int dx, int dy, int dz);
     void    handleKeypress(int key);
     Camera* getCamera();
 
 private:
+    void    paintCurrentBlock();
     int     getBlocksetStart(int idx);
 
     MapLocation m_location;
@@ -38,6 +39,7 @@ private:
     World*      m_world;
     bool        m_paintMode;
     int         m_activeBlock;
+    bool        m_helpActive;
 };
 
 };

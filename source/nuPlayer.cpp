@@ -54,7 +54,7 @@ void Player::render(World* world, Camera* inCamera)
     //   render monster
 }
 
-void Player::move(int dx, int dy)
+void Player::move(int dx, int dy, int dz)
 {
-    m_location.move(dx, dy);
+    m_location.move(dx, dy, dz);
 }

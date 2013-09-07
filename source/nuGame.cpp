@@ -131,14 +131,17 @@ void Game::handleKeyboard()
  */
 void Game::handleKeypress(int key)
 {
+    // move player
     if (key == NU_KEY_LEFT)
-        movePlayer(-1, 0);
+        movePlayer(-1, 0, 0);
     if (key == NU_KEY_RIGHT)
-        movePlayer(1, 0);
+        movePlayer(1, 0, 0);
     if (key == NU_KEY_UP)
-        movePlayer(0, 1);
+        movePlayer(0, 1, 0);
     if (key == NU_KEY_DOWN)
-        movePlayer(0, -1);
+        movePlayer(0, -1, 0);
+    // TODO handle climbing up/down
+
 
     // TODO process other keys like r=rest etc.
 }
@@ -146,9 +149,9 @@ void Game::handleKeypress(int key)
 /*
  * Move player about in the world
  */
-void Game::movePlayer(int dx, int dy) 
+void Game::movePlayer(int dx, int dy, int dz) 
 {
-    m_player->move(dx, dy);
+    m_player->move(dx, dy, dz);
     m_advanceTurn = true;
 }
 

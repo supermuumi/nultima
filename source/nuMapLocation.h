@@ -19,7 +19,7 @@ public:
     void    serialize       (std::ofstream* stream);
     void    deserialize     (std::ifstream* stream);
     int     getLayer        () { return m_layer; }
-    void    move            (int dx, int dy);
+    void    move            (int dx, int dy, int dz);
 
 private:
 
