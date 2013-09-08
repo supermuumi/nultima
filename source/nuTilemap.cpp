@@ -58,9 +58,9 @@ void Tilemap::load(std::string fname)
 	int y2 = y1+m_tileSize;
 
 	TilemapTexture textureInfo = {(float)x1/m_tilemapWidth, 
-				      (float)y1/m_tilemapHeight, 
+				      (float)y2/m_tilemapHeight, 
 				      (float)x2/m_tilemapWidth,
-				      (float)y2/m_tilemapHeight};
+				      (float)y1/m_tilemapHeight};
 	m_tiles[idx] = textureInfo;
 	m_tileMapping[textureId] = idx;
     }

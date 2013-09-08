@@ -87,7 +87,17 @@ const Model* Context::getModel(int type)
     return m_models[type];
 }
 
+TexManager* Context::getTexManager()
+{
+    return m_texManager;
+}
+
 unsigned int Context::getTexture(std::string name)
 {
     return m_texManager->getTexture(name);
+}
+
+Tilemap::TilemapTexture Context::getTilemapTexture(std::string id)
+{
+    return m_texManager->getTilemapTexture(id);
 }

@@ -34,6 +34,7 @@ private:
     } Vertex;
 
     void createUnitPlane();
+    void createUnitPlane(std::string id);
     void createUnitBox();
     
     unsigned int m_indexBuffer;

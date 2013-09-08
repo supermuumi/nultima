@@ -2,6 +2,8 @@
 #include "nuDefs.h"
 #include "nuContext.h"
 #include "nuGraphics.h"
+#include "nuTexManager.h"
+#include "nuTilemap.h"
 
 using namespace Nultima;
 
@@ -14,6 +16,7 @@ Model::Model(int type) :
     {
     case UNIT_PLANE:
         createUnitPlane();
+        //createUnitPlane("forest_heavy");
         break;
 
     case UNIT_BOX:
@@ -53,6 +56,47 @@ void Model::createUnitPlane()
     v.coords = Vec3(0,1,0);
     v.normal = Vec3(0,0,1);
     v.texCoord = Vec2(0,1);
+    verts.push_back(v);
+
+    tris.push_back(Vec3ui(0, 1, 2));
+    tris.push_back(Vec3ui(0, 2, 3));
+
+    Graphics* graphics = Context::get()->getGraphics();
+    m_numTriangles = tris.size();
+    m_indexBuffer = graphics->createIndexBuffer(&tris[0].m_x, tris.size());
+    m_vertexBuffer = graphics->createVertexBuffer(&verts[0].coords.m_x, verts.size());
+}
+
+void Model::createUnitPlane(std::string id)
+{
+    std::vector<Vertex> verts;
+    std::vector<Vec3ui> tris;
+
+    Tilemap::TilemapTexture uv = Context::get()->getTilemapTexture(id);
+
+    Vertex v;
+    // Vert 1
+    v.coords = Vec3(0,0,0);
+    v.normal = Vec3(0,0,1);
+    v.texCoord = Vec2(uv.x1, uv.y1);
+    verts.push_back(v);
+
+    // Vert 2
+    v.coords = Vec3(1,0,0);
+    v.normal = Vec3(0,0,1);
+    v.texCoord = Vec2(uv.x2, uv.y1);
+    verts.push_back(v);
+
+    // Vert 3
+    v.coords = Vec3(1,1,0);
+    v.normal = Vec3(0,0,1);
+    v.texCoord = Vec2(uv.x2, uv.y2);
+    verts.push_back(v);
+
+    // Vert 4
+    v.coords = Vec3(0,1,0);
+    v.normal = Vec3(0,0,1);
+    v.texCoord = Vec2(uv.x1, uv.y2);
     verts.push_back(v);
 
     tris.push_back(Vec3ui(0, 1, 2));

@@ -3,6 +3,7 @@
 #include "nuGraphics.h"
 #include "nuDefs.h"
 #include "nuModel.h"
+#include "nuTexManager.h"
 
 #if NU_OS == NU_OS_WINDOWS
 #   include <windows.h>
@@ -104,6 +105,8 @@ void Block::render() const
     graphics->pushMatrix();
     graphics->translate((float)m_blockCoords.m_x, (float)m_blockCoords.m_y, m_layer>0 ? (float)(m_layer-1) : 0);
     graphics->bindTexture(context->getTexture(m_texName));
+    //(context->getTexManager())->useTilemap();
+    //tex->useTilemap();
 
     m_model->render();
 

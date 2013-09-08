@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include "nuTilemap.h"
 
 namespace Nultima
 {
@@ -29,6 +30,9 @@ public:
     Keyboard*       getKeyboard ()                  { return m_keyboard; }
     const Model*    getModel    (int type);
     unsigned int    getTexture  (std::string name);
+
+    TexManager*     getTexManager();
+    Tilemap::TilemapTexture  getTilemapTexture(std::string id);
 
 private:
     int                 m_argc;

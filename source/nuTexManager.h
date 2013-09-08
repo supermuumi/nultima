@@ -19,7 +19,7 @@ public:
 
     unsigned int getTexture(std::string name);
     void         useTilemap();
-    Tilemap::TilemapTexture  getTextureFromTilemap(std::string id);
+    Tilemap::TilemapTexture  getTilemapTexture(std::string id);
 
 private:
     unsigned int loadTexture(std::string name);

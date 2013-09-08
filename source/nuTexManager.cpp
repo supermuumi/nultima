@@ -44,7 +44,7 @@ void TexManager::useTilemap()
     g->bindTexture(m_tilemap->getTilemapId());
 }
 
-Tilemap::TilemapTexture TexManager::getTextureFromTilemap(std::string id)
+Tilemap::TilemapTexture TexManager::getTilemapTexture(std::string id)
 {
     return m_tilemap->getTexture(id);
 }
