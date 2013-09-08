@@ -21,3 +21,25 @@ Vec3ui Vec3ui::operator+(Vec3ui v)
     return ret;
 }
 
+void Vec3i::serialize(std::ofstream* stream)
+{
+    stream->write((char*)&m_x, 4);
+    stream->write((char*)&m_y, 4);
+    stream->write((char*)&m_z, 4);
+}
+
+void Vec3i::deserialize(std::ifstream* stream)
+{
+    stream->read((char*)&m_x, 4);
+    stream->read((char*)&m_y, 4);
+    stream->read((char*)&m_z, 4);
+}
+
+Vec3i Vec3i::operator+(Vec3i v)
+{
+    Vec3i ret;
+    ret.m_x = m_x + v.m_x;
+    ret.m_y = m_y + v.m_y;
+    ret.m_z = m_z + v.m_z;
+    return ret;
+}

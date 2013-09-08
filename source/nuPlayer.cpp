@@ -25,24 +25,22 @@ void Player::render(World* world, Camera* inCamera)
     Camera* camera = (inCamera) ? inCamera : &playerCamera;
     camera->setView();
 
-    std::vector<Cell*> cells = world->getCells();
+    std::tr1::unordered_map<unsigned int, Cell*> cells = world->getCells();
 
     // loop cells
-    for (std::vector<Cell*>::iterator it = cells.begin(); it != cells.end(); ++it)
+    for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = cells.begin(); it != cells.end(); ++it)
     // loop layers
     for (int i=0; i<NU_MAX_LAYERS; i++)
     {
-        Cell* cell = (*it);
-        cell->beginRendering();
+        Cell* cell = it->second;
         // loop blocks
         for (int x=0; x<NU_CELL_WIDTH; x++)
         for (int y=0; y<NU_CELL_HEIGHT; y++)
         {
-            const Block* block = cell->getBlock(x, y, i);
+            const Block* block = cell->getBlock(Vec3i(x, y, i));
             if (block)
                 block->render();
         }
-        cell->endRendering();
     }
 
     // TODO [sampo] Render player
@@ -57,7 +55,7 @@ void Player::render(World* world, Camera* inCamera)
     //   render monster
 }
 
-void Player::move(int dx, int dy, int dz)
+void Player::move(Vec3i d)
 {
-    m_location.move(dx, dy, dz);
+    m_location.move(d);
 }

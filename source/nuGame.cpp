@@ -50,6 +50,7 @@ void Game::mainloop()
 void Game::tick()
 {
     m_advanceTurn = false;
+
     // Handle input
     handleKeyboard();
 
@@ -93,9 +94,7 @@ void Game::renderViewport()
     m_player->render(m_world, m_isEditorMode ? m_editor->getCamera() : NULL);
 
     if (m_isEditorMode) 
-    {
         m_editor->render();
-    }
 
     renderHUD();
 }
@@ -141,13 +140,13 @@ void Game::handleKeypress(int key)
 {
     // move player
     if (key == NU_KEY_LEFT)
-        movePlayer(-1, 0, 0);
+        movePlayer(Vec3i(-1, 0, 0));
     if (key == NU_KEY_RIGHT)
-        movePlayer(1, 0, 0);
+        movePlayer(Vec3i(1, 0, 0));
     if (key == NU_KEY_UP)
-        movePlayer(0, 1, 0);
+        movePlayer(Vec3i(0, 1, 0));
     if (key == NU_KEY_DOWN)
-        movePlayer(0, -1, 0);
+        movePlayer(Vec3i(0, -1, 0));
     // TODO handle climbing up/down
 
 
@@ -157,9 +156,9 @@ void Game::handleKeypress(int key)
 /*
  * Move player about in the world
  */
-void Game::movePlayer(int dx, int dy, int dz) 
+void Game::movePlayer(Vec3i d) 
 {
-    m_player->move(dx, dy, dz);
+    m_player->move(d);
     m_advanceTurn = true;
 }
 

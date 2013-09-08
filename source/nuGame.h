@@ -1,5 +1,7 @@
 #pragma once
 
+#include "nuVec3.h"
+
 #include <string>
 
 #define NU_GAME_TIMEPERTURN 2048
@@ -31,7 +33,7 @@ private:
     void renderHUD();
 
     // actual gameplay related
-    void movePlayer(int dx, int dy, int dz);
+    void movePlayer(Vec3i d);
     void handleKeyboard();
     void handleKeypress(int key);
     void processTurn();
@@ -43,7 +45,6 @@ private:
     bool        m_isEditorMode;
     bool        m_advanceTurn;
     int         m_timeOfDay; // .16 fixed? :-P
-
 };
 
 }; // namespace

@@ -19,7 +19,6 @@ namespace Nultima
 class Cell;
 class Block;
 
-
 class World
 {
 public:
@@ -33,25 +32,31 @@ public:
         WORLD_TAG_END
     } SerializationTags;
 
+    enum
+    {
+         VERSION_INITIAL = 0,
+         VERSION_UNIFIED_COORDS
+    } WorldVersion;
+
+
     World(std::string fileName);
     ~World() {}
 
-    MapLocation         getPlayerStart  ()  { return m_playerStart; }
-    std::vector<Cell*>  getCells        ()  { return m_loadedCells; }
+    MapLocation         getPlayerStart                      () { return m_playerStart; }
+    std::tr1::unordered_map<unsigned int, Cell*> getCells   () { return m_cellMap; }
 
-    Cell* getCellAt(Vec3ui);
+    Cell* getCellAt(Vec3i);
 
-    void                insertBlock     (MapLocation location, char block);
-    void                removeBlock     (MapLocation location);
+    void                insertBlock     (Block* block);
+    void                clearBlock      (MapLocation location);
 
     void                serialize       (std::ofstream* stream);
     void                deserialize     (std::ifstream* stream);
 
-
 private:
     std::tr1::unordered_map<unsigned int, Cell*> m_cellMap;
-    std::vector<Cell*>                      m_loadedCells;
     MapLocation                             m_playerStart;
+    char                                    m_version;
 };
 
 }; // namespace

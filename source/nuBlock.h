@@ -2,7 +2,8 @@
 
 #include "nuDefs.h"
 #include "nuObject.h"
-#include "nuVec2.h"
+#include "nuVec3.h"
+
 #include <fstream>
 
 namespace Nultima
@@ -27,7 +28,7 @@ public:
     } BlockRepresentation;
 
     Block() {}
-    Block(char type, Vec2i coords, int layer);
+    Block(char type, Vec3i location);
     ~Block() {}
 
     void serialize      (std::ofstream* stream);
@@ -35,18 +36,18 @@ public:
 
     void render         () const;
 
-    void moveTo(Vec2i);
-    void setLayer(int);
+    void moveTo(Vec3i);
     void setType(char);
     void setRepresentation(NuUInt8);
+
+    Vec3i   getLocation() { return m_location; }
 
 private:
     void determineModel     ();
     void determineTexName   ();
 
     char        m_type;
-    Vec2i       m_blockCoords;
-    int         m_layer;
+    Vec3i       m_location;
     std::string m_texName;
     NuUInt8     m_representation;
 };

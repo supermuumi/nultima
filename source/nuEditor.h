@@ -37,7 +37,7 @@ public:
     ~Editor();
 
     void    render();
-    void    moveSelection(int dx, int dy, int dz);
+    void    moveSelection(Vec3i d);
     void    handleKeypress(int key);
     Camera* getCamera();
 
@@ -50,13 +50,14 @@ private:
     void    changeEditMode(EditMode m);
     int     getBlocksetStart(int idx);
 
-    Vec3ui   m_location; // TODO replace with a better data type
-    Camera*  m_camera;
-    Vec3ui   m_cameraOffset;
-    World*   m_world;
-    EditMode m_editMode;
-    int      m_activeBlock;
-    bool     m_helpActive;
+    Vec3i       m_location; // TODO replace with a better data type
+    Camera*     m_camera;
+    Vec3i       m_cameraOffset;
+    World*      m_world;
+    EditMode    m_editMode;
+    int         m_activeBlock;
+    bool        m_helpActive;
+
     Block*   m_cursor;
 };
 

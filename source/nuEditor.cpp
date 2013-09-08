@@ -15,13 +15,13 @@ Editor::Editor(World *world) :
     m_cameraOffset(0, 0, 5)
 {
     m_world = world;
-    m_location = Vec3ui(0, 0, 0);
+    m_location = Vec3i(0, 0, 0);
     m_camera = new Camera();
     m_camera->moveTo(m_cameraOffset);
     m_editMode = EDITMODE_NONE;
     m_activeBlock = Block::ROCK;
     m_helpActive = false;
-    m_cursor = new Block(m_activeBlock, Vec2i(0, 0), 0);
+    m_cursor = new Block(m_activeBlock, Vec3i(0, 0, 0));
 }
 
 Editor::~Editor()
@@ -65,21 +65,21 @@ void Editor::render()
     g->drawString(str, 20, 20);
 }
 
-void Editor::moveSelection(int dx, int dy, int dz)
+void Editor::moveSelection(Vec3i d)
 {
-    m_location = m_location + Vec3ui(dx, dy, dz);
+    m_location = m_location + d;
     // TODO Vec3ui means we never go <0, but rather get -1>NU_MAX_LAYERS which makes layer switching wrap around
     if (m_location.m_z < 0)
         m_location.m_z = 0;
     if (m_location.m_z >= NU_MAX_LAYERS)
         m_location.m_z = NU_MAX_LAYERS-1;
 
-    m_cursor->moveTo(Vec2i(m_location.m_x, m_location.m_y));
-    m_cursor->setLayer(m_location.m_z);
+    m_cursor->moveTo(Vec3i(m_location.m_x, m_location.m_y, m_location.m_z));
     m_camera->moveTo(m_location + m_cameraOffset);
 
     if (m_editMode == EDITMODE_PAINT)
         paintCurrentBlock();
+
     if (m_editMode == EDITMODE_ERASE)
         eraseCurrentBlock();
 }
@@ -98,12 +98,12 @@ void Editor::changeActiveBlockBy(int delta) {
 void Editor::handleKeypress(int key)
 {
     // move cursor
-    if (key == NU_KEY_LEFT) moveSelection(-1, 0, 0);
-    if (key == NU_KEY_RIGHT) moveSelection(1, 0, 0); 
-    if (key == NU_KEY_UP) moveSelection(0, 1, 0); 
-    if (key == NU_KEY_DOWN) moveSelection(0, -1, 0);
-    if (key == '.') moveSelection(0, 0, 1);
-    if (key == ',') moveSelection(0, 0, -1);
+    if (key == NU_KEY_LEFT) moveSelection(Vec3i(-1, 0, 0));
+    if (key == NU_KEY_RIGHT) moveSelection(Vec3i(1, 0, 0)); 
+    if (key == NU_KEY_UP) moveSelection(Vec3i(0, 1, 0)); 
+    if (key == NU_KEY_DOWN) moveSelection(Vec3i(0, -1, 0));
+    if (key == '.') moveSelection(Vec3i(0, 0, 1));
+    if (key == ',') moveSelection(Vec3i(0, 0, -1));
 
     // misc
     if (key == 'h') m_helpActive = !m_helpActive;
@@ -144,15 +144,13 @@ void Editor::changeEditMode(EditMode newMode)
 
 void Editor::paintCurrentBlock()
 {
-    Cell* c = m_world->getCellAt(m_location);
-    if (c != NULL) {
-        c->insertBlock(m_activeBlock, Vec2i(m_location.m_x, m_location.m_y), m_location.m_z);
-    }
+    Block* block = new Block(m_activeBlock, Vec3i(m_location.m_x, m_location.m_y, m_location.m_z));
+    m_world->insertBlock(block);
 }
 
 void Editor::eraseCurrentBlock()
 {
-    //m_world->removeBlock(m_location);
+    m_world->clearBlock(m_location);
 }
 
 /*

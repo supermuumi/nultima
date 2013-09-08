@@ -14,12 +14,12 @@ TexManager::TexManager()
 
     m_tilemap = new Tilemap();
     // TODO should not be in constructor
-    m_tilemap->load("../../config/tilemap.json");
+    //m_tilemap->load("../../config/tilemap.json");
 }
 
 TexManager::~TexManager()
 {
-    delete m_tilemap;
+    //delete m_tilemap;
 }
 
 unsigned int TexManager::loadTexture(std::string name)

@@ -1,4 +1,5 @@
 #include "nuMapLocation.h"
+#include "nuWorld.h"
 
 #include <fstream>
 #include <istream>
@@ -9,53 +10,36 @@ using namespace Nultima;
 
 void MapLocation::serialize(std::ofstream* stream)
 {
-    stream->write((char*)&m_cellIdx, 4);
-    stream->write((char*)&m_blockX, 4);
-    stream->write((char*)&m_blockY, 4);
-    stream->write((char*)&m_layer, 4);
+    m_position.serialize(stream);
 }
 
-void MapLocation::deserialize(std::ifstream* stream)
+void MapLocation::deserialize(std::ifstream* stream, int version)
 {
-    stream->read((char*)&m_cellIdx, 4);
-    stream->read((char*)&m_blockX, 4);
-    stream->read((char*)&m_blockY, 4);
-    stream->read((char*)&m_layer, 4);
+    if (version == World::VERSION_INITIAL)
+    {
+        int idx;
+        stream->read((char*)&idx, 4);
+        stream->read((char*)&m_position.m_x, 4);
+        stream->read((char*)&m_position.m_y, 4);
+        stream->read((char*)&m_position.m_z, 4);
+    }
+    else
+    {
+        m_position.deserialize(stream);
+    }
 }
 
 MapLocation::MapLocation() :
-    m_cellIdx(0),
-    m_blockX(0),
-    m_blockY(0),
-    m_layer(0)
+    m_position(Vec3i(0, 0, 0))
 {}
 
-MapLocation::MapLocation(unsigned int cellIdx, int blockX, int blockY, int layer) :
-    m_cellIdx(cellIdx),
-    m_blockX(blockX),
-    m_blockY(blockY),
-    m_layer(layer)
+MapLocation::MapLocation(Vec3i position) :
+    m_position(position)
 {}
 
-void MapLocation::getCoordinate(Vec2i& coord)
+void MapLocation::move(Vec3i d) 
 {
-    int cellX = 0xffff & (m_cellIdx>>16);
-    int x = cellX * NU_CELL_WIDTH + m_blockX;
-
-    int cellY = 0xffff & m_cellIdx;
-    int y = cellY * NU_CELL_WIDTH + m_blockY;
-
-    coord.m_x = x;
-    coord.m_y = y;
-}
-
-void MapLocation::move(int dx, int dy, int dz) 
-{
-    // TODO [muumi] - asserts
-    m_blockX += dx;
-    m_blockY += dy;
-
-    m_layer += dz;
-    if (m_layer < 0)
-        m_layer = 0;
+    m_position = m_position + d;
+    if (m_position.m_z < 0)
+        m_position.m_z = 0;
 }
