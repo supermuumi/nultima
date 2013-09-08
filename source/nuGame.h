@@ -12,6 +12,7 @@ class GameState;
 class Player;
 class Camera;
 class Editor;
+class AudioManager;
 
 class Game
 {
@@ -44,6 +45,7 @@ private:
     bool        m_advanceTurn;
     int         m_timeOfDay; // .16 fixed? :-P
 
+    AudioManager* m_audio;
 };
 
 }; // namespace

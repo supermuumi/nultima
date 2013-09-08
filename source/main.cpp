@@ -1,6 +1,8 @@
 #include "nuContext.h"
 #include "nuGame.h"
 
+#include "bass.h"
+
 using namespace Nultima;
 
 int main (int argc, char** argv)
