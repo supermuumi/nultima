@@ -1,6 +1,7 @@
 #include "nuTexManager.h"
 #include "nuContext.h"
 #include "nuGraphics.h"
+#include "nuTilemap.h"
 
 using namespace Nultima;
 
@@ -10,6 +11,15 @@ TexManager::TexManager()
     m_textureFilenames["grass"] = "../../assets/textures/grass.jpg";
     m_textureFilenames["water"] = "../../assets/textures/water.gif";
     m_textureFilenames["rock"] = "../../assets/textures/rock.jpg";
+
+    m_tilemap = new Tilemap();
+    // TODO should not be in constructor
+    m_tilemap->load("../../config/tilemap.json");
+}
+
+TexManager::~TexManager()
+{
+    delete m_tilemap;
 }
 
 unsigned int TexManager::loadTexture(std::string name)
@@ -26,4 +36,15 @@ unsigned int TexManager::getTexture(std::string name)
 	    return tit->second;
 
     return loadTexture(name);
+}
+
+void TexManager::useTilemap()
+{
+    Graphics* g = Context::get()->getGraphics();
+    g->bindTexture(m_tilemap->getTilemapId());
+}
+
+Tilemap::TilemapTexture TexManager::getTextureFromTilemap(std::string id)
+{
+    return m_tilemap->getTexture(id);
 }
