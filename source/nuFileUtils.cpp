@@ -14,10 +14,11 @@ char* FileUtils::readFile(std::string fname)
     {
         file.seekg(0, std::ios::end);
         long size = (long)file.tellg();
-        buffer = new char[size];
+        buffer = new char[size+1];
         file.seekg(0, std::ios::beg);
         file.read(buffer, size);
         file.close();
+		buffer[size] = 0;
     }
 
     return buffer;
