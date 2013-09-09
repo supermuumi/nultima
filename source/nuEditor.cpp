@@ -60,7 +60,7 @@ void Editor::render()
 
     // render stats
     char str[128];
-    sprintf(str, "Block=[%d,%d] layer=%d", m_location.m_x, m_location.m_y, m_location.m_z);
+    sprintf(str, "Block=[%d,%d]\nlayer=%d", m_location.m_x, m_location.m_y, m_location.m_z);
     g->setColor(1.0, 1.0, 1.0, 1.0);
     g->drawString(str, 20, 20);
 }

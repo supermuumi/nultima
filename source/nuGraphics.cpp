@@ -206,14 +206,25 @@ void Graphics::drawString(char* str, float x, float y)
 
     gluOrtho2D( 0.0, m_wWidth, 0.0, m_wHeight);
 
-    glRasterPos2i(x, m_wHeight-y);
+	int origY = m_wHeight-y;
+    glRasterPos2i(x, origY);
     
     glDisable(GL_TEXTURE);
     glDisable(GL_TEXTURE_2D);
 
     int i, len;
     for (i = 0, len = strlen(str); i < len; i++)
-	glutBitmapCharacter(GLUT_BITMAP_8_BY_13, (int)str[i]);
+	{
+		if (str[i] == '\n') {
+			// TODO [muumi] get line height from somewhere
+			origY -= 20;
+			glRasterPos2i(x, origY);
+		}
+		else
+		{
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, (int)str[i]);
+		}
+	}
 
     glEnable(GL_TEXTURE);
     glEnable(GL_TEXTURE_2D);
