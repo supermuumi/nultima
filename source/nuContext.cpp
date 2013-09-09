@@ -46,6 +46,7 @@ void Context::init(int argc, char** argv)
     m_models.resize(Model::NUM_MODELS, NULL);
 
     m_texManager = new TexManager();
+    m_texManager->loadTilemap("../../config/tilemap.json");
 }
 
 void Context::deinit()
@@ -97,7 +98,7 @@ unsigned int Context::getTexture(std::string name)
     return m_texManager->getTexture(name);
 }
 
-Tilemap::TilemapTexture Context::getTilemapTexture(std::string id)
+unsigned int Context::getTilemapTexture(int id)
 {
     return m_texManager->getTilemapTexture(id);
 }

@@ -44,7 +44,7 @@ public:
 
 private:
     void determineModel     ();
-    void determineTexName   ();
+//    void determineTexName   ();
 
     char        m_type;
     Vec3i       m_location;

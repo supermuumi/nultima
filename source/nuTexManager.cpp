@@ -13,15 +13,29 @@ TexManager::TexManager()
     m_textureFilenames["rock"] = "../../assets/textures/rock.jpg";
 
     m_tilemap = new Tilemap();
-    // TODO should not be in constructor
-    //m_tilemap->load("../../config/tilemap.json");
 }
 
 TexManager::~TexManager()
 {
-    //delete m_tilemap;
+    delete m_tilemap;
 }
 
+//////////////////////////////////////////////////////////////////////
+// Tilemap related
+//////////////////////////////////////////////////////////////////////
+void TexManager::loadTilemap(char *fname)
+{
+    m_tilemap->load(fname);
+}
+
+unsigned int TexManager::getTilemapTexture(int id)
+{
+    return m_tilemap->getTexture(id);
+}
+
+//////////////////////////////////////////////////////////////////////
+// legacy texturing stuff
+//////////////////////////////////////////////////////////////////////
 unsigned int TexManager::loadTexture(std::string name)
 {
     Graphics* graphics = Context::get()->getGraphics();
@@ -38,13 +52,3 @@ unsigned int TexManager::getTexture(std::string name)
     return loadTexture(name);
 }
 
-void TexManager::useTilemap()
-{
-    Graphics* g = Context::get()->getGraphics();
-    g->bindTexture(m_tilemap->getTilemapId());
-}
-
-Tilemap::TilemapTexture TexManager::getTilemapTexture(std::string id)
-{
-    return m_tilemap->getTexture(id);
-}

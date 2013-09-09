@@ -41,14 +41,14 @@ void Editor::render()
 
     // draw active block over map (alternating every 300ms)
     int timer = (int)Utils::getCurrentTime();
-    if (timer % 600 < 300)
-    {
+//    if (timer % 600 < 300)
+//    {
         g->pushMatrix();
         // offset cursor block slightly so it actually shows
         g->translate(0, 0, 0.1f);
         m_cursor->render();
         g->popMatrix();
-    }
+//    }
 
     // TODO render hud
     if (m_helpActive)
@@ -60,7 +60,7 @@ void Editor::render()
 
     // render stats
     char str[128];
-    sprintf(str, "Block=[%d,%d]\nlayer=%d", m_location.m_x, m_location.m_y, m_location.m_z);
+    sprintf(str, "Block=[%d,%d] tile=%d\nlayer=%d", m_location.m_x, m_location.m_y, m_activeBlock, m_location.m_z);
     g->setColor(1.0, 1.0, 1.0, 1.0);
     g->drawString(str, 20, 20);
 }
@@ -89,8 +89,9 @@ void Editor::changeActiveBlockBy(int delta) {
     // TODO proper values
     if (m_activeBlock < 0) 
         m_activeBlock = 0;
-    if (m_activeBlock > Block::ROCK)
-        m_activeBlock = Block::ROCK;
+
+    if (m_activeBlock > 37) //Block::ROCK)
+        m_activeBlock = 37; //Block::ROCK;
 
     m_cursor->setType(m_activeBlock);
 }
