@@ -26,7 +26,6 @@ Block::Block(char type, Vec3i location) :
 {
     m_representation = AUTO;
     determineModel();
-    determineTexName();
 }
 
 void Block::moveTo(Vec3i v)
@@ -40,9 +39,7 @@ void Block::moveTo(Vec3i v)
 
 void Block::setType(char type)
 {
-    // TODO set type
     m_type = type;
-    determineTexName();
 }
 
 void Block::determineModel()
@@ -54,24 +51,6 @@ void Block::determineModel()
         m_model = context->getModel(Model::UNIT_BOX);
     else
         m_model = context->getModel(m_representation == BLOCK ? Model::UNIT_BOX : Model::UNIT_PLANE);
-}
-
-void Block::determineTexName()
-{
-    switch (m_type)
-    {
-    case GRASS:
-        m_texName = "grass";
-        break;
-    case WATER:
-        m_texName = "water";
-        break;
-    case ROCK:
-        m_texName = "rock";
-        break;
-    default:
-        NU_ASSERT(!"Unkown block type");
-    }
 }
 
 void Block::serialize(std::ofstream* stream)
@@ -86,7 +65,6 @@ void Block::deserialize(std::ifstream* stream)
     m_location.deserialize(stream);
 
     determineModel();
-    determineTexName();
 }
 
 void Block::render() const
@@ -96,9 +74,7 @@ void Block::render() const
 
     graphics->pushMatrix();
     graphics->translate((float)m_location.m_x, (float)m_location.m_y, m_location.m_z>0 ? (float)(m_location.m_z-1) : 0);
-    graphics->bindTexture(context->getTexture(m_texName));
-    //(context->getTexManager())->useTilemap();
-    //tex->useTilemap();
+    graphics->bindTexture(context->getTilemapTexture(m_type));
 
     m_model->render();
 

@@ -32,7 +32,7 @@ public:
     unsigned int    getTexture  (std::string name);
 
     TexManager*     getTexManager();
-    Tilemap::TilemapTexture  getTilemapTexture(std::string id);
+    unsigned int    getTilemapTexture(int id);
 
 private:
     int                 m_argc;

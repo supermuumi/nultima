@@ -47,6 +47,17 @@ void Editor::renderHud()
     // Render minimap
     m_minimap->render();
 
+    // draw active block over map (alternating every 300ms)
+    int timer = (int)Utils::getCurrentTime();
+//    if (timer % 600 < 300)
+//    {
+        g->pushMatrix();
+        // offset cursor block slightly so it actually shows
+        g->translate(0, 0, 0.1f);
+        m_cursor->render();
+        g->popMatrix();
+//    }
+
     if (m_helpActive)
     {
         // TODO display commands
@@ -112,10 +123,11 @@ void Editor::moveCamera(Vec3i d)
 void Editor::changeActiveBlockBy(int delta) {
     m_cursorType += delta;
     // TODO proper values
+
     if (m_cursorType < 0) 
         m_cursorType = 0;
-    if (m_cursorType > Block::ROCK)
-        m_cursorType = Block::ROCK;
+    if (m_cursorType > 37)
+        m_cursorType = 37; //Block::ROCK;
 }
 
 void Editor::handleKeypress(int key)
