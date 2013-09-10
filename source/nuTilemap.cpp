@@ -77,6 +77,11 @@ void Tilemap::load(std::string fname)
 	int y2 = y1+m_tileSize;
 
         // TODO this is shit
+
+        float sRed = 0;
+        float sGreen = 0;
+        float sBlue = 0;
+
         for (int y = y1, ofs=0; y < y2; y++)
         {
             for (int x = x1; x < x2; x++)
@@ -84,9 +89,19 @@ void Tilemap::load(std::string fname)
                 tempTexture[ofs] = tilemapData[y*tilemapWidth*3 + x*3];
                 tempTexture[ofs+1] = tilemapData[y*tilemapWidth*3 + x*3+1];
                 tempTexture[ofs+2] = tilemapData[y*tilemapWidth*3 + x*3+2];
+
+                sRed += tempTexture[ofs] / 255.0;
+                sGreen += tempTexture[ofs+1] / 255.0;
+                sBlue += tempTexture[ofs+2] / 255.0;
+
                 ofs += 3;
             }
         }
+
+        sRed /= (m_tileSize*m_tileSize);
+        sGreen /= (m_tileSize*m_tileSize);
+        sBlue /= (m_tileSize*m_tileSize);
+        m_tileColors.push_back(Vec3(sRed, sGreen, sBlue));
 
         unsigned int tempTextureId;
         glGenTextures(1, &tempTextureId);
@@ -102,7 +117,3 @@ void Tilemap::load(std::string fname)
     free(tilemapData);
 }
 
-unsigned int Tilemap::getTexture(int id)
-{
-    return m_tiles[id];
-}
