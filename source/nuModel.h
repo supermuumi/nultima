@@ -17,6 +17,7 @@ public:
     {
         UNIT_PLANE = 0,
         UNIT_BOX,
+        UNIT_HALFBOX,
         NUM_MODELS
     };
 
@@ -34,8 +35,8 @@ private:
     } Vertex;
 
     void createUnitPlane();
-    void createUnitPlane(std::string id);
     void createUnitBox();
+    void createUnitHalfBox();
     
     unsigned int m_indexBuffer;
     unsigned int m_vertexBuffer;
