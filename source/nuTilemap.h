@@ -16,14 +16,14 @@ public:
 
     void           load(std::string fname);
     unsigned int   getTexture(int id) { return m_tiles[id]; }
-    Vec3           getTileColor(int id) { return m_tileColors[id]; }
+    Vec3ui         getTileColor(int id) { return m_tileColors[id]; }
     int            getNumTiles() { return m_tiles.size(); }
 
 private:
     int                       m_tileSize;
 
     std::vector<unsigned int> m_tiles;
-    std::vector<Vec3>         m_tileColors;
+    std::vector<Vec3ui>       m_tileColors;
 };
 
 }; // namespace
