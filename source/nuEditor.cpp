@@ -77,7 +77,7 @@ void Editor::renderHud()
 
         g->setColor(1.0f, 1.0f, 1.0f, 1.0f);
         char* helpText = "h - help";
-        g->drawString(helpText.c_str(), 40, 40);
+        g->drawString(helpText, 40, 40);
 
     }
 
