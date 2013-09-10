@@ -9,6 +9,7 @@
 #include <OpenGL/glext.h>
 #include <GLUT/glut.h>
 #else
+#include <Windows.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
