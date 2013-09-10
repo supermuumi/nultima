@@ -22,7 +22,8 @@ Editor::Editor(World *world) :
     m_editMode = EDITMODE_NONE;
     m_helpActive = false;
     m_cursor = Vec3i(0, 0, 0);
-    m_cursorType = Block::ROCK;
+    m_cursorType = 0; //Block::ROCK;
+    m_cursorRepresentation = Block::PLANE;
     m_minimap = new Minimap(m_world);
     m_minimap->update();
 }
@@ -37,6 +38,17 @@ Camera* Editor::getCamera()
     return m_camera;
 }
 
+std::string Editor::getEditModeName()
+{
+    std::string modeNames[] = {
+        "None",
+        "Paint",
+        "Erase"
+    };
+
+    return modeNames[m_editMode];
+}
+
 void Editor::renderHud()
 {
     Graphics* g = Context::get()->getGraphics();
@@ -48,7 +60,7 @@ void Editor::renderHud()
     // Render minimap
     m_minimap->render();
 
-	if (m_helpActive)
+    if (m_helpActive)
     {
         // TODO display commands
         // TODO set normal view
@@ -56,7 +68,7 @@ void Editor::renderHud()
 
     // render stats
     char str[128];
-    sprintf(str, "Block=[%d,%d]\nlayer=%d", m_cursor.m_x, m_cursor.m_y, m_cursor.m_z);
+    sprintf(str, "Mode=%s Block=[%d,%d]\nlayer=%d", getEditModeName().c_str(), m_cursor.m_x, m_cursor.m_y, m_cursor.m_z);
     g->setColor(1.0, 1.0, 1.0, 1.0);
     g->drawString(str, 20, 20);
 }
@@ -66,12 +78,13 @@ void Editor::renderActiveBlock()
     Graphics* g = Context::get()->getGraphics();
 
     int timer = (int)Utils::getCurrentTime();
-    if (timer % 600 < 300)
+    if (timer % 300 < 150)
     {
         g->pushMatrix();
         // offset cursor block slightly so it actually shows
         g->translate(0, 0, 0.1f);
         Block b = Block(m_cursorType, m_cursor);
+        b.setRepresentation(m_cursorRepresentation);
         b.render();
         g->popMatrix();
     }
@@ -150,12 +163,20 @@ void Editor::handleKeypress(int key)
     // change block type
     if (key == 'q') changeActiveBlockBy(-1);
     if (key == 'w') changeActiveBlockBy(1);
+    if (key == 't') cycleCursorRepresentation();
     //if (key >= '1' && key <= '9') m_activeBlock = getBlocksetStart(key-'1');
 
     // saving & loading
     // TODO change to something that doesn't overlap with "blockset" selection
     if (key == '5') saveWorld();
 
+}
+
+void Editor::cycleCursorRepresentation()
+{
+    m_cursorRepresentation++;
+    if (m_cursorRepresentation >= Block::BLOCK_LASTREPRESENTATION)
+        m_cursorRepresentation = 0;
 }
 
 void Editor::changeEditMode(EditMode newMode)
@@ -178,6 +199,7 @@ void Editor::changeEditMode(EditMode newMode)
 void Editor::paintCurrentBlock()
 {
     Block* block = new Block(m_cursorType, m_cursor);
+    block->setRepresentation(m_cursorRepresentation);
     m_world->insertBlock(block);
 }
 

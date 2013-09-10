@@ -24,7 +24,7 @@ Block::Block(char type, Vec3i location) :
     m_type(type),
     m_location(location)
 {
-    m_representation = AUTO;
+    m_representation = BLOCK;
     determineModel();
 }
 
@@ -45,23 +45,25 @@ void Block::setType(char type)
 void Block::determineModel()
 {
     Context* context = Context::get();
-    if (m_location.m_z == 0)
+    if (m_location.m_z == 0 || m_representation == PLANE)
         m_model = context->getModel(Model::UNIT_PLANE);
-    else if (m_representation == AUTO)
+    else if (m_representation == BLOCK)
         m_model = context->getModel(Model::UNIT_BOX);
     else
-        m_model = context->getModel(m_representation == BLOCK ? Model::UNIT_BOX : Model::UNIT_PLANE);
+        m_model = context->getModel(Model::UNIT_HALFBOX);
 }
 
 void Block::serialize(std::ofstream* stream)
 {
     stream->write(&m_type, 1);
+    stream->write((char*)&m_representation, 1);
     m_location.serialize(stream);
 }
 
 void Block::deserialize(std::ifstream* stream)
 {
     stream->read(&m_type, 1);
+    stream->read((char*)&m_representation, 1);
     m_location.deserialize(stream);
 
     determineModel();

@@ -26,7 +26,7 @@ void World::serialize(std::ofstream* stream)
 {
     char cWrite = WORLD_TAG_VERSION;
     stream->write(&cWrite, 1);
-    cWrite = VERSION_UNIFIED_COORDS;
+    cWrite = VERSION_BLOCK_REPRESENTATION;
     stream->write(&cWrite, 1);
 
     cWrite = WORLD_TAG_PLAYERSTART;

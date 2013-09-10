@@ -36,7 +36,8 @@ public:
     enum
     {
          VERSION_INITIAL = 0,
-         VERSION_UNIFIED_COORDS
+         VERSION_UNIFIED_COORDS,
+         VERSION_BLOCK_REPRESENTATION // each block = 2 bytes on disk now
     } WorldVersion;
 
 

@@ -23,30 +23,31 @@ public:
 
     typedef enum 
     {
-        AUTO = 0,
-        PLANE,
-        BLOCK
+        PLANE = 0,
+        HALFBLOCK,
+        BLOCK,
+
+        BLOCK_LASTREPRESENTATION
     } BlockRepresentation;
 
     Block() {}
     Block(char type, Vec3i location);
     ~Block() {}
 
-    void serialize      (std::ofstream* stream);
-    void deserialize    (std::ifstream* stream);
+    void    serialize      (std::ofstream* stream);
+    void    deserialize    (std::ifstream* stream);
 
-    void render         () const;
+    void    render         () const;
 
-    void moveTo(Vec3i);
-    void setType(char);
-    char getType() { return m_type; }
-    void setRepresentation(NuUInt8);
+    void    moveTo(Vec3i);
+    void    setType(char);
+    char    getType() { return m_type; }
+    void    setRepresentation(NuUInt8);
 
     Vec3i   getLocation() { return m_location; }
 
 private:
-    void determineModel     ();
-//    void determineTexName   ();
+    void    determineModel();
 
     char        m_type;
     Vec3i       m_location;

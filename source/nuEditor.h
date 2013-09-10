@@ -42,6 +42,9 @@ public:
     Camera* getCamera();
 
 private:
+    std::string getEditModeName();
+    void        cycleCursorRepresentation();
+
     void    paintCurrentBlock();
     void    eraseCurrentBlock();
     void    changeActiveBlockBy(int);
@@ -61,6 +64,7 @@ private:
 
     Vec3i       m_cursor;
     int         m_cursorType;
+    int         m_cursorRepresentation;
     Minimap*    m_minimap;
 };
 
