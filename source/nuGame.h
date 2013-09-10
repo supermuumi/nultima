@@ -35,6 +35,7 @@ private:
     // actual gameplay related
     void movePlayer(Vec3i d);
     void handleKeyboard();
+    void handleMouse();
     void handleKeypress(int key);
     void processTurn();
 

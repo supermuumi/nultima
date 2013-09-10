@@ -4,6 +4,7 @@
 #include "nuKeyboard.h"
 #include "nuModel.h"
 #include "nuTexManager.h"
+#include "nuMouse.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -16,13 +17,15 @@ Context::Context() :
     m_argc(0),
     m_argv(NULL),
     m_graphics(NULL),
-    m_keyboard(NULL)
+    m_keyboard(NULL),
+    m_mouse(NULL)
 {}
 
 Context::~Context()
 {
     NU_ASSERT(!m_graphics);
     NU_ASSERT(!m_keyboard);
+    NU_ASSERT(!m_mouse);
 }
 
 Context* Context::get()
@@ -42,6 +45,7 @@ void Context::init(int argc, char** argv)
     m_graphics->init(argc, argv);
 
     m_keyboard = new Keyboard();
+    m_mouse = new Mouse();
 
     m_models.resize(Model::NUM_MODELS, NULL);
 
@@ -57,6 +61,9 @@ void Context::deinit()
 
     delete m_keyboard;
     m_keyboard = NULL;
+
+    delete m_mouse;
+    m_mouse = NULL;
 
     delete m_texManager;
     m_texManager = NULL;

@@ -53,6 +53,7 @@ void Game::tick()
 
     // Handle input
     handleKeyboard();
+    handleMouse();
 
     // Streaming
 
@@ -112,7 +113,6 @@ void Game::renderHUD()
 void Game::handleKeyboard()
 {
     Keyboard* keyboard = Context::get()->getKeyboard();
-    NU_UNREF(keyboard);
 
     while (keyboard->hasKeyPresses())
     {
@@ -131,6 +131,14 @@ void Game::handleKeyboard()
                 handleKeypress(key);
         }
     }
+}
+
+void Game::handleMouse()
+{
+    Mouse* mouse = Context::get()->getMouse();
+    if (m_isEditorMode)
+        m_editor->handleMouse();
+
 }
 
 /*

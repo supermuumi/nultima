@@ -6,6 +6,7 @@
 #include "nuWorld.h"
 #include "nuCell.h"
 #include "nuDefs.h"
+#include "nuTexManager.h"
 
 #define MINIMAP_WIDTH   256
 #define MINIMAP_HEIGHT  128
@@ -13,9 +14,6 @@
 using namespace Nultima;
 
 static const unsigned int s_backgroundColor = 0xffb469ff;
-static const unsigned int s_waterColor = 0xffff0000;
-static const unsigned int s_grassColor = 0xff00ff00;
-static const unsigned int s_rockColor = 0xff333333;
 
 Minimap::Minimap(World* world)
 {
@@ -37,9 +35,9 @@ void Minimap::render()
 
 unsigned int Minimap::determineColor(Vec2i coord, int size)
 {
-    int numTypes[Block::TYPE_LAST];
-    for (int i=0; i<Block::TYPE_LAST; i++)
-        numTypes[i] = 0;
+    TexManager* tex = Context::get()->getTexManager();
+    std::vector<int> numTypes;
+    numTypes.resize(tex->getNumTiles(), 0);
     
     int x = coord.m_x;
     int y = coord.m_y;
@@ -59,27 +57,31 @@ unsigned int Minimap::determineColor(Vec2i coord, int size)
 
     int mostFrequentType = -1;
     int mostFrequentCount = 0;
-    for (int i=0; i<Block::TYPE_LAST; i++)
+    for (int i=0; i<tex->getNumTiles(); i++)
         if (numTypes[i] > mostFrequentCount)
             mostFrequentType = i;
 
     unsigned int color = s_backgroundColor;
-    switch (mostFrequentType)
+
+    // TODO [sampo] different color for different block types
+    if (mostFrequentType != -1)
     {
-    case Block::GRASS:
-        color = s_grassColor;
-        break;
-    case Block::WATER:
-        color = s_waterColor;
-        break;
-    case Block::ROCK:
-        color = s_rockColor;
-        break;
-    default:
-        // Left color unchanged
-        break;
+        Vec3ui c = tex->getTilemap()->getTileColor(mostFrequentType);
+        color = (c.m_x & 0xff) +
+                ((c.m_y & 0xff) << 8) +
+                ((c.m_z & 0xff) << 16) +
+                (0xff << 24);
     }
+
     return color;
+}
+
+void Minimap::getScreenLocation(int& x, int& y, int& width, int& height)
+{
+    x = 0;
+    y = 0;
+    width = MINIMAP_WIDTH;
+    height = MINIMAP_HEIGHT;
 }
 
 void Minimap::update()
@@ -110,6 +112,20 @@ void Minimap::update()
     for (int j=0; j<MINIMAP_HEIGHT; j++)
     {
         Vec2i current = Vec2i(min.m_x+i*maxBlocks, min.m_y+j*maxBlocks); 
-        m_pixels[i+j*MINIMAP_WIDTH] = determineColor(current, maxBlocks);
+        m_pixels[i+(MINIMAP_HEIGHT-1-j)*MINIMAP_WIDTH] = determineColor(current, maxBlocks);
     }
+}
+
+void Minimap::getWorldMinMax(Vec2i& min, Vec2i& max)
+{
+    min = m_world->getMinCoordinate();
+    max = m_world->getMaxCoordinate();
+    
+    Vec2i dim = max-min;
+
+    if (dim.m_x < MINIMAP_WIDTH)
+        min.m_x -= MINIMAP_WIDTH - dim.m_x;
+
+    if (dim.m_y < MINIMAP_HEIGHT)
+        min.m_y -= MINIMAP_HEIGHT - dim.m_y;
 }

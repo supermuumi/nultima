@@ -13,14 +13,6 @@ class Block : public Object
 {
 public:
 
-    enum Type
-    {
-        GRASS = 0,
-        WATER,
-        ROCK,
-        TYPE_LAST
-    };
-
     typedef enum 
     {
         PLANE = 0,

@@ -10,6 +10,7 @@
 #include "nuUtils.h"
 #include "nuMinimap.h"
 #include "nuTexManager.h"
+#include "nuMouse.h"
 
 using namespace Nultima;
 
@@ -123,7 +124,8 @@ void Editor::moveCamera(Vec3i d)
     m_camera->moveTo(m_cursor + m_cameraOffset);
 }
 
-void Editor::changeActiveBlockBy(int delta) {
+void Editor::changeActiveBlockBy(int delta)
+{
     m_cursorType += delta;
 
     TexManager* tex = Context::get()->getTexManager();
@@ -169,7 +171,36 @@ void Editor::handleKeypress(int key)
     // saving & loading
     // TODO change to something that doesn't overlap with "blockset" selection
     if (key == '5') saveWorld();
+}
 
+void Editor::handleMouse()
+{
+    Mouse* mouse = Context::get()->getMouse();
+
+    Mouse::KeyPress key = mouse->getKeyPress(Mouse::NU_MOUSE_LEFT);
+    if (key.isDown)
+    {
+        // Minimap
+        int x, y, width, height;
+        m_minimap->getScreenLocation(x, y, width, height);
+        
+        if (key.x >= x && key.x < x+width &&
+            key.y >= y && key.y < y+height)
+        {
+            Vec2i min;
+            Vec2i max;
+            m_minimap->getWorldMinMax(min, max);
+
+            Vec2i coord;
+            coord.m_x = min.m_x + ((max.m_x - min.m_x) * (key.x - x)) / width;
+            coord.m_y = min.m_y + ((max.m_y - min.m_y) * (key.y - y)) / height;
+
+            m_cursor.m_x = coord.m_x;
+            m_cursor.m_y = coord.m_y;
+            m_camera->moveTo(m_cursor + m_cameraOffset);
+
+        }
+    }
 }
 
 void Editor::cycleCursorRepresentation()

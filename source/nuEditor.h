@@ -39,6 +39,7 @@ public:
 
     void    render();
     void    handleKeypress(int key);
+    void    handleMouse();
     Camera* getCamera();
 
 private:

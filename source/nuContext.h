@@ -11,6 +11,7 @@ class Graphics;
 class Keyboard;
 class Model;
 class TexManager;
+class Mouse;
 
 class Context
 {
@@ -28,6 +29,7 @@ public:
     std::string     getStateFile();
     Graphics*       getGraphics ()                  { return m_graphics; }
     Keyboard*       getKeyboard ()                  { return m_keyboard; }
+    Mouse*          getMouse    ()                  { return m_mouse; }
     const Model*    getModel    (int type);
     unsigned int    getTexture  (std::string name);
 
@@ -39,6 +41,7 @@ private:
     char**              m_argv;
     Graphics*           m_graphics;
     Keyboard*           m_keyboard;
+    Mouse*              m_mouse;
     std::vector<Model*> m_models;
     TexManager*         m_texManager;
 };

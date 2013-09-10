@@ -4,6 +4,7 @@
 #include "nuContext.h"
 #include "nuGame.h"
 #include "nuGraphics.h"
+#include "nuMouse.h"
 
 #if defined(__APPLE__) || defined(MACOSX)
 #include <OpenGL/glu.h>
@@ -77,10 +78,8 @@ static void specialKeyReleased(int key, int x, int y)
 
 static void click(int button, int updown, int x, int y)
 {
-    NU_UNREF(button);
-    NU_UNREF(updown);
-    NU_UNREF(x);
-    NU_UNREF(y);
+    Mouse* mouse = Context::get()->getMouse();
+    mouse->setClick(button, x, glutGet(GLUT_WINDOW_HEIGHT)-y, (updown == GLUT_UP) ? false : true);
 }
 
 static void motion(int x, int y)
