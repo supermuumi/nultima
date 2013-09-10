@@ -44,40 +44,35 @@ static void keyReleased(unsigned char key, int x, int y)
     keyboard->setKeyPressed(key, false);
 }
 
-static void specialKeyPressed(int key, int x, int y)
+static void keyPress(int key, bool up)
 {
-    NU_UNREF(key);
-    NU_UNREF(x);
-    NU_UNREF(y);
-
-    //NU_ASSERT(!"Not implemented");
     Keyboard* keyboard = Context::get()->getKeyboard();
     if (key == GLUT_KEY_LEFT)
-	keyboard->setKeyPressed(NU_KEY_LEFT, true);    
+    	keyboard->setKeyPressed(NU_KEY_LEFT, up);
     if (key == GLUT_KEY_RIGHT)
-	keyboard->setKeyPressed(NU_KEY_RIGHT, true);    
+	    keyboard->setKeyPressed(NU_KEY_RIGHT, up);
     if (key == GLUT_KEY_UP)
-	keyboard->setKeyPressed(NU_KEY_UP, true);    
+	    keyboard->setKeyPressed(NU_KEY_UP, up);
     if (key == GLUT_KEY_DOWN)
-	keyboard->setKeyPressed(NU_KEY_DOWN, true);    
+	    keyboard->setKeyPressed(NU_KEY_DOWN, up);
+    if (key == GLUT_KEY_PAGE_DOWN)
+        keyboard->setKeyPressed(NU_KEY_PAGE_DOWN, up);
+    if (key == GLUT_KEY_PAGE_UP)
+        keyboard->setKeyPressed(NU_KEY_PAGE_UP, up);
+}
+
+static void specialKeyPressed(int key, int x, int y)
+{
+    NU_UNREF(x);
+    NU_UNREF(y);
+    keyPress(key, true);
 }
 
 static void specialKeyReleased(int key, int x, int y)
 {
-    NU_UNREF(key);
     NU_UNREF(x);
     NU_UNREF(y);
-
-    //NU_ASSERT(!"Not implemented");
-    Keyboard* keyboard = Context::get()->getKeyboard();
-    if (key == GLUT_KEY_LEFT)
-	keyboard->setKeyPressed(NU_KEY_LEFT, false);    
-    if (key == GLUT_KEY_RIGHT)
-	keyboard->setKeyPressed(NU_KEY_RIGHT, false);    
-    if (key == GLUT_KEY_UP)
-	keyboard->setKeyPressed(NU_KEY_UP, false);    
-    if (key == GLUT_KEY_DOWN)
-	keyboard->setKeyPressed(NU_KEY_DOWN, false);    
+    keyPress(key, false);
 }
 
 static void click(int button, int updown, int x, int y)

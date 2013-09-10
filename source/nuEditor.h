@@ -38,11 +38,8 @@ public:
     ~Editor();
 
     void    render();
-    void    moveSelection(Vec3i d);
     void    handleKeypress(int key);
     Camera* getCamera();
-
-    void    saveWorld();
 
 private:
     void    paintCurrentBlock();
@@ -50,6 +47,11 @@ private:
     void    changeActiveBlockBy(int);
     void    changeEditMode(EditMode m);
     int     getBlocksetStart(int idx);
+    void    moveCamera(Vec3i);
+    void    moveSelection(Vec3i d);
+    void    saveWorld();
+    void    renderHud();
+    void    renderActiveBlock();
 
     Camera*     m_camera;
     Vec3i       m_cameraOffset;

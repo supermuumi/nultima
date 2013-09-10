@@ -36,11 +36,34 @@ Camera* Editor::getCamera()
     return m_camera;
 }
 
-void Editor::render()
+void Editor::renderHud()
+{
+    Graphics* g = Context::get()->getGraphics();
+    Vec2i wDim = g->getWindowDimensions();
+
+    // set ortho view
+    g->setOrthoProjection(0, wDim.m_x, 0, wDim.m_y);
+
+    // Render minimap
+    m_minimap->render();
+
+    if (m_helpActive)
+    {
+        // TODO display commands
+        // TODO set normal view
+    }
+
+    // render stats
+    char str[128];
+    sprintf(str, "Block=[%d,%d]\nlayer=%d", m_cursor.m_x, m_cursor.m_y, m_cursor.m_z);
+    g->setColor(1.0, 1.0, 1.0, 1.0);
+    g->drawString(str, 20, 20);
+}
+
+void Editor::renderActiveBlock()
 {
     Graphics* g = Context::get()->getGraphics();
 
-    // draw active block over map (alternating every 300ms)
     int timer = (int)Utils::getCurrentTime();
     if (timer % 600 < 300)
     {
@@ -51,25 +74,15 @@ void Editor::render()
         b.render();
         g->popMatrix();
     }
+}
 
-    // TODO render hud
-    if (m_helpActive)
-    {
-        // set ortho view
-        Vec2i wDim = g->getWindowDimensions();
-        g->setOrthoProjection(0, wDim.m_x, 0, wDim.m_y);
+void Editor::render()
+{
+    // draw active block over map (alternating every 300ms)
+    renderActiveBlock();
 
-        m_minimap->render();
-
-        // TODO display commands
-        // TODO set normal view
-    }
-
-    // render stats
-    char str[128];
-    sprintf(str, "Block=[%d,%d]\nlayer=%d", m_cursor.m_x, m_cursor.m_y, m_cursor.m_z);
-    g->setColor(1.0, 1.0, 1.0, 1.0);
-    g->drawString(str, 20, 20);
+    // render hud
+    renderHud();
 }
 
 void Editor::moveSelection(Vec3i d)
@@ -90,6 +103,12 @@ void Editor::moveSelection(Vec3i d)
         eraseCurrentBlock();
 }
 
+void Editor::moveCamera(Vec3i d)
+{
+    m_cameraOffset = m_cameraOffset + d;
+    m_camera->moveTo(m_cursor + m_cameraOffset);
+}
+
 void Editor::changeActiveBlockBy(int delta) {
     m_cursorType += delta;
     // TODO proper values
@@ -108,6 +127,11 @@ void Editor::handleKeypress(int key)
     if (key == NU_KEY_DOWN) moveSelection(Vec3i(0, -1, 0));
     if (key == '.') moveSelection(Vec3i(0, 0, 1));
     if (key == ',') moveSelection(Vec3i(0, 0, -1));
+
+    // move camera
+    if (key == NU_KEY_PAGE_UP) moveCamera(Vec3i(0, 0, 1));
+    if (key == NU_KEY_PAGE_DOWN) moveCamera(Vec3i(0, 0, -1));
+
 
     // misc
     if (key == 'h') m_helpActive = !m_helpActive;
