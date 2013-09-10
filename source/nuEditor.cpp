@@ -8,6 +8,7 @@
 #include "nuModel.h"
 #include "nuGraphics.h"
 #include "nuUtils.h"
+#include "nuMinimap.h"
 
 using namespace Nultima;
 
@@ -15,19 +16,19 @@ Editor::Editor(World *world) :
     m_cameraOffset(0, 0, 5)
 {
     m_world = world;
-    m_location = Vec3i(0, 0, 0);
     m_camera = new Camera();
     m_camera->moveTo(m_cameraOffset);
     m_editMode = EDITMODE_NONE;
-    m_activeBlock = Block::ROCK;
     m_helpActive = false;
-    m_cursor = new Block(m_activeBlock, Vec3i(0, 0, 0));
+    m_cursor = Vec3i(0, 0, 0);
+    m_cursorType = Block::ROCK;
+    m_minimap = new Minimap(m_world);
+    m_minimap->update();
 }
 
 Editor::~Editor()
 {
     delete m_camera;
-    delete m_cursor;
 }
 
 Camera* Editor::getCamera()
@@ -46,36 +47,41 @@ void Editor::render()
         g->pushMatrix();
         // offset cursor block slightly so it actually shows
         g->translate(0, 0, 0.1f);
-        m_cursor->render();
+        Block b = Block(m_cursorType, m_cursor);
+        b.render();
         g->popMatrix();
     }
 
     // TODO render hud
     if (m_helpActive)
     {
-        // TODO set ortho view
+        // set ortho view
+        Vec2i wDim = g->getWindowDimensions();
+        g->setOrthoProjection(0, wDim.m_x, 0, wDim.m_y);
+
+        m_minimap->render();
+
         // TODO display commands
         // TODO set normal view
     }
 
     // render stats
     char str[128];
-    sprintf(str, "Block=[%d,%d]\nlayer=%d", m_location.m_x, m_location.m_y, m_location.m_z);
+    sprintf(str, "Block=[%d,%d]\nlayer=%d", m_cursor.m_x, m_cursor.m_y, m_cursor.m_z);
     g->setColor(1.0, 1.0, 1.0, 1.0);
     g->drawString(str, 20, 20);
 }
 
 void Editor::moveSelection(Vec3i d)
 {
-    m_location = m_location + d;
+    m_cursor = m_cursor + d;
     // TODO Vec3ui means we never go <0, but rather get -1>NU_MAX_LAYERS which makes layer switching wrap around
-    if (m_location.m_z < 0)
-        m_location.m_z = 0;
-    if (m_location.m_z >= NU_MAX_LAYERS)
-        m_location.m_z = NU_MAX_LAYERS-1;
+    if (m_cursor.m_z < 0)
+        m_cursor.m_z = 0;
+    if (m_cursor.m_z >= NU_MAX_LAYERS)
+        m_cursor.m_z = NU_MAX_LAYERS-1;
 
-    m_cursor->moveTo(Vec3i(m_location.m_x, m_location.m_y, m_location.m_z));
-    m_camera->moveTo(m_location + m_cameraOffset);
+    m_camera->moveTo(m_cursor + m_cameraOffset);
 
     if (m_editMode == EDITMODE_PAINT)
         paintCurrentBlock();
@@ -85,14 +91,12 @@ void Editor::moveSelection(Vec3i d)
 }
 
 void Editor::changeActiveBlockBy(int delta) {
-    m_activeBlock += delta;
+    m_cursorType += delta;
     // TODO proper values
-    if (m_activeBlock < 0) 
-        m_activeBlock = 0;
-    if (m_activeBlock > Block::ROCK)
-        m_activeBlock = Block::ROCK;
-
-    m_cursor->setType(m_activeBlock);
+    if (m_cursorType < 0) 
+        m_cursorType = 0;
+    if (m_cursorType > Block::ROCK)
+        m_cursorType = Block::ROCK;
 }
 
 void Editor::handleKeypress(int key)
@@ -113,6 +117,9 @@ void Editor::handleKeypress(int key)
     if (key == 'e') changeEditMode(EDITMODE_ERASE);
     if (key == 's') paintCurrentBlock();
     if (key == 'd') eraseCurrentBlock();
+
+    // minimap
+    if (key == 'm') m_minimap->update();
     
     // change block type
     if (key == 'q') changeActiveBlockBy(-1);
@@ -144,13 +151,13 @@ void Editor::changeEditMode(EditMode newMode)
 
 void Editor::paintCurrentBlock()
 {
-    Block* block = new Block(m_activeBlock, Vec3i(m_location.m_x, m_location.m_y, m_location.m_z));
+    Block* block = new Block(m_cursorType, m_cursor);
     m_world->insertBlock(block);
 }
 
 void Editor::eraseCurrentBlock()
 {
-    m_world->clearBlock(m_location);
+    m_world->clearBlock(m_cursor);
 }
 
 /*

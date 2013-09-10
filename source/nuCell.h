@@ -17,8 +17,8 @@ public:
     Cell(Vec2i position);
     ~Cell();
 
-    // TODO [sampo] Use Vec3
-    const Block*    getBlock    (Vec3i location) { return m_blocks[location.m_z][location.m_y][location.m_x]; }
+    Vec2i           getPosition () {return m_position;}
+    const Block*    getBlock    (Vec3i location);
     void            insertBlock (char type, Vec3i location);
     void            insertBlock (Block* block);
 

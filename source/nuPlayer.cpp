@@ -18,7 +18,7 @@ Player::Player(MapLocation location)
 void Player::render(World* world, Camera* inCamera)
 {
     Graphics* graphics = Context::get()->getGraphics();
-    graphics->setViewProjection();
+    graphics->setPerspectiveProjection();
 
     // place camera
     Camera playerCamera(m_location);
@@ -34,12 +34,16 @@ void Player::render(World* world, Camera* inCamera)
     {
         Cell* cell = it->second;
         // loop blocks
-        for (int x=0; x<NU_CELL_WIDTH; x++)
-        for (int y=0; y<NU_CELL_HEIGHT; y++)
+
+        if (cell)
         {
-            const Block* block = cell->getBlock(Vec3i(x, y, i));
-            if (block)
-                block->render();
+            for (int x=0; x<NU_CELL_WIDTH; x++)
+            for (int y=0; y<NU_CELL_HEIGHT; y++)
+            {
+                const Block* block = cell->getBlock(Vec3i(x, y, i));
+                if (block)
+                    block->render();
+            }
         }
     }
 

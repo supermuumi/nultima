@@ -194,3 +194,25 @@ void Cell::clearBlock(Vec3i position)
         m_blocks[position.m_z][y][x] = NULL;
     }
 }
+
+
+const Block* Cell::getBlock(Vec3i location)
+{
+    // translate coordinates to cell local coordinate space
+    int x = location.m_x;
+    int y = location.m_y;
+    if (x<0)
+    {
+        x *= -1;
+        x -= 1;
+    }
+    if (y<0)
+    {
+        y *= -1;
+        y -= 1;
+    }
+    x = x % NU_CELL_WIDTH;
+    y = y % NU_CELL_HEIGHT;
+
+    return m_blocks[location.m_z][y][x];
+}

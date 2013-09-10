@@ -17,7 +17,8 @@ public:
     {
         GRASS = 0,
         WATER,
-        ROCK
+        ROCK,
+        TYPE_LAST
     };
 
     typedef enum 
@@ -38,6 +39,7 @@ public:
 
     void moveTo(Vec3i);
     void setType(char);
+    char getType() { return m_type; }
     void setRepresentation(NuUInt8);
 
     Vec3i   getLocation() { return m_location; }

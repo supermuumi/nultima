@@ -21,3 +21,19 @@ Vec2i Vec2i::operator+(Vec2i v)
     ret.m_y = m_y + v.m_y;
     return ret;
 }
+
+Vec2i Vec2i::operator-(Vec2i v) 
+{
+    Vec2i ret;
+    ret.m_x = m_x - v.m_x;
+    ret.m_y = m_y - v.m_y;
+    return ret;
+}
+
+Vec2i Vec2i::operator/(Vec2i v) 
+{
+    Vec2i ret;
+    ret.m_x = m_x / v.m_x;
+    ret.m_y = m_y / v.m_y;
+    return ret;
+}

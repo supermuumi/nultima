@@ -2,6 +2,7 @@
 
 #include "nuMapLocation.h"
 #include "nuVec3.h"
+#include "nuVec2.h"
 
 #include <string>
 #include <vector>
@@ -42,16 +43,19 @@ public:
     World(std::string fileName);
     ~World() {}
 
-    MapLocation         getPlayerStart                      () { return m_playerStart; }
+    MapLocation getPlayerStart  () { return m_playerStart; }
     std::tr1::unordered_map<unsigned int, Cell*> getCells   () { return m_cellMap; }
 
-    Cell* getCellAt(Vec3i);
+    Cell*       getCellAt       (Vec3i);
+    Block*      getBlockAt      (Vec3i);
+    void        insertBlock     (Block* block);
+    void        clearBlock      (MapLocation location);
 
-    void                insertBlock     (Block* block);
-    void                clearBlock      (MapLocation location);
+    void        serialize       (std::ofstream* stream);
+    void        deserialize     (std::ifstream* stream);
 
-    void                serialize       (std::ofstream* stream);
-    void                deserialize     (std::ifstream* stream);
+    Vec2i       getMinCoordinate();
+    Vec2i       getMaxCoordinate();
 
 private:
     std::tr1::unordered_map<unsigned int, Cell*> m_cellMap;

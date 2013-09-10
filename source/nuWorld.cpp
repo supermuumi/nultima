@@ -35,7 +35,11 @@ void World::serialize(std::ofstream* stream)
     playerStart.serialize(stream);
 
     for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = m_cellMap.begin(); it != m_cellMap.end(); ++it)
-        (it->second)->serialize(stream);
+    {
+        Cell* cell = it->second;
+        if (cell)
+            cell->serialize(stream);
+    }
 
     cWrite = WORLD_TAG_END;
     stream->write(&cWrite, 1);
@@ -107,4 +111,47 @@ Cell* World::getCellAt(Vec3i v)
 {
     unsigned int idx = Cell::indexAtLocation(v);
     return m_cellMap[idx];
+}
+
+Block* World::getBlockAt(Vec3i v)
+{
+    unsigned int idx = Cell::indexAtLocation(v);
+    Cell* cell = m_cellMap[idx];
+    return (cell) ? (Block*)cell->getBlock(v) : NULL;
+}
+
+Vec2i World::getMinCoordinate()
+{
+    Vec2i min(0,0);
+    for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = m_cellMap.begin(); it != m_cellMap.end(); ++it)
+    {
+        Cell* cell = it->second;
+        if (cell)
+        {
+            Vec2i position = cell->getPosition();
+            if (position.m_x < min.m_x)
+                min.m_x = position.m_x;
+            if (position.m_y < min.m_y)
+                min.m_y = position.m_y;
+        }
+    }
+    return min;
+}
+
+Vec2i World::getMaxCoordinate()
+{
+    Vec2i max(0,0);
+    for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = m_cellMap.begin(); it != m_cellMap.end(); ++it)
+    {
+        Cell* cell = it->second;
+        if (cell)
+        {
+            Vec2i position = cell->getPosition();
+            if (position.m_x > max.m_x)
+                max.m_x = position.m_x;
+            if (position.m_y > max.m_y)
+                max.m_y = position.m_y;
+        }
+    }
+    return max;
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "nuVec2.h"
-#include "nuBlock.h"
 #include "nuVec3.h"
 
 namespace Nultima
@@ -10,6 +9,8 @@ namespace Nultima
     class Camera;
     class MapLocation;
     class World;
+    class Minimap;
+    class Block;
 
 /*
  * requirements:
@@ -50,15 +51,15 @@ private:
     void    changeEditMode(EditMode m);
     int     getBlocksetStart(int idx);
 
-    Vec3i       m_location; // TODO replace with a better data type
     Camera*     m_camera;
     Vec3i       m_cameraOffset;
     World*      m_world;
     EditMode    m_editMode;
-    int         m_activeBlock;
     bool        m_helpActive;
 
-    Block*   m_cursor;
+    Vec3i       m_cursor;
+    int         m_cursorType;
+    Minimap*    m_minimap;
 };
 
 };

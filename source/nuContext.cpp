@@ -38,7 +38,7 @@ void Context::init(int argc, char** argv)
     m_argc = argc;
     m_argv = argv;
 
-    m_graphics = new Graphics(WINDOW_WIDTH, WINDOW_HEIGHT);
+    m_graphics = new Graphics(Vec2i(WINDOW_WIDTH, WINDOW_HEIGHT));
     m_graphics->init(argc, argv);
 
     m_keyboard = new Keyboard();

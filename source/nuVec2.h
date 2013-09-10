@@ -24,6 +24,9 @@ public:
     ~Vec2i() {}
 
     Vec2i operator+      (Vec2i);
+    Vec2i operator-      (Vec2i);
+    Vec2i operator/      (Vec2i);
+
     void  serialize      (std::ofstream* stream);
     void  deserialize    (std::ifstream* stream);
 
