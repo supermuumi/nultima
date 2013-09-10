@@ -10,22 +10,9 @@ using namespace Nultima;
 char* FileUtils::readFile(std::string fname)
 {
     char* buffer = NULL;
-	/*
-    std::ifstream file(fname.c_str(), std::ios::in);
-
-    if (file.is_open())
-    {
-        file.seekg(0, std::ios::end);
-        long size = (long)file.tellg();
-        buffer = new char[size+1];
-        file.seekg(0, std::ios::beg);
-        file.read(buffer, size);
-        file.close();
-		buffer[size] = 0;
-    }
-	*/
-
-	FILE* fp = fopen(fname.c_str(), "rb");
+	FILE* fp;
+	
+	fp = fopen(fname.c_str(), "rb");
 	if (fp) {
 		fseek(fp, 0, SEEK_END);
 		long size = ftell(fp);
