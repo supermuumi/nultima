@@ -113,7 +113,7 @@ void Model::createUnitBox()
                         coords[faces[i][0]][1],
                         coords[faces[i][0]][2]);
         v.normal = Vec3(normals[i][0], normals[i][1], normals[i][2]);
-        v.texCoord = Vec2(0,1);
+        v.texCoord = Vec2(0,0);
         verts.push_back(v);
 
         // Vertex 2
@@ -121,7 +121,7 @@ void Model::createUnitBox()
                         coords[faces[i][1]][1],
                         coords[faces[i][1]][2]);
         v.normal = Vec3(normals[i][0], normals[i][1], normals[i][2]);
-        v.texCoord = Vec2(1,1);
+        v.texCoord = Vec2(1,0);
         verts.push_back(v);
 
         // Vertex 3
@@ -129,7 +129,7 @@ void Model::createUnitBox()
                         coords[faces[i][2]][1],
                         coords[faces[i][2]][2]);
         v.normal = Vec3(normals[i][0], normals[i][1], normals[i][2]);
-        v.texCoord = Vec2(1,0);
+        v.texCoord = Vec2(1,1);
         verts.push_back(v);
 
         // Vertex 4
@@ -137,7 +137,7 @@ void Model::createUnitBox()
                         coords[faces[i][3]][1],
                         coords[faces[i][3]][2]);
         v.normal = Vec3(normals[i][0], normals[i][1], normals[i][2]);
-        v.texCoord = Vec2(0,0);
+        v.texCoord = Vec2(0,1);
         verts.push_back(v);
 
         tris.push_back(Vec3ui(i*4, i*4+1, i*4+2));
