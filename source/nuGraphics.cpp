@@ -302,3 +302,32 @@ void Graphics::drawString(char* str, float x, float y)
     glPopMatrix();
     NU_ASSERT(glGetError() == GL_NO_ERROR);
 }
+
+void Graphics::setBlending(bool enabled)
+{
+    if (enabled)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else
+    {
+        glDisable(GL_BLEND);
+    }
+}
+
+void Graphics::fillRect(float x1, float y1, float x2, float y2, bool blend)
+{
+    if (blend)
+        setBlending(true);
+
+    glBegin(GL_QUADS);
+    glVertex2f(x1, y1);
+    glVertex2f(x2, y1);
+    glVertex2f(x2, y2);
+    glVertex2f(x1, y2);
+    glEnd();
+
+    if (blend)
+        setBlending(false);
+}

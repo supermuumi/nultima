@@ -59,19 +59,29 @@ void Editor::renderHud()
     g->setOrthoProjection(0, wDim.m_x, 0, wDim.m_y);
 
     // Render minimap
-    m_minimap->render();
-
-    if (m_helpActive)
-    {
-        // TODO display commands
-        // TODO set normal view
-    }
+    if (!m_helpActive)
+        m_minimap->render();
 
     // render stats
     char str[128];
     sprintf(str, "Mode=%s Block=[%d,%d]\nlayer=%d", getEditModeName().c_str(), m_cursor.m_x, m_cursor.m_y, m_cursor.m_z);
     g->setColor(1.0, 1.0, 1.0, 1.0);
     g->drawString(str, 20, 20);
+
+
+    // TODO [muumi] This is busted, text is not shown.
+    if (m_helpActive)
+    {
+        g->setColor(0.8f, 0.0f, 0.0f, 0.5f);
+        g->fillRect(20, 20, wDim.m_x-20, wDim.m_y-20, true);
+
+        g->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        char* helpText = "h - help";
+        g->drawString(helpText.c_str(), 40, 40);
+
+    }
+
+    g->setPerspectiveProjection();    
 }
 
 void Editor::renderActiveBlock()
