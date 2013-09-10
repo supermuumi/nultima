@@ -15,6 +15,7 @@ public:
 
     void           load(std::string fname);
     unsigned int   getTexture(int id);
+	int            getNumTiles() { return m_tiles.size(); }
 
 private:
     int                       m_tileSize;

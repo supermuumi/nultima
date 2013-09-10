@@ -20,6 +20,7 @@ public:
     void         loadTilemap(char* fname);
     unsigned int getTexture(std::string name);
     unsigned int getTilemapTexture(int id);
+	unsigned int getNumTiles() { return m_tilemap->getNumTiles(); }
 
 private:
     unsigned int loadTexture(std::string name);

@@ -9,6 +9,7 @@
 #include "nuGraphics.h"
 #include "nuUtils.h"
 #include "nuMinimap.h"
+#include "nuTexManager.h"
 
 using namespace Nultima;
 
@@ -47,18 +48,7 @@ void Editor::renderHud()
     // Render minimap
     m_minimap->render();
 
-    // draw active block over map (alternating every 300ms)
-    int timer = (int)Utils::getCurrentTime();
-//    if (timer % 600 < 300)
-//    {
-        g->pushMatrix();
-        // offset cursor block slightly so it actually shows
-        g->translate(0, 0, 0.1f);
-        m_cursor->render();
-        g->popMatrix();
-//    }
-
-    if (m_helpActive)
+	if (m_helpActive)
     {
         // TODO display commands
         // TODO set normal view
@@ -124,10 +114,11 @@ void Editor::changeActiveBlockBy(int delta) {
     m_cursorType += delta;
     // TODO proper values
 
+	TexManager* tex = Context::get()->getTexManager();
     if (m_cursorType < 0) 
+        m_cursorType = tex->getNumTiles()-1;
+    if (m_cursorType >= tex->getNumTiles())
         m_cursorType = 0;
-    if (m_cursorType > 37)
-        m_cursorType = 37; //Block::ROCK;
 }
 
 void Editor::handleKeypress(int key)
