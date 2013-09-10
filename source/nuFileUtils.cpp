@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <string>
 #include <fstream>
 #include "nuFileUtils.h"
@@ -8,6 +10,7 @@ using namespace Nultima;
 char* FileUtils::readFile(std::string fname)
 {
     char* buffer = NULL;
+	/*
     std::ifstream file(fname.c_str(), std::ios::in);
 
     if (file.is_open())
@@ -20,6 +23,23 @@ char* FileUtils::readFile(std::string fname)
         file.close();
 		buffer[size] = 0;
     }
+	*/
+
+	FILE* fp = fopen(fname.c_str(), "rb");
+	if (fp) {
+		fseek(fp, 0, SEEK_END);
+		long size = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+		buffer = new char[size+1];
+
+		long bytesLeftToRead = size;
+		while (bytesLeftToRead > 0) {
+			int bytesRead = fread(buffer, 1, bytesLeftToRead, fp);
+			bytesLeftToRead -= bytesRead;
+		}
+		fclose(fp);
+		buffer[size] = 0;
+	}
 
     return buffer;
 }
