@@ -112,9 +112,8 @@ void Editor::moveCamera(Vec3i d)
 
 void Editor::changeActiveBlockBy(int delta) {
     m_cursorType += delta;
-    // TODO proper values
 
-	TexManager* tex = Context::get()->getTexManager();
+    TexManager* tex = Context::get()->getTexManager();
     if (m_cursorType < 0) 
         m_cursorType = tex->getNumTiles()-1;
     if (m_cursorType >= tex->getNumTiles())

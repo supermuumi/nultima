@@ -22,6 +22,7 @@ public:
     unsigned int getTilemapTexture(int id);
 	unsigned int getNumTiles() { return m_tilemap->getNumTiles(); }
 
+
 private:
     unsigned int loadTexture(std::string name);
 
