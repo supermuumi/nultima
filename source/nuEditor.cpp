@@ -73,7 +73,7 @@ void Editor::renderHud()
     if (m_helpActive)
     {
         g->setColor(0.8f, 0.0f, 0.0f, 0.5f);
-        g->fillRect(20, 20, wDim.m_x-20, wDim.m_y-20, true);
+        g->fillRect(20.f, 20.f, wDim.m_x-20.f, wDim.m_y-20.f, true);
 
         g->setColor(1.0f, 1.0f, 1.0f, 1.0f);
         std::string helpText = "h - help";
@@ -134,7 +134,7 @@ void Editor::moveCamera(Vec3i d)
     m_camera->moveTo(m_cursor + m_cameraOffset);
 }
 
-void Editor::changeActiveBlockBy(int delta)
+void Editor::changeActiveBlockBy(char delta)
 {
     m_cursorType += delta;
 
@@ -255,6 +255,7 @@ void Editor::eraseCurrentBlock()
  */
 int Editor::getBlocksetStart(int idx) 
 {
+    NU_UNREF(idx);
     // TODO
     return 0;
 }

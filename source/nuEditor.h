@@ -2,6 +2,7 @@
 
 #include "nuVec2.h"
 #include "nuVec3.h"
+#include "nuDefs.h"
 
 namespace Nultima
 {
@@ -48,7 +49,7 @@ private:
 
     void    paintCurrentBlock();
     void    eraseCurrentBlock();
-    void    changeActiveBlockBy(int);
+    void    changeActiveBlockBy(char);
     void    changeEditMode(EditMode m);
     int     getBlocksetStart(int idx);
     void    moveCamera(Vec3i);
@@ -64,8 +65,8 @@ private:
     bool        m_helpActive;
 
     Vec3i       m_cursor;
-    int         m_cursorType;
-    int         m_cursorRepresentation;
+    char        m_cursorType;
+    NuUInt8     m_cursorRepresentation;
     Minimap*    m_minimap;
 };
 

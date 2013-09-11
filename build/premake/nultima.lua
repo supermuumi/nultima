@@ -9,7 +9,7 @@ flags { "ExtraWarnings", "FatalWarnings" }
 configuration { "windows" }
 defines { "GLUT_BUILDING_LIB", "GLUT_NO_LIB_PRAGMA", "GLEW_STATIC" }
 files { "source/*.cpp", "source/*.h" }
-links { "glut", "opengl32", "glu32", "glew"}
+links { "glut", "opengl32", "glu32", "glew", "bass"}
 libdirs { "external/bass" }
 includedirs { "external" }
 postbuildcommands { "copy ..\\..\\external\\bass\\bass.dll ..\\..\\bin\\windows" }

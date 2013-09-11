@@ -270,12 +270,6 @@ void Graphics::drawString(const char* str, float x, float y)
     glPushMatrix();
     glLoadIdentity();
     
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-
-    gluOrtho2D( 0.0, m_windowDimensions.m_x, 0.0, m_windowDimensions.m_y);
-
     int origY = m_windowDimensions.m_y-y;
     glRasterPos2i(x, origY);
 
@@ -283,7 +277,8 @@ void Graphics::drawString(const char* str, float x, float y)
     int i, len;
     for (i = 0, len = strlen(str); i < len; i++)
 	{
-		if (str[i] == '\n') {
+		if (str[i] == '\n')
+        {
 			// TODO [muumi] get line height from somewhere
 			origY -= 20;
 			glRasterPos2i(x, origY);
@@ -295,11 +290,6 @@ void Graphics::drawString(const char* str, float x, float y)
 	}
 
     glEnable(GL_TEXTURE_2D);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-    
-    glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     NU_ASSERT(glGetError() == GL_NO_ERROR);
 }

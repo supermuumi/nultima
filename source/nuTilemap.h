@@ -17,7 +17,7 @@ public:
     void           load(std::string fname);
     unsigned int   getTexture(int id) { return m_tiles[id]; }
     Vec3ui         getTileColor(int id) { return m_tileColors[id]; }
-    int            getNumTiles() { return m_tiles.size(); }
+    char           getNumTiles() { return (char)m_tiles.size(); }
 
 private:
     int                       m_tileSize;
