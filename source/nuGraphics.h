@@ -51,7 +51,7 @@ public:
 
     // rendering
     void setColor(float r, float g, float b, float a);
-    void drawString(char* str, float x, float y);
+    void drawString(const char* str, float x, float y);
     void fillRect(float x1, float y1, float x2, float y2, bool blend);
     void setBlending(bool enabled);
 

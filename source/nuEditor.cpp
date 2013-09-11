@@ -76,8 +76,8 @@ void Editor::renderHud()
         g->fillRect(20, 20, wDim.m_x-20, wDim.m_y-20, true);
 
         g->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        char* helpText = "h - help";
-        g->drawString(helpText, 40, 40);
+        std::string helpText = "h - help";
+        g->drawString(helpText.c_str(), 40, 40);
 
     }
 

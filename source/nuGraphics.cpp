@@ -262,7 +262,7 @@ void Graphics::setColor(float r, float g, float b, float a)
 }
 
 // TODO ripped from protos/editor/main.cpp - needs sanity check!
-void Graphics::drawString(char* str, float x, float y)
+void Graphics::drawString(const char* str, float x, float y)
 {
     NU_ASSERT(glGetError() == GL_NO_ERROR);
     glMatrixMode(GL_MODELVIEW);
@@ -321,12 +321,19 @@ void Graphics::fillRect(float x1, float y1, float x2, float y2, bool blend)
     if (blend)
         setBlending(true);
 
+    glPushMatrix();
+
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+
     glBegin(GL_QUADS);
     glVertex2f(x1, y1);
     glVertex2f(x2, y1);
     glVertex2f(x2, y2);
     glVertex2f(x1, y2);
     glEnd();
+
+    glPopMatrix();
 
     if (blend)
         setBlending(false);

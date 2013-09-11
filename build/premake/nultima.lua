@@ -4,7 +4,7 @@ projectsettings("Nultima")
 platforms{"native", "x32", "x64"}
 configuration {"Debug or Release"}
 kind "ConsoleApp"
---flags { "ExtraWarnings", "FatalWarnings" }
+flags { "ExtraWarnings", "FatalWarnings" }
 
 configuration { "windows" }
 defines { "GLUT_BUILDING_LIB", "GLUT_NO_LIB_PRAGMA", "GLEW_STATIC" }

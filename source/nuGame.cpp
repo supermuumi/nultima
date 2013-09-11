@@ -135,7 +135,7 @@ void Game::handleKeyboard()
 
 void Game::handleMouse()
 {
-    Mouse* mouse = Context::get()->getMouse();
+    //Mouse* mouse = Context::get()->getMouse();
     if (m_isEditorMode)
         m_editor->handleMouse();
 

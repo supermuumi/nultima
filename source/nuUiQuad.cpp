@@ -13,7 +13,6 @@ UiQuad::UiQuad(int x, int y, int width, int height, unsigned int texture) :
     m_texture(texture)
 {
     Context* context = Context::get();
-    Graphics* graphics = context->getGraphics();
     m_model = context->getModel(Model::UNIT_PLANE);
 }
 

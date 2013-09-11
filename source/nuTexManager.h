@@ -17,10 +17,10 @@ public:
     TexManager();
     ~TexManager();
 
-    void            loadTilemap         (char* fname);
+    void            loadTilemap         (std::string fname);
     unsigned int    getTexture          (std::string name);
     unsigned int    getTilemapTexture   (int id);
-	int             getNumTiles         () { return m_tilemap->getNumTiles(); }
+    int             getNumTiles         () { return m_tilemap->getNumTiles(); }
     Tilemap*        getTilemap          () { return m_tilemap; }
 
 private:

@@ -1,3 +1,4 @@
+#include "nuDefs.h"
 #include "nuTilemap.h"
 #include "nuFileUtils.h"
 
@@ -7,7 +8,7 @@
 #include <iostream>
 
 #if NU_OS == NU_OS_WINDOWS
-#   include <Windows.h>
+#include <Windows.h>
 #endif
 
 #if defined(__APPLE__) || defined(MACOSX)

@@ -2,6 +2,7 @@
 #include "nuContext.h"
 #include "nuGraphics.h"
 #include "nuTilemap.h"
+#include <string>
 
 using namespace Nultima;
 
@@ -23,7 +24,7 @@ TexManager::~TexManager()
 //////////////////////////////////////////////////////////////////////
 // Tilemap related
 //////////////////////////////////////////////////////////////////////
-void TexManager::loadTilemap(char *fname)
+void TexManager::loadTilemap(std::string fname)
 {
     m_tilemap->load(fname);
 }
