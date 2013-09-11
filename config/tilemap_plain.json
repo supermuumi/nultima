@@ -1,0 +1,31 @@
+{
+	"config" : {
+		"tilesize": 64,
+		"tilemap": "../../assets/tilemaps/plain_tilemap.png"
+	},
+	
+	"tiles" : {
+            "shore_topleft"     : 0,
+            "shore_top"         : 1,
+            "shore_topright"    : 2,
+            "shore_left"        : 32,
+            "shore_right"       : 34,
+            "shore_bottomleft"  : 64,
+            "shore_bottom"      : 65,
+            "shore_bottomright" : 66,
+
+            "sea_shallow"       : 3,
+            "sea_normal"        : 4,
+            "sea_deep"          : 5,
+
+            "grassland"         : 35,
+            "plains"            : 36,
+
+            "road_horiz"        : 67,
+            "road_vert"         : 68,
+            "road_L"            : 69,
+            "road_L90"          : 70,
+            "road_L180"         : 71,
+            "road_L270"         : 72
+	}
+}
