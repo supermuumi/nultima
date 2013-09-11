@@ -7,15 +7,16 @@
 #include <string>
 #include <iostream>
 
-#if NU_OS == NU_OS_WINDOWS
-#include <Windows.h>
-#endif
+//#if NU_OS == NU_OS_WINDOWS
+//#include <Windows.h>
+//#endif
 
 #if defined(__APPLE__) || defined(MACOSX)
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
 #include <GLUT/glut.h>
 #else
+#include <Windows.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "glut/include/GL/glut.h"

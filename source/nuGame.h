@@ -14,6 +14,7 @@ class GameState;
 class Player;
 class Camera;
 class Editor;
+class AudioManager;
 
 class Game
 {
@@ -39,13 +40,14 @@ private:
     void handleKeypress(int key);
     void processTurn();
 
-    World*      m_world;
-    GameState*  m_state;
-    Player*     m_player;
-    Editor*     m_editor;
-    bool        m_isEditorMode;
-    bool        m_advanceTurn;
-    int         m_timeOfDay; // .16 fixed? :-P
+    World*          m_world;
+    GameState*      m_state;
+    Player*         m_player;
+    Editor*         m_editor;
+    bool            m_isEditorMode;
+    bool            m_advanceTurn;
+    int             m_timeOfDay; // .16 fixed? :-P
+    AudioManager*   m_audio;
 };
 
 }; // namespace

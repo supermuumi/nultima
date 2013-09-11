@@ -10,6 +10,7 @@
 #include "nuMapLocation.h"
 #include "nuCamera.h"
 #include "nuEditor.h"
+#include "nuAudioManager.h"
 
 using namespace Nultima;
 
@@ -31,6 +32,11 @@ Game::Game(std::string worldFile, std::string stateFile) :
         playerLocation = m_world->getPlayerStart();
 
     m_player = new Player(playerLocation);
+
+    // some test audio for verifying bass works
+    m_audio = new AudioManager();
+    m_audio->addMusic("bgmusic", "../../assets/audio/poing.ogg");
+    m_audio->addEffect("freefall", "../../assets/audio/freefall.ogg");
 }
 
 Game::~Game()
@@ -39,10 +45,14 @@ Game::~Game()
     delete m_player;
     delete m_state;
     delete m_world;
+
+    delete m_audio;
 }
 
 void Game::mainloop()
 {
+    m_audio->playMusic("bgmusic");
+
     Graphics* graphics = Context::get()->getGraphics();
     GLUT::mainloop(this, graphics);
 }
@@ -121,6 +131,7 @@ void Game::handleKeyboard()
         // TODO this should be wrapped inside e.g. #ifdef NU_ENABLE_EDITOR 
         if (key == NU_KEY_TAB) 
         {
+            m_audio->playEffect("freefall");
             m_isEditorMode = !m_isEditorMode;
         }
         else
