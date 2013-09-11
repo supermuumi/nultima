@@ -1,10 +1,12 @@
+#include "nuFileUtils.h"
+#include "nuDialogueTree.h"
+
+#include "rapidjson/document.h"
+
 #include <iostream>
 #include <string>
 #include <map>
 #include <vector>
-#include "document.h"
-#include "nuFileUtils.h"
-#include "nuDialogueTree.h"
 
 using namespace Nultima;
 

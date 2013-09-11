@@ -12,7 +12,7 @@
 #include <GLUT/glut.h>
 #else
 #define GLUT_DISABLE_ATEXIT_HACK
-#include "GL/glut.h"
+#include "glut/include/GL/glut.h"
 #endif
 
 #define SPECIAL_KEY_OFFSET 256

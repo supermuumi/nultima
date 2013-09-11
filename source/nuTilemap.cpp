@@ -1,6 +1,8 @@
 #include "nuTilemap.h"
 #include "nuFileUtils.h"
-#include "document.h"
+
+#include "rapidjson/document.h"
+
 #include <string>
 #include <iostream>
 
@@ -15,11 +17,11 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glut.h>
+#include "glut/include/GL/glut.h"
 #endif
 
 #define STBI_HEADER_FILE_ONLY
-#include "stb_image.c"
+#include "stb/stb_image.c"
 
 using namespace Nultima;
 

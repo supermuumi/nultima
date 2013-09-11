@@ -1,9 +1,10 @@
-#include <stdio.h>
+#include "nuFileUtils.h"
 
+#include "rapidjson/document.h"
+
+#include <stdio.h>
 #include <string>
 #include <fstream>
-#include "nuFileUtils.h"
-#include "document.h"
 
 using namespace Nultima;
 

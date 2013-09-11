@@ -6,7 +6,7 @@
 #   include <Windows.h>
 #endif
 
-#include "GL/glew.h"
+#include "glew/include/GL/glew.h"
 
 #if defined(__APPLE__) || defined(MACOSX)
 #include <OpenGL/glu.h>
@@ -15,10 +15,10 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glut.h>
+#include "glut/include/GL/glut.h"
 #endif
 
-#include "stb_image.c"
+#include "stb/stb_image.c"
 
 using namespace Nultima;
 
