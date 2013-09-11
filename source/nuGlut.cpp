@@ -15,6 +15,8 @@
 #include "GL/glut.h"
 #endif
 
+#define SPECIAL_KEY_OFFSET 256
+
 using namespace Nultima;
 
 Game* g_currentGame = NULL;
@@ -48,32 +50,21 @@ static void keyReleased(unsigned char key, int x, int y)
 static void keyPress(int key, bool up)
 {
     Keyboard* keyboard = Context::get()->getKeyboard();
-    if (key == GLUT_KEY_LEFT)
-    	keyboard->setKeyPressed(NU_KEY_LEFT, up);
-    if (key == GLUT_KEY_RIGHT)
-	    keyboard->setKeyPressed(NU_KEY_RIGHT, up);
-    if (key == GLUT_KEY_UP)
-	    keyboard->setKeyPressed(NU_KEY_UP, up);
-    if (key == GLUT_KEY_DOWN)
-	    keyboard->setKeyPressed(NU_KEY_DOWN, up);
-    if (key == GLUT_KEY_PAGE_DOWN)
-        keyboard->setKeyPressed(NU_KEY_PAGE_DOWN, up);
-    if (key == GLUT_KEY_PAGE_UP)
-        keyboard->setKeyPressed(NU_KEY_PAGE_UP, up);
+    keyboard->setKeyPressed(key, up);
 }
 
 static void specialKeyPressed(int key, int x, int y)
 {
     NU_UNREF(x);
     NU_UNREF(y);
-    keyPress(key, true);
+    keyPress(key+SPECIAL_KEY_OFFSET, true);
 }
 
 static void specialKeyReleased(int key, int x, int y)
 {
     NU_UNREF(x);
     NU_UNREF(y);
-    keyPress(key, false);
+    keyPress(key+SPECIAL_KEY_OFFSET, false);
 }
 
 static void click(int button, int updown, int x, int y)
