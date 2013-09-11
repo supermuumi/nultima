@@ -307,6 +307,18 @@ void Graphics::setBlending(bool enabled)
     }
 }
 
+void Graphics::setDepthTest(bool enabled)
+{
+    if (enabled)
+    {
+        glEnable(GL_DEPTH_TEST);
+    }
+    else
+    {
+        glDisable(GL_DEPTH_TEST);
+    }
+}
+
 void Graphics::fillRect(float x1, float y1, float x2, float y2, bool blend)
 {
     if (blend)

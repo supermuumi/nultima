@@ -12,6 +12,8 @@
 #include "nuTexManager.h"
 #include "nuMouse.h"
 
+#include <string>
+
 using namespace Nultima;
 
 Editor::Editor(World *world) :
@@ -58,27 +60,47 @@ void Editor::renderHud()
     // set ortho view
     g->setOrthoProjection(0, wDim.m_x, 0, wDim.m_y);
 
-    // Render minimap
-    if (!m_helpActive)
-        m_minimap->render();
-
-    // render stats
-    char str[128];
-    sprintf(str, "Mode=%s Block=[%d,%d]\nlayer=%d", getEditModeName().c_str(), m_cursor.m_x, m_cursor.m_y, m_cursor.m_z);
-    g->setColor(1.0, 1.0, 1.0, 1.0);
-    g->drawString(str, 20, 20);
-
-
     // TODO [muumi] This is busted, text is not shown.
     if (m_helpActive)
     {
+        g->setDepthTest(false);
         g->setColor(0.8f, 0.0f, 0.0f, 0.5f);
         g->fillRect(20.f, 20.f, wDim.m_x-20.f, wDim.m_y-20.f, true);
 
+        std::string helpText = 
+            "arrows       - move\n"
+            ".            - up layer\n"
+            ",            - down layer\n"
+            "page up/down - zoom\n"
+            "\n"
+            "h            - toggle help\n"
+            "\n"
+            "p            - toggle paint mode\n"
+            "e            - toggle erase mode\n"
+            "s            - paint current block\n"
+            "d            - erase current block\n"
+            "q/w          - prev/next block type\n"
+            "t            - toggle plane/half block/block\n"
+            "\n"
+            "m            - update minimap\n"
+            "\n"
+            "5            - save\n"
+            ;
+
         g->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        std::string helpText = "h - help";
         g->drawString(helpText.c_str(), 40, 40);
 
+        g->setDepthTest(true);
+    }
+    else
+    {
+        m_minimap->render();
+
+        // render stats
+        char str[128];
+        sprintf(str, "Mode=%s Block=[%d,%d]\nlayer=%d", getEditModeName().c_str(), m_cursor.m_x, m_cursor.m_y, m_cursor.m_z);
+        g->setColor(1.0, 1.0, 1.0, 1.0);
+        g->drawString(str, 20, 20);
     }
 
     g->setPerspectiveProjection();    
