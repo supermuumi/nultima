@@ -13,7 +13,7 @@ public:
     Camera(MapLocation location);
     ~Camera() {};
 
-    void moveTo(Vec3ui v);
+    void moveTo(Vec3i v);
     void moveToLocation(MapLocation location);
     void setView();
 

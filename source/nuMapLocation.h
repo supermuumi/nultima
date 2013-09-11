@@ -1,7 +1,7 @@
 #pragma once
 
 #include "nuDefs.h"
-#include "nuVec2.h"
+#include "nuVec3.h"
 
 #include <fstream>
 
@@ -12,23 +12,15 @@ class MapLocation
 {
 public:
     MapLocation();
-    MapLocation(unsigned int cellIdx, int blockX, int blockY, int layer);
+    MapLocation(Vec3i position);
     ~MapLocation() {};
 
-    void    getCoordinate   (Vec2i& coord);
     void    serialize       (std::ofstream* stream);
-    void    deserialize     (std::ifstream* stream);
-    int     getLayer        () { return m_layer; }
-    void    move            (int dx, int dy, int dz);
+    void    deserialize     (std::ifstream* stream, int version);
 
-private:
+    void    move            (Vec3i d);
 
-    Vec2i           m_coordinate;
-
-    unsigned int    m_cellIdx;
-    int             m_blockX;
-    int             m_blockY;
-    int             m_layer;
+    Vec3i   m_position;
 };
 
 };

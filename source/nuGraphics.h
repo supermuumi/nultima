@@ -1,6 +1,8 @@
 #pragma once
 
 #include "nuVec3.h"
+#include "nuVec2.h"
+
 #include <string>
 
 namespace Nultima
@@ -11,11 +13,14 @@ class GLUT;
 class Graphics
 {
 public:
-    Graphics(int wWidth, int wHeight);
+    Graphics(Vec2i windowDimensions);
     ~Graphics();
 
     void init(int argc, char** argv);
     void deinit();
+
+    // Window
+    Vec2i       getWindowDimensions () { return m_windowDimensions; }
 
     // Geometry
     unsigned int createIndexBuffer  (unsigned int* tris, int numTris);
@@ -25,8 +30,10 @@ public:
     void         drawElements       (int count);
 
     // Texturing
-    void            bindTexture (unsigned int id);
-    unsigned int    loadTexture (std::string filename);
+    void            bindTexture     (unsigned int id);
+    unsigned int    loadTexture     (std::string filename);
+    unsigned int    generateTexture (unsigned char* data, int w, int h);
+    void            setTextureData  (unsigned int id, unsigned char* data, int x, int y, int width, int height);
 
     // Render target ops
     void resize (int x, int y);
@@ -34,20 +41,22 @@ public:
     void swap   ();
 
     // Matrix ops
-    void loadIdentity       ();
-    void setViewProjection  ();
-    void lookAt             (Vec3 pos, Vec3 center, Vec3 up);
-    void pushMatrix         ();
-    void popMatrix          ();
-    void translate          (float x, float y, float z);
+    void setPerspectiveProjection   ();
+    void setOrthoProjection         (int left, int right, int bottom, int top);
+    void lookAt                     (Vec3 pos, Vec3 center, Vec3 up);
+    void pushMatrix                 ();
+    void popMatrix                  ();
+    void translate                  (float x, float y, float z);
+    void scale                      (float x, float y, float z);
 
     // rendering
     void setColor(float r, float g, float b, float a);
     void drawString(char* str, float x, float y);
+    void fillRect(float x1, float y1, float x2, float y2, bool blend);
+    void setBlending(bool enabled);
 
 private:
-    int     m_wWidth;
-    int     m_wHeight;
+    Vec2i   m_windowDimensions;
     GLUT*   m_GLUT;
 };
 

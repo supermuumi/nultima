@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "nuVec3.h"
 
 namespace Nultima
 {
@@ -10,36 +11,19 @@ namespace Nultima
 class Tilemap
 {
 public:
-
-    typedef struct 
-    {
-        float x1;
-        float y1;
-        float x2;
-        float y2;
-    } TilemapTexture;
-
     Tilemap();
     ~Tilemap();
 
     void           load(std::string fname);
-    unsigned int   getTilemapId();
-    TilemapTexture getTexture(std::string id);
+    unsigned int   getTexture(int id) { return m_tiles[id]; }
+    Vec3ui         getTileColor(int id) { return m_tileColors[id]; }
+    int            getNumTiles() { return m_tiles.size(); }
 
 private:
-    void           createTexture();
+    int                       m_tileSize;
 
-    unsigned int                m_textureId;
-    int                         m_tileSize;
-    int                         m_tilemapWidth;
-    int                         m_tilemapHeight;
-    int                         m_tilemapBpp;
-    int                         m_tilesPerLine;
-//    unsigned char*              m_tilemapData;
-
-    std::string                 m_tilemapFile;
-    std::vector<TilemapTexture> m_tiles;
-    std::map<std::string,int>   m_tileMapping;
+    std::vector<unsigned int> m_tiles;
+    std::vector<Vec3ui>       m_tileColors;
 };
 
 }; // namespace

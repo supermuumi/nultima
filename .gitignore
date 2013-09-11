@@ -45,3 +45,5 @@ build/premake/.#nultima.lua
 source/.#nuModel.h
 
 *.cpp#
+*.psess
+*.vsp

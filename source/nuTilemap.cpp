@@ -4,6 +4,10 @@
 #include <string>
 #include <iostream>
 
+#if NU_OS == NU_OS_WINDOWS
+#   include <Windows.h>
+#endif
+
 #if defined(__APPLE__) || defined(MACOSX)
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
@@ -22,7 +26,6 @@ using namespace Nultima;
 
 Tilemap::Tilemap()
 {
-    m_tiles.resize(512);
 }
 
 Tilemap::~Tilemap()
@@ -41,43 +44,18 @@ void Tilemap::load(std::string fname)
 
     // parse config
     m_tileSize = doc["config"]["tilesize"].GetInt();
-    m_tilemapFile = doc["config"]["tilemap"].GetString();
+    
+    std::string tilemapFile = doc["config"]["tilemap"].GetString();
 
     // load tilemap texture
-    createTexture();
-
-    // process tile info (needs config & actual tilemap data)
-    const rapidjson::Value& tiles = doc["tiles"];
-    for (rapidjson::Value::ConstMemberIterator itr = tiles.MemberBegin(); itr != tiles.MemberEnd(); ++itr)
-    {
-        std::string textureId = itr->name.GetString();
-        int idx = itr->value.GetInt();
-
-	int x1 = idx%m_tilesPerLine * m_tileSize;
-	int y1 = idx/m_tilesPerLine * m_tileSize;
-	int x2 = x1+m_tileSize;
-	int y2 = y1+m_tileSize;
-
-	TilemapTexture textureInfo = {(float)x1/m_tilemapWidth, 
-				      (float)y2/m_tilemapHeight, 
-				      (float)x2/m_tilemapWidth,
-				      (float)y1/m_tilemapHeight};
-	m_tiles[idx] = textureInfo;
-	m_tileMapping[textureId] = idx;
-    }
-}
-
-// TODO use Nultima::Graphics here?
-void Tilemap::createTexture()
-{
     unsigned char* tilemapData; 
+    int tilemapWidth, tilemapHeight, tilemapBpp;
+    int tilesPerLine;
+    tilemapData = stbi_load(tilemapFile.c_str(), &tilemapWidth, &tilemapHeight, &tilemapBpp, 0);
+    //std::cout << "tilemap = " << m_tilemapWidth << "x" << m_tilemapHeight << "x" << m_tilemapBpp << "\n";
+    tilesPerLine = tilemapWidth / m_tileSize;
 
-    tilemapData = stbi_load(m_tilemapFile.c_str(), &m_tilemapWidth, &m_tilemapHeight, &m_tilemapBpp, 0);
-    std::cout << "tilemap = " << m_tilemapWidth << "x" << m_tilemapHeight << "x" << m_tilemapBpp << "\n";
-    m_tilesPerLine = m_tilemapWidth / m_tileSize;
-
-    glGenTextures(1, &m_textureId);
-    glBindTexture(GL_TEXTURE_2D, m_textureId);
+    unsigned char* tempTexture = new unsigned char[m_tileSize*m_tileSize*3];
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
@@ -85,18 +63,58 @@ void Tilemap::createTexture()
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, m_tilemapWidth, m_tilemapHeight,
-		      GL_RGB, GL_UNSIGNED_BYTE, tilemapData);
+    // process tile info 
+    // for each tile we'll create a m_tileSize^2 texture
+    const rapidjson::Value& tiles = doc["tiles"];
+    for (rapidjson::Value::ConstMemberIterator itr = tiles.MemberBegin(); itr != tiles.MemberEnd(); ++itr)
+    {
+        std::string textureId = itr->name.GetString();
+        int idx = itr->value.GetInt();
 
+        // (x1,y1)-(x2,y2) define tile data in tilemap
+	int x1 = idx%tilesPerLine * m_tileSize;
+	int y1 = idx/tilesPerLine * m_tileSize;
+	int x2 = x1+m_tileSize;
+	int y2 = y1+m_tileSize;
+
+        // TODO this is shit
+
+        unsigned int sRed = 0;
+        unsigned int sGreen = 0;
+        unsigned int sBlue = 0;
+
+        for (int y = y1, ofs=0; y < y2; y++)
+        {
+            for (int x = x1; x < x2; x++)
+            {
+                tempTexture[ofs] = tilemapData[y*tilemapWidth*3 + x*3];
+                tempTexture[ofs+1] = tilemapData[y*tilemapWidth*3 + x*3+1];
+                tempTexture[ofs+2] = tilemapData[y*tilemapWidth*3 + x*3+2];
+
+                sRed += tempTexture[ofs];
+                sGreen += tempTexture[ofs+1];
+                sBlue += tempTexture[ofs+2];
+
+                ofs += 3;
+            }
+        }
+
+        sRed /= (m_tileSize*m_tileSize);
+        sGreen /= (m_tileSize*m_tileSize);
+        sBlue /= (m_tileSize*m_tileSize);
+        m_tileColors.push_back(Vec3ui(sRed, sGreen, sBlue));
+
+        unsigned int tempTextureId;
+        glGenTextures(1, &tempTextureId);
+        glBindTexture(GL_TEXTURE_2D, tempTextureId);
+        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, m_tileSize, m_tileSize, GL_RGB, GL_UNSIGNED_BYTE, tempTexture);
+
+//        printf("OGL texture %d: id=%s idx=%d coords=(%d,%d)-(%d,%d)\n", tempTextureId, textureId.c_str(), idx, x1, y1, x2, y2);
+
+        m_tiles.push_back(tempTextureId);
+    }
+
+    delete tempTexture;
     free(tilemapData);
 }
 
-unsigned int Tilemap::getTilemapId()
-{
-    return m_textureId;
-}
-
-Tilemap::TilemapTexture Tilemap::getTexture(std::string id)
-{
-    return m_tiles[m_tileMapping[id]];
-}

@@ -3,6 +3,7 @@
 #include "nuDefs.h"
 #include "nuBlock.h"
 #include "nuVec2.h"
+#include "nuVec3.h"
 
 #include <fstream>
 
@@ -13,23 +14,25 @@ class Cell
 {
 public:
     Cell() {};
-    Cell(int x, int y);
+    Cell(Vec2i position);
     ~Cell();
 
-    const Block*    getBlock    (int x, int y, int layer) { return m_blocks[layer][y][x]; }
-    void            insertBlock (char type, Vec2i coords, int layer);
+    Vec2i           getPosition () {return m_position;}
+    const Block*    getBlock    (Vec3i location);
+    void            insertBlock (char type, Vec3i location);
+    void            insertBlock (Block* block);
 
-    void            beginRendering  ();
-    void            endRendering    ();
+    void            clearBlock  (Vec3i location);
 
     void            serialize   (std::ofstream* stream);
-    void            deserialize (std::ifstream* stream);
+    void            deserialize (std::ifstream* stream, int version);
 
-    Vec2i getPosition() { return Vec2i(m_x, m_y); }
+    unsigned int    getIndex    ();
+
+    static unsigned int indexAtLocation (Vec3i location);
 
 private:
-    int     m_x;
-    int     m_y;
+    Vec2i m_position;
     Block*  m_blocks[NU_MAX_LAYERS][NU_CELL_HEIGHT][NU_CELL_WIDTH];
 };
 

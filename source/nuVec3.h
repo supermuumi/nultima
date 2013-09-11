@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+
 namespace Nultima
 {
 
@@ -29,6 +31,23 @@ public:
     unsigned int m_x;
     unsigned int m_y;
     unsigned int m_z;
+};
+
+class Vec3i
+{
+public:
+    Vec3i() : m_x(0), m_y(0), m_z(0) {}
+    Vec3i(int x, int y, int z) : m_x(x), m_y(y), m_z(z) {}
+    ~Vec3i() {}
+
+    Vec3i operator+(Vec3i);
+
+    void    serialize       (std::ofstream* stream);
+    void    deserialize     (std::ifstream* stream);
+
+    int m_x;
+    int m_y;
+    int m_z;
 };
 
 };

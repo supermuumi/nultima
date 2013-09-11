@@ -20,81 +20,53 @@
 
 using namespace Nultima;
 
-Block::Block(char type, Vec2i coords, int layer) :
+Block::Block(char type, Vec3i location) :
     m_type(type),
-    m_blockCoords(coords),
-    m_layer(layer)
+    m_location(location)
 {
-    m_representation = AUTO;
+    m_representation = BLOCK;
     determineModel();
-    determineTexName();
 }
 
-void Block::moveTo(Vec2i v)
+void Block::moveTo(Vec3i v)
 {
-    m_blockCoords.m_x = v.m_x;
-    m_blockCoords.m_y = v.m_y;
-}
-
-void Block::setLayer(int n)
-{
-    assert(n >= 0 && n < NU_MAX_LAYERS);
-    m_layer = n;
+    NU_ASSERT(v.m_x < NU_CELL_WIDTH && v.m_y < NU_CELL_HEIGHT);
+    m_location.m_x = v.m_x;
+    m_location.m_y = v.m_y;
+    m_location.m_z = v.m_z;
     determineModel();
 }
 
 void Block::setType(char type)
 {
-    // TODO set type
     m_type = type;
-    determineTexName();
 }
 
 void Block::determineModel()
 {
     Context* context = Context::get();
-
-    if (m_layer == 0)
+    if (m_location.m_z == 0 || m_representation == PLANE)
         m_model = context->getModel(Model::UNIT_PLANE);
-    else if (m_representation == AUTO)
+    else if (m_representation == BLOCK)
         m_model = context->getModel(Model::UNIT_BOX);
     else
-        m_model = context->getModel(m_representation == BLOCK ? Model::UNIT_BOX : Model::UNIT_PLANE);
-}
-
-void Block::determineTexName()
-{
-    switch (m_type)
-    {
-    case GRASS:
-        m_texName = "grass";
-        break;
-    case WATER:
-        m_texName = "water";
-        break;
-    case ROCK:
-        m_texName = "rock";
-        break;
-    default:
-        NU_ASSERT(!"Unkown block type");
-    }
+        m_model = context->getModel(Model::UNIT_HALFBOX);
 }
 
 void Block::serialize(std::ofstream* stream)
 {
     stream->write(&m_type, 1);
-    m_blockCoords.serialize(stream);
-    stream->write((char*)&m_layer, 4);
+    stream->write((char*)&m_representation, 1);
+    m_location.serialize(stream);
 }
 
 void Block::deserialize(std::ifstream* stream)
 {
     stream->read(&m_type, 1);
-    m_blockCoords.deserialize(stream);
-    stream->read((char*)&m_layer, 4);
+    stream->read((char*)&m_representation, 1);
+    m_location.deserialize(stream);
 
     determineModel();
-    determineTexName();
 }
 
 void Block::render() const
@@ -103,10 +75,8 @@ void Block::render() const
     Graphics* graphics = context->getGraphics();
 
     graphics->pushMatrix();
-    graphics->translate((float)m_blockCoords.m_x, (float)m_blockCoords.m_y, m_layer>0 ? (float)(m_layer-1) : 0);
-    graphics->bindTexture(context->getTexture(m_texName));
-    //(context->getTexManager())->useTilemap();
-    //tex->useTilemap();
+    graphics->translate((float)m_location.m_x, (float)m_location.m_y, m_location.m_z>0 ? (float)(m_location.m_z-1) : 0);
+    graphics->bindTexture(context->getTilemapTexture(m_type));
 
     m_model->render();
 

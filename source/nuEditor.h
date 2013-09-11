@@ -1,7 +1,6 @@
 #pragma once
 
 #include "nuVec2.h"
-#include "nuBlock.h"
 #include "nuVec3.h"
 
 namespace Nultima
@@ -10,6 +9,8 @@ namespace Nultima
     class Camera;
     class MapLocation;
     class World;
+    class Minimap;
+    class Block;
 
 /*
  * requirements:
@@ -37,27 +38,35 @@ public:
     ~Editor();
 
     void    render();
-    void    moveSelection(int dx, int dy, int dz);
     void    handleKeypress(int key);
+    void    handleMouse();
     Camera* getCamera();
 
-    void    saveWorld();
-
 private:
+    std::string getEditModeName();
+    void        cycleCursorRepresentation();
+
     void    paintCurrentBlock();
     void    eraseCurrentBlock();
     void    changeActiveBlockBy(int);
     void    changeEditMode(EditMode m);
     int     getBlocksetStart(int idx);
+    void    moveCamera(Vec3i);
+    void    moveSelection(Vec3i d);
+    void    saveWorld();
+    void    renderHud();
+    void    renderActiveBlock();
 
-    Vec3ui   m_location; // TODO replace with a better data type
-    Camera*  m_camera;
-    Vec3ui   m_cameraOffset;
-    World*   m_world;
-    EditMode m_editMode;
-    int      m_activeBlock;
-    bool     m_helpActive;
-    Block*   m_cursor;
+    Camera*     m_camera;
+    Vec3i       m_cameraOffset;
+    World*      m_world;
+    EditMode    m_editMode;
+    bool        m_helpActive;
+
+    Vec3i       m_cursor;
+    int         m_cursorType;
+    int         m_cursorRepresentation;
+    Minimap*    m_minimap;
 };
 
 };

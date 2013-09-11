@@ -4,6 +4,7 @@
 #include "nuKeyboard.h"
 #include "nuModel.h"
 #include "nuTexManager.h"
+#include "nuMouse.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -16,13 +17,15 @@ Context::Context() :
     m_argc(0),
     m_argv(NULL),
     m_graphics(NULL),
-    m_keyboard(NULL)
+    m_keyboard(NULL),
+    m_mouse(NULL)
 {}
 
 Context::~Context()
 {
     NU_ASSERT(!m_graphics);
     NU_ASSERT(!m_keyboard);
+    NU_ASSERT(!m_mouse);
 }
 
 Context* Context::get()
@@ -38,14 +41,16 @@ void Context::init(int argc, char** argv)
     m_argc = argc;
     m_argv = argv;
 
-    m_graphics = new Graphics(WINDOW_WIDTH, WINDOW_HEIGHT);
+    m_graphics = new Graphics(Vec2i(WINDOW_WIDTH, WINDOW_HEIGHT));
     m_graphics->init(argc, argv);
 
     m_keyboard = new Keyboard();
+    m_mouse = new Mouse();
 
     m_models.resize(Model::NUM_MODELS, NULL);
 
     m_texManager = new TexManager();
+    m_texManager->loadTilemap("../../config/tilemap.json");
 }
 
 void Context::deinit()
@@ -56,6 +61,9 @@ void Context::deinit()
 
     delete m_keyboard;
     m_keyboard = NULL;
+
+    delete m_mouse;
+    m_mouse = NULL;
 
     delete m_texManager;
     m_texManager = NULL;
@@ -97,7 +105,7 @@ unsigned int Context::getTexture(std::string name)
     return m_texManager->getTexture(name);
 }
 
-Tilemap::TilemapTexture Context::getTilemapTexture(std::string id)
+unsigned int Context::getTilemapTexture(int id)
 {
     return m_texManager->getTilemapTexture(id);
 }

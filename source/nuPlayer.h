@@ -15,7 +15,7 @@ public:
     ~Player() {};
 
     void        render(World* world, Camera* camera);
-    void        move  (int dx, int dy, int dz);
+    void        move  (Vec3i d);
 
 private:
     MapLocation m_location;
