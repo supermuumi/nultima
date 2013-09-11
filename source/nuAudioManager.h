@@ -12,8 +12,8 @@ public:
     AudioManager();
     ~AudioManager();
 
-    void addMusic(std::string id, char* fname);
-    void addEffect(std::string id, char* fname);
+    void addMusic(std::string id, const char* fname);
+    void addEffect(std::string id, const char* fname);
 
     void playMusic(std::string id);
     void playEffect(std::string id);

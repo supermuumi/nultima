@@ -1,5 +1,5 @@
 #include "nuAudioManager.h"
-#include "bass.h"
+#include "bass/bass.h"
 
 #include <map>
 #include <string>
@@ -16,12 +16,12 @@ AudioManager::~AudioManager()
     BASS_Free();
 }
 
-void AudioManager::addMusic(std::string id, char* fname) 
+void AudioManager::addMusic(std::string id, const char* fname) 
 {
     m_musicTracks[id] = BASS_StreamCreateFile(FALSE, fname, 0, 0, BASS_SAMPLE_LOOP);
 }
 
-void AudioManager::addEffect(std::string id, char* fname) 
+void AudioManager::addEffect(std::string id, const char* fname) 
 {
     m_effects[id] = BASS_StreamCreateFile(FALSE, fname, 0, 0, 0);
 }
