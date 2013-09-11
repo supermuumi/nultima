@@ -98,7 +98,7 @@ void Editor::renderHud()
 
         // render stats
         char str[128];
-        sprintf(str, "Mode=%s Block=[%d,%d]\nlayer=%d", getEditModeName().c_str(), m_cursor.m_x, m_cursor.m_y, m_cursor.m_z);
+        sprintf(str, "Mode=%s Loc=[%d,%d] Block=%d\nlayer=%d", getEditModeName().c_str(), m_cursor.m_x, m_cursor.m_y, m_cursorType, m_cursor.m_z);
         g->setColor(1.0, 1.0, 1.0, 1.0);
         g->drawString(str, 20, 20);
     }
