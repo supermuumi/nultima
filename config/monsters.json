@@ -1,0 +1,13 @@
+{
+
+    "monster" : 
+    {
+        "hp"    : 20,
+        "mp"    : 20,
+        "speed" : 1.0,
+        "tile"  : 128,
+        "behavior" : "behavior_id"
+    }
+
+
+}
