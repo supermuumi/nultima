@@ -2469,9 +2469,9 @@ static int create_png_image_raw(png *a, uint8 *raw, uint32 raw_len, int out_n, u
          switch (filter) {
             case F_none       : cur[k] = raw[k]; break;
             case F_sub        : cur[k] = raw[k]; break;
-            case F_up         : cur[k] = raw[k] + prior[k]; break;
+            case F_up         : cur[k] = (0xff & (raw[k] + prior[k])); break;
             case F_avg        : cur[k] = raw[k] + (prior[k]>>1); break;
-            case F_paeth      : cur[k] = (uint8) (raw[k] + paeth(0,prior[k],0)); break;
+            case F_paeth      : cur[k] = (uint8) (0xff & (raw[k] + paeth(0,prior[k],0))); break;
             case F_avg_first  : cur[k] = raw[k]; break;
             case F_paeth_first: cur[k] = raw[k]; break;
          }
@@ -2488,10 +2488,10 @@ static int create_png_image_raw(png *a, uint8 *raw, uint32 raw_len, int out_n, u
                    for (k=0; k < img_n; ++k)
          switch (filter) {
             CASE(F_none)  cur[k] = raw[k]; break;
-            CASE(F_sub)   cur[k] = raw[k] + cur[k-img_n]; break;
-            CASE(F_up)    cur[k] = raw[k] + prior[k]; break;
+            CASE(F_sub)   cur[k] = (0xff & (raw[k] + cur[k-img_n])); break;
+            CASE(F_up)    cur[k] = (0xff & (raw[k] + prior[k])); break;
             CASE(F_avg)   cur[k] = raw[k] + ((prior[k] + cur[k-img_n])>>1); break;
-            CASE(F_paeth)  cur[k] = (uint8) (raw[k] + paeth(cur[k-img_n],prior[k],prior[k-img_n])); break;
+            CASE(F_paeth)  cur[k] = (uint8) (0xff & (raw[k] + (paeth(cur[k-img_n],prior[k],prior[k-img_n])))); break;
             CASE(F_avg_first)    cur[k] = raw[k] + (cur[k-img_n] >> 1); break;
             CASE(F_paeth_first)  cur[k] = (uint8) (raw[k] + paeth(cur[k-img_n],0,0)); break;
          }
