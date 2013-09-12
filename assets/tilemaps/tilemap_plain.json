@@ -26,6 +26,23 @@
             "road_L"            : 69,
             "road_L90"          : 70,
             "road_L180"         : 71,
-            "road_L270"         : 72
+            "road_L270"         : 72,
+            "road_crossroad"    : 73, 
+            "road_t"            : 74, 
+            "road_t90"          : 75, 
+            "road_t180"         : 76, 
+            "road_t270"         : 77, 
+
+            "wall_horiz"        : 99,
+            "wall_vert"         : 100,
+            "wall_L"            : 101,
+            "wall_L90"          : 102,
+            "wall_L180"         : 103,
+            "wall_L270"         : 104,
+            "wall_crossroad"    : 105, 
+            "wall_t"            : 106, 
+            "wall_t90"          : 107, 
+            "wall_t180"         : 108, 
+            "wall_t270"         : 109
 	}
 }
