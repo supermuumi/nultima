@@ -6,17 +6,22 @@
 #include "nuObject.h"
 #include "nuBlock.h"
 #include "nuCell.h"
+#include "nuCharacter.h"
 
 using namespace Nultima;
 
 Player::Player(MapLocation location)
 {
     m_location = location;
+    m_avatar = new Character();
 }
 
 // TODO [sampo] frustum culling
 void Player::render(World* world, Camera* inCamera)
 {
+    // TODO [sampo] tick outside?
+    m_avatar->tick();
+
     Graphics* graphics = Context::get()->getGraphics();
     graphics->setPerspectiveProjection();
 
@@ -47,7 +52,11 @@ void Player::render(World* world, Camera* inCamera)
         }
     }
 
-    // TODO [sampo] Render player
+    // Render player
+    graphics->pushMatrix();
+    graphics->translate((float)m_location.m_position.m_x, (float)m_location.m_position.m_y, (float)m_location.m_position.m_z+0.5f);
+    m_avatar->render();
+    graphics->popMatrix();
 
     // TODO [sampo] loop inhabitants
     //     render inhabitant

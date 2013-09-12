@@ -123,6 +123,13 @@ void Graphics::scale(float x, float y, float z)
     NU_ASSERT(glGetError() == GL_NO_ERROR);
 }
 
+void Graphics::rotate(float angle, float x, float y, float z)
+{
+    NU_ASSERT(glGetError() == GL_NO_ERROR);
+    glRotatef(angle, x, y, z);
+    NU_ASSERT(glGetError() == GL_NO_ERROR);
+}
+
 void Graphics::pushMatrix()
 {
     NU_ASSERT(glGetError() == GL_NO_ERROR);
@@ -254,6 +261,14 @@ void Graphics::setTextureData(unsigned int id, unsigned char* data, int x, int y
                         GL_UNSIGNED_BYTE,
                         data);
     NU_ASSERT(glGetError() == GL_NO_ERROR);
+}
+
+void Graphics::setTexturing(bool enable)
+{
+    if (enable)
+        glEnable(GL_TEXTURE_2D);
+    else
+        glDisable(GL_TEXTURE_2D);
 }
 
 void Graphics::setColor(float r, float g, float b, float a)

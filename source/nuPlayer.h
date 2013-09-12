@@ -7,6 +7,7 @@ namespace Nultima
 
 class World;
 class Camera;
+class Character;
 
 class Player
 {
@@ -19,6 +20,7 @@ public:
 
 private:
     MapLocation m_location;
+    Character*  m_avatar;
 };
 
 };

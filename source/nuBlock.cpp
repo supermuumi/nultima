@@ -50,7 +50,7 @@ void Block::determineModel()
     else if (m_representation == BLOCK)
         m_model = context->getModel(Model::UNIT_BOX);
     else
-        m_model = context->getModel(Model::UNIT_HALFBOX);
+        m_model = context->getModel(Model::HALFBOX);
 }
 
 void Block::serialize(std::ofstream* stream)

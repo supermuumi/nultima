@@ -16,8 +16,6 @@ public:
     ~Object() {}
 
     virtual void render     (void) const = 0;
-    virtual void serialize  (std::ofstream* stream) = 0;
-    virtual void deserialize(std::ifstream* stream) = 0;
 
 protected:
     const Model* m_model;

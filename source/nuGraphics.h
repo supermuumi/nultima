@@ -34,6 +34,7 @@ public:
     unsigned int    loadTexture     (std::string filename);
     unsigned int    generateTexture (unsigned char* data, int w, int h);
     void            setTextureData  (unsigned int id, unsigned char* data, int x, int y, int width, int height);
+    void            setTexturing    (bool enable);
 
     // Render target ops
     void resize (int x, int y);
@@ -48,6 +49,7 @@ public:
     void popMatrix                  ();
     void translate                  (float x, float y, float z);
     void scale                      (float x, float y, float z);
+    void rotate                     (float angle, float x, float y, float z);
 
     // rendering
     void setColor(float r, float g, float b, float a);

@@ -9,6 +9,7 @@ namespace Nultima
 {
 
 // TODO [sampo] reference count so that we can unload the models
+// TODO [sampo] ModelFactory for the Model Types, Model should only take raw vertex data
 class Model
 {
 public:
@@ -17,7 +18,8 @@ public:
     {
         UNIT_PLANE = 0,
         UNIT_BOX,
-        UNIT_HALFBOX,
+        HALFBOX,
+        TORUS,
         NUM_MODELS
     };
 
@@ -37,6 +39,7 @@ private:
     void createUnitPlane();
     void createUnitBox();
     void createUnitHalfBox();
+    void createTorus(int r, int p, float radius, float thickness);
     
     unsigned int m_indexBuffer;
     unsigned int m_vertexBuffer;
