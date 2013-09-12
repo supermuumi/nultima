@@ -1,0 +1,11 @@
+{
+    "music" :
+    {
+        "bgmusic" : "../../assets/audio/poing.ogg"
+    },
+
+    "effects" :
+    {
+        "freefall" : ["../../assets/audio/freefall.ogg", false]
+    }
+}

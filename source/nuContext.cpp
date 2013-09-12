@@ -51,6 +51,7 @@ void Context::init(int argc, char** argv)
 
     m_texManager = new TexManager();
     m_texManager->loadTilemap("../../config/tilemap.json");
+    //m_texManager->loadTilemap("../../assets/tilemaps/tilemap_plain.json");
 }
 
 void Context::deinit()

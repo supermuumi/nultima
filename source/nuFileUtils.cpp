@@ -37,7 +37,7 @@ rapidjson::Document FileUtils::readJSON(std::string fname)
     rapidjson::Document doc;
     char* jsonBlob;
 
-    jsonBlob = FileUtils::readFile(fname.c_str());
+    jsonBlob = FileUtils::readFile(fname);
     assert(jsonBlob != NULL);
     doc.Parse<0>(jsonBlob);
     delete jsonBlob;

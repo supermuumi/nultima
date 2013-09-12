@@ -12,11 +12,13 @@ public:
     AudioManager();
     ~AudioManager();
 
+    void loadJSON(const char* fname);
+
     void addMusic(std::string id, const char* fname);
-    void addEffect(std::string id, const char* fname);
+    void addEffect(std::string id, const char* fname, bool loop);
 
     void playMusic(std::string id);
-    void playEffect(std::string id);
+    void playEffect(std::string id, bool restart);
     void stopMusic(std::string id);
     void stopEffect(std::string id);
 

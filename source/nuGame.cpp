@@ -35,8 +35,7 @@ Game::Game(std::string worldFile, std::string stateFile) :
 
     // some test audio for verifying bass works
     m_audio = new AudioManager();
-    m_audio->addMusic("bgmusic", "../../assets/audio/poing.ogg");
-    m_audio->addEffect("freefall", "../../assets/audio/freefall.ogg");
+    m_audio->loadJSON("../../assets/audio/audio.json");
 }
 
 Game::~Game()
@@ -51,7 +50,7 @@ Game::~Game()
 
 void Game::mainloop()
 {
-    m_audio->playMusic("bgmusic");
+    //m_audio->playMusic("bgmusic");
 
     Graphics* graphics = Context::get()->getGraphics();
     GLUT::mainloop(this, graphics);
@@ -131,7 +130,7 @@ void Game::handleKeyboard()
         // TODO this should be wrapped inside e.g. #ifdef NU_ENABLE_EDITOR 
         if (key == NU_KEY_TAB) 
         {
-            m_audio->playEffect("freefall");
+            //m_audio->playEffect("freefall", true);
             m_isEditorMode = !m_isEditorMode;
         }
         else
