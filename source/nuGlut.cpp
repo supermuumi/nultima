@@ -91,8 +91,11 @@ static void cleanup()
 {
 }
 
-void GLUT::init(int argc, char** argv, int wWidth, int wHeight)
+void GLUT::init(int wWidth, int wHeight)
 {
+    Context* context = Context::get();
+    int argc = context->getArgc();
+    char** argv = context->getArgv();
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(wWidth, wHeight);
@@ -105,6 +108,8 @@ void GLUT::init(int argc, char** argv, int wWidth, int wHeight)
     glutMouseFunc(click);
     glutMotionFunc(motion);
     glutReshapeFunc(reshape);
+    if (context->isFullScreen())
+        glutFullScreen();
     atexit(cleanup);
 }
 

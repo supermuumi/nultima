@@ -32,10 +32,10 @@ Graphics::~Graphics()
     NU_ASSERT(!m_GLUT);
 }
 
-void Graphics::init(int argc, char** argv)
+void Graphics::init()
 {
     m_GLUT = new GLUT();
-    m_GLUT->init(argc, argv, m_windowDimensions.m_x, m_windowDimensions.m_y);
+    m_GLUT->init(m_windowDimensions.m_x, m_windowDimensions.m_y);
 
     glewInit();
 

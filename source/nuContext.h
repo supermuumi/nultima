@@ -36,7 +36,13 @@ public:
     TexManager*     getTexManager();
     unsigned int    getTilemapTexture(int id);
 
+    int             getArgc() { return m_argc; }
+    char**          getArgv() { return m_argv; }
+    bool            isFullScreen() { return m_fullScreen; }
+
 private:
+    void            parseCommandLine();
+
     int                 m_argc;
     char**              m_argv;
     Graphics*           m_graphics;
@@ -44,6 +50,7 @@ private:
     Mouse*              m_mouse;
     std::vector<Model*> m_models;
     TexManager*         m_texManager;
+    bool                m_fullScreen;
 };
 
 }; // namespace

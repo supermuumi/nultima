@@ -12,7 +12,7 @@ public:
     GLUT() {};
     ~GLUT() {};
 
-    void init(int argc, char** argv, int wWidth, int wHeight);
+    void init(int wWidth, int wHeight);
     void deinit();
 
     static void mainloop(Game* game, Graphics* graphics);

@@ -16,7 +16,7 @@ public:
     Graphics(Vec2i windowDimensions);
     ~Graphics();
 
-    void init(int argc, char** argv);
+    void init();
     void deinit();
 
     // Window

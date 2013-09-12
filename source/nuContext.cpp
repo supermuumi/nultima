@@ -6,6 +6,8 @@
 #include "nuTexManager.h"
 #include "nuMouse.h"
 
+#include <stdio.h>
+
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
@@ -18,7 +20,8 @@ Context::Context() :
     m_argv(NULL),
     m_graphics(NULL),
     m_keyboard(NULL),
-    m_mouse(NULL)
+    m_mouse(NULL),
+    m_fullScreen(false)
 {}
 
 Context::~Context()
@@ -40,9 +43,10 @@ void Context::init(int argc, char** argv)
 {
     m_argc = argc;
     m_argv = argv;
+    parseCommandLine();
 
     m_graphics = new Graphics(Vec2i(WINDOW_WIDTH, WINDOW_HEIGHT));
-    m_graphics->init(argc, argv);
+    m_graphics->init();
 
     m_keyboard = new Keyboard();
     m_mouse = new Mouse();
@@ -68,6 +72,18 @@ void Context::deinit()
 
     delete m_texManager;
     m_texManager = NULL;
+}
+
+void Context::parseCommandLine()
+{
+    for (int i = 0; i < m_argc; i++) {
+        if (m_argv[i][0] == '-') {
+            std::string s(&m_argv[i][1]);
+
+            if (s == "fullscreen")
+                m_fullScreen = true;
+        }
+    }
 }
 
 void Context::release()
