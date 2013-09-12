@@ -5,6 +5,8 @@
 #include "nuTexManager.h"
 #include "nuTilemap.h"
 
+#include <cmath>
+
 using namespace Nultima;
 
 Model::Model(int type) :
