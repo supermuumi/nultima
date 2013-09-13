@@ -22,7 +22,14 @@ AudioManager::~AudioManager()
 
 void AudioManager::loadJSON(const char* fname)
 {
-    rapidjson::Document doc = FileUtils::readJSON(fname);
+    rapidjson::Document doc;
+
+    char* jsonBlob = FileUtils::readFile(fname);
+    assert(jsonBlob != NULL);
+    doc.Parse<0>(jsonBlob);
+    delete jsonBlob;
+    assert(!doc.HasParseError());
+
 
     const rapidjson::Value& music = doc["music"];
     for (rapidjson::Value::ConstMemberIterator itr = music.MemberBegin(); itr != music.MemberEnd(); ++itr)
