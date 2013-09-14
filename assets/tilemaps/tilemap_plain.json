@@ -43,6 +43,26 @@
             "wall_t"            : 106, 
             "wall_t90"          : 107, 
             "wall_t180"         : 108, 
-            "wall_t270"         : 109
+            "wall_t270"         : 109,
+
+            "brickwall"         : 110,
+            "brickwall_window"  : 111,
+            "secret_door"       : 112,
+            "door_closed"       : 113,
+            "door_open"         : 114,
+            "door_locked"       : 115,
+            "door_magic"        : 116,
+
+            "river_horiz"       : 131,
+            "river_vert"        : 132,
+            "river_L"           : 133,
+            "river_L90"         : 134,
+            "river_L180"        : 135,
+            "river_L270"        : 136,
+            "river_crossroad"   : 137, 
+            "river_t"           : 138, 
+            "river_t90"         : 139, 
+            "river_t180"        : 140, 
+            "river_t270"        : 141
 	}
 }
