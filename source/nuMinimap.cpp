@@ -68,7 +68,6 @@ unsigned int Minimap::determineColor(Vec2i coord, int size)
 
     unsigned int color = s_backgroundColor;
 
-    // TODO [sampo] different color for different block types
     if (mostFrequentType != -1)
     {
         Vec3ui c = tex->getTilemap()->getTileColor(mostFrequentType);
