@@ -11,6 +11,9 @@
 #include "nuCamera.h"
 #include "nuEditor.h"
 #include "nuAudioManager.h"
+#include "nuLight.h"
+#include "nuUtils.h"
+#include <cmath>
 
 using namespace Nultima;
 
@@ -36,10 +39,19 @@ Game::Game(std::string worldFile, std::string stateFile) :
     // some test audio for verifying bass works
     m_audio = new AudioManager();
     m_audio->loadJSON("../../assets/audio/audio.json");
+
+    m_light = new Light(
+        Vec3(0.0f, 0.0f, 5.0f),
+        Vec3(.8f, .8f, .8f),
+        Vec3(.8f, .8f, .8f),
+        Vec3(.8f, .8f, .8f)
+        );
 }
 
 Game::~Game()
 {
+    delete m_light;
+
     delete m_editor;
     delete m_player;
     delete m_state;
@@ -53,6 +65,7 @@ void Game::mainloop()
     //m_audio->playMusic("bgmusic");
 
     Graphics* graphics = Context::get()->getGraphics();
+    graphics->enableLighting();
     GLUT::mainloop(this, graphics);
 }
 
@@ -100,8 +113,16 @@ void Game::renderViewport()
     Graphics* g = Context::get()->getGraphics();
     g->setColor(1.0, 1.0, 1.0, 1.0);
 
+    // really really really shitty placeholder lighting
+    // TODO replace with something proper
+    double timer = Utils::getCurrentTime() * 0.001;
+    Vec3i pPos = m_player->getPosition();
+    m_light->m_pos.m_x = pPos.m_x;
+    m_light->m_pos.m_y = pPos.m_y;
+    m_light->m_pos.m_z = pPos.m_z + std::sin(timer)*5.0f;
+
     // render world
-    m_player->render(m_world, m_isEditorMode ? m_editor->getCamera() : NULL);
+    m_player->render(m_world, m_isEditorMode ? m_editor->getCamera() : NULL, m_light);
 
     if (m_isEditorMode) 
         m_editor->render();
@@ -111,9 +132,11 @@ void Game::renderViewport()
 
 void Game::renderHUD()
 {
+    //printf("m_light = %.2f %.2f %.2f\n", m_light->m_pos.m_x, m_light->m_pos.m_y, m_light->m_pos.m_z);
     // TODO set ortho
     // TODO render time of day
     // TODO render party members & statuses
+    // TODO set perspective
 }
 
 /*
@@ -123,6 +146,14 @@ void Game::handleKeyboard()
 {
     Keyboard* keyboard = Context::get()->getKeyboard();
 
+    /*
+      if (keyboard->isKeyPressed('q')) m_light->m_pos.m_z -= 0.1;
+      if (keyboard->isKeyPressed('z')) m_light->m_pos.m_z += 0.1;
+      if (keyboard->isKeyPressed('w')) m_light->m_pos.m_y -= 0.1;
+      if (keyboard->isKeyPressed('s')) m_light->m_pos.m_y += 0.1;
+      if (keyboard->isKeyPressed('a')) m_light->m_pos.m_x -= 0.1;
+      if (keyboard->isKeyPressed('d')) m_light->m_pos.m_x += 0.1;
+    */
     while (keyboard->hasKeyPresses())
     {
         int key = keyboard->processKeyPress();

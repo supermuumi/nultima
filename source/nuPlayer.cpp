@@ -7,6 +7,7 @@
 #include "nuBlock.h"
 #include "nuCell.h"
 #include "nuCharacter.h"
+#include "nuLight.h"
 
 using namespace Nultima;
 
@@ -17,7 +18,7 @@ Player::Player(MapLocation location)
 }
 
 // TODO [sampo] frustum culling
-void Player::render(World* world, Camera* inCamera)
+void Player::render(World* world, Camera* inCamera, Light* light)
 {
     // TODO [sampo] tick outside?
     m_avatar->tick();
@@ -29,6 +30,8 @@ void Player::render(World* world, Camera* inCamera)
     Camera playerCamera(m_location);
     Camera* camera = (inCamera) ? inCamera : &playerCamera;
     camera->setView();
+
+    graphics->setLight(light);
 
     std::tr1::unordered_map<unsigned int, Cell*> cells = world->getCells();
 

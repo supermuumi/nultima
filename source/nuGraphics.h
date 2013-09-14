@@ -9,6 +9,7 @@ namespace Nultima
 {
 
 class GLUT;
+class Light;
 
 class Graphics
 {
@@ -57,6 +58,10 @@ public:
     void fillRect(float x1, float y1, float x2, float y2, bool blend);
     void setBlending(bool enabled);
     void setDepthTest(bool enabled);
+
+    // lighting
+    void enableLighting();
+    void setLight(Light* light);
 
 private:
     Vec2i   m_windowDimensions;

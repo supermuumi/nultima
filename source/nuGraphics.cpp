@@ -1,6 +1,7 @@
 #include "nuGraphics.h"
 #include "nuDefs.h"
 #include "nuGlut.h"
+#include "nuLight.h"
 
 #if NU_OS == NU_OS_WINDOWS
 #   include <Windows.h>
@@ -354,4 +355,30 @@ void Graphics::fillRect(float x1, float y1, float x2, float y2, bool blend)
 
     if (blend)
         setBlending(false);
+}
+
+void Graphics::enableLighting()
+{
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+}
+
+// TODO refactoring needed, this is fugly
+void Graphics::setLight(Light* light)
+{
+    float tmpVec[4];
+    
+    tmpVec[3] = 1.0f;
+    // set color
+    light->getAmbient(tmpVec);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, tmpVec);
+    light->getDiffuse(tmpVec);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, tmpVec);
+    light->getSpecular(tmpVec);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, tmpVec);
+
+    // set position
+    Vec3 v = light->getPosition();
+    v.getFloats(tmpVec);
+    glLightfv(GL_LIGHT0, GL_POSITION, tmpVec);
 }

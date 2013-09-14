@@ -11,6 +11,12 @@ Vec3 Vec3::operator+ (Vec3 v)
     return ret;
 }
 
+void Vec3::getFloats(float* array)
+{
+    array[0] = m_x;
+    array[1] = m_y;
+    array[2] = m_z;
+}
 
 Vec3ui Vec3ui::operator+(Vec3ui v)
 {
