@@ -27,7 +27,7 @@ void Camera::moveTo(Vec3i v)
 
 void Camera::moveToLocation(MapLocation location)
 {
-    m_pos = Vec3((float)location.m_position.m_x, (float)location.m_position.m_y, 30);
+    m_pos = Vec3((float)location.m_position.m_x, (float)location.m_position.m_y, 10);
     m_dir = Vec3(0, 0, -1);
     m_up = Vec3(0, 1, 0);
     m_right = Vec3(1, 0, 0);

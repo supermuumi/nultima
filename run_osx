@@ -1,1 +1,1 @@
-make && cd bin/osx;./Nultima;cd../..
+make && cd bin/osx;./Nultima;cd ../..
