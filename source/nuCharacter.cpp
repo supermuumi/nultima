@@ -17,6 +17,11 @@ Character::Character()
     m_lastTime = Utils::getCurrentTime();
 }
 
+Character::~Character()
+{
+    delete m_model;
+}
+
 void Character::tick()
 {
     // TODO [sampo] Store a single time for all actors to use

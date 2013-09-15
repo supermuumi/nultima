@@ -117,7 +117,8 @@ void Tilemap::load(std::string fname)
         m_tiles.push_back(tempTextureId);
     }
 
-    delete tempTexture;
+    delete[] tempTexture;
+
     free(tilemapData);
 }
 

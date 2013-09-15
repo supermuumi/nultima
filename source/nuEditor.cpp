@@ -34,6 +34,7 @@ Editor::Editor(World *world) :
 Editor::~Editor()
 {
     delete m_camera;
+    delete m_minimap;
 }
 
 Camera* Editor::getCamera()
@@ -264,6 +265,7 @@ void Editor::paintCurrentBlock()
     Block* block = new Block(m_cursorType, m_cursor);
     block->setRepresentation(m_cursorRepresentation);
     m_world->insertBlock(block);
+    // TODO [muumi] I think this leaks memory. World calls Cell which calls "new Block" instead of using this.
 }
 
 void Editor::eraseCurrentBlock()

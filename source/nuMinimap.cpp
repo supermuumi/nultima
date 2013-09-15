@@ -25,6 +25,11 @@ Minimap::Minimap(World* world)
     m_world = world;
 }
 
+Minimap::~Minimap()
+{
+    delete m_quad;
+}
+
 void Minimap::render()
 {
     Graphics* g = Context::get()->getGraphics();
