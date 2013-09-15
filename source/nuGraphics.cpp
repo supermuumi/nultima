@@ -225,6 +225,8 @@ unsigned int Graphics::loadTexture(std::string filename)
 
     gluBuild2DMipmaps( GL_TEXTURE_2D, 3, w, h, GL_RGB, GL_UNSIGNED_BYTE, data );
 
+    free(data);
+
     return ret;
 }
 

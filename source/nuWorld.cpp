@@ -7,6 +7,9 @@
 
 #include <fstream>
 
+#define STBI_HEADER_FILE_ONLY
+#include "stb/stb_image.c"
+
 using namespace Nultima;
 
 // TODO [sampo] streaming: unique tags for each block in the data 
@@ -20,6 +23,35 @@ World::World(std::string fileName)
         deserialize(&worldFile);
         worldFile.close();
     }
+}
+
+void World::generateFromPNG(std::string fname)
+{
+    int w, h, bpp;
+    unsigned char* data = stbi_load(fname.c_str(), &w, &h, &bpp, 0);
+
+    for (int y = 0; y < h; y++)
+    {
+        for (int x = 0; x < w; x++)
+        {
+
+            int ofs = (y*w + x)*bpp;
+            int p = 0;
+            for (int b = 0; b < bpp; b++)
+                p = (p << 8) | data[ofs+b];
+
+            Vec3i loc(x, y, 0);
+
+            if (p == 0x0000ff) 
+                insertBlock(new Block(1, loc));
+            if (p == 0x00ff00)
+                insertBlock(new Block(2, loc));
+            if (p == 0x663300)
+                insertBlock(new Block(3, loc));
+        }
+    }
+
+    free(data);
 }
 
 void World::serialize(std::ofstream* stream)

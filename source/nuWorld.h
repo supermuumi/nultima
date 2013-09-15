@@ -40,9 +40,11 @@ public:
          VERSION_BLOCK_REPRESENTATION // each block = 2 bytes on disk now
     } WorldVersion;
 
-
+    World() {}
     World(std::string fileName);
     ~World() {}
+
+    void generateFromPNG(std::string fname);
 
     MapLocation getPlayerStart  () { return m_playerStart; }
     std::tr1::unordered_map<unsigned int, Cell*> getCells   () { return m_cellMap; }
