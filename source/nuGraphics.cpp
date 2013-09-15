@@ -363,6 +363,12 @@ void Graphics::enableLighting()
     glEnable(GL_LIGHT0);
 }
 
+void Graphics::disableLighting()
+{
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
+}
+
 // TODO refactoring needed, this is fugly
 void Graphics::setLight(Light* light)
 {

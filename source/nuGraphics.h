@@ -61,6 +61,7 @@ public:
 
     // lighting
     void enableLighting();
+    void disableLighting();
     void setLight(Light* light);
 
 private:

@@ -65,7 +65,6 @@ void Game::mainloop()
     //m_audio->playMusic("bgmusic");
 
     Graphics* graphics = Context::get()->getGraphics();
-    graphics->enableLighting();
     GLUT::mainloop(this, graphics);
 }
 
