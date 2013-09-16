@@ -13,7 +13,10 @@
 #include "nuAudioManager.h"
 #include "nuLight.h"
 #include "nuUtils.h"
+#include "nuTimer.h"
+
 #include <cmath>
+#include <sstream>
 
 using namespace Nultima;
 
@@ -75,6 +78,8 @@ void Game::mainloop()
 
 void Game::tick()
 {
+    ScopedTimer timer("Game::tick");
+
     m_advanceTurn = false;
 
     // Handle input
@@ -89,6 +94,8 @@ void Game::tick()
 
 void Game::display()
 {
+    ScopedTimer timer("Game::display");
+
     // prepare
     beginFrame();
 
@@ -132,6 +139,8 @@ void Game::renderViewport()
         m_editor->render();
 
     renderHUD();
+
+    renderStats();
 }
 
 void Game::renderHUD()
@@ -141,6 +150,26 @@ void Game::renderHUD()
     // TODO render time of day
     // TODO render party members & statuses
     // TODO set perspective
+}
+
+void Game::renderStats()
+{
+    Context* context = Context::get();
+    Graphics* g = context->getGraphics();
+
+    Vec2i wDim = g->getWindowDimensions();
+    g->setOrthoProjection(0, wDim.m_x, 0, wDim.m_y);
+    g->setDepthTest(false);
+
+    std::ostringstream text;
+    text << "Game::tick: " <<  m_timers["Game::tick"] << "ms\n";
+    text << "Game::display: " <<  m_timers["Game::display"] << "ms\n";
+    text << " Player::renderWorld: " <<  m_timers["Player::renderWorld"] << "ms\n";
+
+    g->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    g->drawString(text.str().c_str(), 550, 20);
+
+    g->setDepthTest(true);
 }
 
 /*
@@ -225,4 +254,12 @@ void Game::processTurn()
     m_timeOfDay += NU_GAME_TIMEPERTURN;
 
     // TODO move sun, e.g. m_world->setTimeOfDay(m_timeOfDay/65536.0f);
+}
+
+void Game::processTimers()
+{
+    Timer* timer = Context::get()->getTimer();
+    m_timers["Game::tick"] = timer->getTimerValue("Game::tick");
+    m_timers["Game::display"] = timer->getTimerValue("Game::display");
+    m_timers["Player::renderWorld"] = timer->getTimerValue("Player::renderWorld");
 }

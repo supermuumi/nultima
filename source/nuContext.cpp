@@ -5,6 +5,7 @@
 #include "nuModel.h"
 #include "nuTexManager.h"
 #include "nuMouse.h"
+#include "nuTimer.h"
 
 #include <stdio.h>
 
@@ -56,6 +57,8 @@ void Context::init(int argc, char** argv)
     m_texManager = new TexManager();
     m_texManager->loadTilemap("../../config/tilemap.json");
     //m_texManager->loadTilemap("../../assets/tilemaps/tilemap_plain.json");
+
+    m_timer = new Timer();
 }
 
 void Context::deinit()
@@ -72,6 +75,9 @@ void Context::deinit()
 
     delete m_texManager;
     m_texManager = NULL;
+
+    delete m_timer;
+    m_timer = NULL;
 }
 
 void Context::parseCommandLine()

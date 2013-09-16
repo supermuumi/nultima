@@ -11,6 +11,7 @@
 #include "nuDefs.h"
 #include "nuTexManager.h"
 #include "nuTilemap.h"
+#include "nuTimer.h"
 
 using namespace Nultima;
 
@@ -21,22 +22,26 @@ Player::Player(MapLocation location, World* world)
     m_avatar = new Character();
 }
 
-// TODO [sampo] frustum culling
-void Player::render(Camera* inCamera, Light* light)
+void Player::setupWorldRendering(Camera* inCamera)
 {
     // TODO [sampo] tick outside?
     m_avatar->tick();
 
-    Graphics* graphics = Context::get()->getGraphics();
-    graphics->setPerspectiveProjection();
+    Graphics* g = Context::get()->getGraphics();
+    g->setPerspectiveProjection();
 
     // place camera
     Camera playerCamera(m_location);
     Camera* camera = (inCamera) ? inCamera : &playerCamera;
     camera->setView();
 
-    graphics->enableLighting();
-    graphics->setLight(light);
+    g->enableLighting();
+    g->setLight(m_light);
+}
+
+void Player::renderWorld()
+{
+    ScopedTimer timer("Player::renderWorld");
 
     std::tr1::unordered_map<unsigned int, Cell*> cells = m_world->getCells();
 
@@ -66,23 +71,24 @@ void Player::render(Camera* inCamera, Light* light)
             }
         }
     }
+}
 
+// TODO [sampo] frustum culling
+void Player::render(Camera* inCamera, Light* light)
+{
+    m_light = light;
+
+    setupWorldRendering(inCamera);
+    renderWorld();
+
+    Graphics* g = Context::get()->getGraphics();
     // Render player
-    graphics->pushMatrix();
-    graphics->translate((float)m_location.m_position.m_x+0.5f, (float)m_location.m_position.m_y+0.5f, (float)m_location.m_position.m_z+0.5f);
+    g->pushMatrix();
+    g->translate((float)m_location.m_position.m_x+0.5f, (float)m_location.m_position.m_y+0.5f, (float)m_location.m_position.m_z+0.5f);
     m_avatar->render();
-    graphics->popMatrix();
+    g->popMatrix();
 
-    // TODO [sampo] loop inhabitants
-    //     render inhabitant
-
-    // TODO [sampo] loop props
-    //     render props
-
-    // TODO [sampo] loop monsters
-    //   render monster
-
-    graphics->disableLighting();
+    g->disableLighting();
 }
 
 bool Player::move(Vec3i d)

@@ -61,7 +61,6 @@ void Editor::renderHud()
     // set ortho view
     g->setOrthoProjection(0, wDim.m_x, 0, wDim.m_y);
 
-    // TODO [muumi] This is busted, text is not shown.
     if (m_helpActive)
     {
         g->setDepthTest(false);

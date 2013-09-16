@@ -22,9 +22,14 @@ public:
     Vec3i       getPosition() { return m_location.m_position; }
 
 private:
+    void        renderWorld();
+    void        setupWorldRendering(Camera* inCamera);
+
     MapLocation m_location;
     Character*  m_avatar;
     World*      m_world;
+    // TODO [sampo] get this from the world?
+    Light*      m_light;
 };
 
 };

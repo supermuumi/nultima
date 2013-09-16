@@ -12,6 +12,7 @@ class Keyboard;
 class Model;
 class TexManager;
 class Mouse;
+class Timer;
 
 class Context
 {
@@ -36,6 +37,8 @@ public:
     TexManager*     getTexManager();
     unsigned int    getTilemapTexture(int id);
 
+    Timer*          getTimer() { return m_timer; }
+
     int             getArgc() { return m_argc; }
     char**          getArgv() { return m_argv; }
     bool            isFullScreen() { return m_fullScreen; }
@@ -51,6 +54,7 @@ private:
     std::vector<Model*> m_models;
     TexManager*         m_texManager;
     bool                m_fullScreen;
+    Timer*              m_timer;
 };
 
 }; // namespace

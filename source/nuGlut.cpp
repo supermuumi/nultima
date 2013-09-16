@@ -27,6 +27,7 @@ static void display()
     NU_ASSERT(g_currentGame);
     g_currentGame->tick();
     g_currentGame->display();
+    g_currentGame->processTimers();
 }
 
 static void keyPressed(unsigned char key, int x, int y)
