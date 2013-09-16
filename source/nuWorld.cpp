@@ -42,6 +42,12 @@ void World::generateFromPNG(std::string fname)
 
             Vec3i loc(x, y, 0);
 
+/*
+0xffffff = generic ground
+0xffff00 = highway / road
+0x0000ff = water
+0x00ff00 = park
+ */
             if (p == 0x0000ff) 
                 insertBlock(new Block(1, loc));
             if (p == 0x00ff00)
