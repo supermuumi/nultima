@@ -17,6 +17,7 @@ public:
     TexManager();
     ~TexManager();
 
+    // TODO [sampo] move tilemap out, it does not belong here as it does not contain only texture information
     void            loadTilemap         (std::string fname);
     unsigned int    getTexture          (std::string name);
     unsigned int    getTilemapTexture   (int id);

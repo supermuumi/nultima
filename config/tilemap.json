@@ -1,26 +1,96 @@
 {
-	"config" : {
+	"config" :
+	{
 		"tilesize": 16,
 		"tilemap": "../../assets/u5_tilemap.png"
 	},
 	
-	"tiles" : {
-		"water" : 1,
-		"water_deep": 2,
-		"water_shallow": 3,
-		"grassland1" : 4,
-		"grassland2" : 5,
-		"forest_light" : 8,
-		"forest_normal" : 9,
-		"forest_heavy" : 10,
-		"mountain_small" : 11,
-		"mountain_normal" : 12,
-		"mountain_high" : 13,
-		"road_vertical" : 32,
-		"road_horizontal" : 33,
-		"road_L" : 34,
-		"road_L90" : 35,
-		"road_L180" : 36,
-		"road_L270" : 37
-	}
+	"tiles" :
+	[
+		{
+			"id": 1,
+			"name": "water",
+			"solid": false
+		},
+		{
+			"id": 2,
+			"name": "water_deep",
+			"solid": false
+		},
+		{
+			"id": 3,
+			"name": "water_shallow",
+			"solid": false
+		},
+		{
+			"id": 4,
+			"name": "grassland1",
+			"solid": true
+		},
+		{
+			"id": 5,
+			"name": "grassland2",
+			"solid": true
+		},
+		{
+			"id": 8,
+			"name": "forest_light",
+			"solid": false
+		},
+		{
+			"id": 9,
+			"name": "forest_normal",
+			"solid": false
+		},
+		{
+			"id": 10,
+			"name": "forest_heavy",
+			"solid": false
+		},
+		{
+			"id": 11,
+			"name": "mountain_small",
+			"solid": true
+		},
+		{
+			"id": 12,
+			"name": "mountain_normal",
+			"solid": true
+		},
+		{
+			"id": 13,
+			"name": "mountain_high",
+			"solid": true
+		},
+		{
+			"id": 32,
+			"name": "road_vertical",
+			"solid": true
+		},
+		{
+			"id": 33,
+			"name": "road_horizontal",
+			"solid": true
+		},
+		{
+			"id": 34,
+			"name": "road_L",
+			"solid": true
+		},
+		{
+			"id": 35,
+			"name": "road_L90",
+			"solid": true
+		},
+		{
+			"id": 36,
+			"name": "road_L180",
+			"solid": true
+		},
+		{
+			"id": 37,
+			"name": "road_L270",
+			"solid": true
+		}
+	]
 }

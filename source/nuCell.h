@@ -19,7 +19,6 @@ public:
 
     Vec2i           getPosition () {return m_position;}
     const Block*    getBlock    (Vec3i location);
-    void            insertBlock (char type, Vec3i location);
     void            insertBlock (Block* block);
 
     void            clearBlock  (Vec3i location);

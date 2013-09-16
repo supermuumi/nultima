@@ -29,7 +29,7 @@ Model::Model(int type) :
         break;
 
     case TORUS:
-        createTorus(30, 30, 0.5, 0.5);
+        createTorus(30, 30, 0.25, 0.25);
         break;
 
     default:

@@ -39,7 +39,7 @@ Game::Game(std::string worldFile, std::string stateFile) :
     if (!m_state->getPlayerLocation(playerLocation))
         playerLocation = m_world->getPlayerStart();
 
-    m_player = new Player(playerLocation);
+    m_player = new Player(playerLocation, m_world);
 
     // some test audio for verifying bass works
     m_audio = new AudioManager();
@@ -121,12 +121,12 @@ void Game::renderViewport()
     // TODO replace with something proper
     double timer = Utils::getCurrentTime() * 0.001;
     Vec3i pPos = m_player->getPosition();
-    m_light->m_pos.m_x = pPos.m_x;
-    m_light->m_pos.m_y = pPos.m_y;
-    m_light->m_pos.m_z = pPos.m_z + std::sin(timer)*5.0f;
+    m_light->m_pos.m_x = (float)pPos.m_x;
+    m_light->m_pos.m_y = (float)pPos.m_y;
+    m_light->m_pos.m_z = (float)pPos.m_z + (float)std::sin(timer)*1.0f;
 
     // render world
-    m_player->render(m_world, m_isEditorMode ? m_editor->getCamera() : NULL, m_light);
+    m_player->render(m_isEditorMode ? m_editor->getCamera() : NULL, m_light);
 
     if (m_isEditorMode) 
         m_editor->render();

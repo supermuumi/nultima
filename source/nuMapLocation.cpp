@@ -1,5 +1,6 @@
 #include "nuMapLocation.h"
 #include "nuWorld.h"
+#include "nuDefs.h"
 
 #include <fstream>
 #include <istream>
@@ -37,9 +38,8 @@ MapLocation::MapLocation(Vec3i position) :
     m_position(position)
 {}
 
-void MapLocation::move(Vec3i d) 
+void MapLocation::set(Vec3i vec) 
 {
-    m_position = m_position + d;
-    if (m_position.m_z < 0)
-        m_position.m_z = 0;
+    NU_ASSERT(m_position.m_z >= 0);
+    m_position = vec;
 }

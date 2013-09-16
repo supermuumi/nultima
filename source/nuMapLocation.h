@@ -18,7 +18,7 @@ public:
     void    serialize       (std::ofstream* stream);
     void    deserialize     (std::ifstream* stream, int version);
 
-    void    move            (Vec3i d);
+    void    set             (Vec3i d);
 
     Vec3i   m_position;
 };

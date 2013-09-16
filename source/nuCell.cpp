@@ -96,30 +96,6 @@ void Cell::deserialize(std::ifstream* stream, int version)
     stream->seekg(-1, std::ios_base::cur); 
 }
 
-void Cell::insertBlock(char type, Vec3i location)
-{
-    // translate coordinates to cell local coordinate space
-    int x = location.m_x;
-    int y = location.m_y;
-    if (x<0)
-    {
-        x *= -1;
-        x -= 1;
-    }
-    if (y<0)
-    {
-        y *= -1;
-        y -= 1;
-    }
-    x = x % NU_CELL_WIDTH;
-    y = y % NU_CELL_HEIGHT;
-    
-    int layer = location.m_z;
-    if (m_blocks[layer][y][x])
-        delete m_blocks[layer][y][x];
-    m_blocks[layer][y][x] = new Block(type, Vec3i(x, y, layer));
-}
-
 void Cell::insertBlock(Block* block)
 {
     Vec3i location = block->getLocation();

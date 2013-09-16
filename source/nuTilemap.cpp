@@ -60,6 +60,7 @@ void Tilemap::load(std::string fname)
 
     unsigned char* tempTexture = new unsigned char[m_tileSize*m_tileSize*3];
 
+    // TODO [sampo] move to graphics (buildTexture())
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -69,16 +70,19 @@ void Tilemap::load(std::string fname)
     // process tile info 
     // for each tile we'll create a m_tileSize^2 texture
     const rapidjson::Value& tiles = doc["tiles"];
-    for (rapidjson::Value::ConstMemberIterator itr = tiles.MemberBegin(); itr != tiles.MemberEnd(); ++itr)
+
+    for (rapidjson::SizeType i = 0; i < tiles.Size(); i++)
     {
-        std::string textureId = itr->name.GetString();
-        int idx = itr->value.GetInt();
+        const rapidjson::Value& tile = tiles[i];
+        int idx = tile["id"].GetInt();
+        std::string textureId = tile["name"].GetString();
+        bool isSolid = tile["solid"].GetBool();
 
         // (x1,y1)-(x2,y2) define tile data in tilemap
-	int x1 = idx%tilesPerLine * m_tileSize;
-	int y1 = idx/tilesPerLine * m_tileSize;
-	int x2 = x1+m_tileSize;
-	int y2 = y1+m_tileSize;
+	    int x1 = idx%tilesPerLine * m_tileSize;
+	    int y1 = idx/tilesPerLine * m_tileSize;
+	    int x2 = x1+m_tileSize;
+	    int y2 = y1+m_tileSize;
 
         // TODO this is shit
 
@@ -105,7 +109,7 @@ void Tilemap::load(std::string fname)
         sRed /= (m_tileSize*m_tileSize);
         sGreen /= (m_tileSize*m_tileSize);
         sBlue /= (m_tileSize*m_tileSize);
-        m_tileColors.push_back(Vec3ui(sRed, sGreen, sBlue));
+        Vec3ui tileColor = Vec3ui(sRed, sGreen, sBlue);
 
         unsigned int tempTextureId;
         glGenTextures(1, &tempTextureId);
@@ -114,7 +118,11 @@ void Tilemap::load(std::string fname)
 
 //        printf("OGL texture %d: id=%s idx=%d coords=(%d,%d)-(%d,%d)\n", tempTextureId, textureId.c_str(), idx, x1, y1, x2, y2);
 
-        m_tiles.push_back(tempTextureId);
+        BlockInfo info;
+        info.textureId  = tempTextureId;
+        info.isSolid    = isSolid;
+        info.color      = tileColor;
+        m_tiles.push_back(info);
     }
 
     delete[] tempTexture;

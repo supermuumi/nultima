@@ -63,7 +63,7 @@ void World::serialize(std::ofstream* stream)
 
     cWrite = WORLD_TAG_PLAYERSTART;
     stream->write(&cWrite, 1);
-    MapLocation playerStart(Vec3i(1, 3, 0));
+    MapLocation playerStart(Vec3i(1, 3, 1));
     playerStart.serialize(stream);
 
     for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = m_cellMap.begin(); it != m_cellMap.end(); ++it)

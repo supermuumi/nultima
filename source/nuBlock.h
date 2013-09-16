@@ -22,28 +22,28 @@ public:
         BLOCK_LASTREPRESENTATION
     } BlockRepresentation;
 
-    Block() {}
-    Block(char type, Vec3i location);
-    ~Block() {}
+    Block                       (void)      {}
+    Block                       (char type, Vec3i location);
+    ~Block                      (void)      {}
 
-    void    serialize      (std::ofstream* stream);
-    void    deserialize    (std::ifstream* stream);
+    void    serialize           (std::ofstream* stream);
+    void    deserialize         (std::ifstream* stream);
 
-    void    render         () const;
+    void    render              (void) const;
 
-    void    moveTo(Vec3i);
-    void    setType(char);
-    char    getType() { return m_type; }
-    void    setRepresentation(NuUInt8);
+    void    moveTo              (Vec3i);
+    void    setType             (char);
+    char    getType             (void)      { return m_type; }
+    void    setRepresentation   (NuUInt8);
+    NuUInt8 getRepresentation   (void)      { return m_representation; }
 
-    Vec3i   getLocation() { return m_location; }
+    Vec3i   getLocation         (void) { return m_location; }
 
 private:
     void    determineModel();
 
     char        m_type;
     Vec3i       m_location;
-    std::string m_texName;
     NuUInt8     m_representation;
 };
 
