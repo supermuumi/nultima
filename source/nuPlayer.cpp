@@ -73,13 +73,9 @@ void Player::renderWorld()
     }
 }
 
-// TODO [sampo] frustum culling
-void Player::render(Camera* inCamera, Light* light)
+void Player::renderPlayer()
 {
-    m_light = light;
-
-    setupWorldRendering(inCamera);
-    renderWorld();
+    ScopedTimer timer("Player::renderPlayer");
 
     Graphics* g = Context::get()->getGraphics();
     // Render player
@@ -87,8 +83,23 @@ void Player::render(Camera* inCamera, Light* light)
     g->translate((float)m_location.m_position.m_x+0.5f, (float)m_location.m_position.m_y+0.5f, (float)m_location.m_position.m_z+0.5f);
     m_avatar->render();
     g->popMatrix();
+}
 
+void Player::finishWorldRendering()
+{
+    Graphics* g = Context::get()->getGraphics();
     g->disableLighting();
+}
+
+// TODO [sampo] frustum culling
+void Player::render(Camera* inCamera, Light* light)
+{
+    m_light = light;
+
+    setupWorldRendering(inCamera);
+    renderWorld();
+    renderPlayer();
+    finishWorldRendering();
 }
 
 bool Player::move(Vec3i d)

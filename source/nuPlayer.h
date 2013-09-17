@@ -23,7 +23,9 @@ public:
 
 private:
     void        renderWorld();
+    void        renderPlayer();
     void        setupWorldRendering(Camera* inCamera);
+    void        finishWorldRendering();
 
     MapLocation m_location;
     Character*  m_avatar;

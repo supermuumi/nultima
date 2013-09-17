@@ -40,6 +40,7 @@ private:
     void renderViewport();
     void renderHUD();
     void renderStats();
+    void setupLight();
 
     // actual gameplay related
     void movePlayer(Vec3i d);

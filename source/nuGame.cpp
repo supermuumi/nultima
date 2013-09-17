@@ -119,18 +119,27 @@ void Game::endFrame()
     graphics->swap();
 }
 
-void Game::renderViewport()
+void Game::setupLight()
 {
-    Graphics* g = Context::get()->getGraphics();
-    g->setColor(1.0, 1.0, 1.0, 1.0);
+    ScopedTimer timer("Game::setupLight");
 
     // really really really shitty placeholder lighting
     // TODO replace with something proper
-    double timer = Utils::getCurrentTime() * 0.001;
+    double lightTimer = Utils::getCurrentTime() * 0.001;
     Vec3i pPos = m_player->getPosition();
     m_light->m_pos.m_x = (float)pPos.m_x;
     m_light->m_pos.m_y = (float)pPos.m_y;
-    m_light->m_pos.m_z = (float)pPos.m_z + (float)std::sin(timer)*1.0f;
+    m_light->m_pos.m_z = (float)pPos.m_z + (float)std::sin(lightTimer)*1.0f;
+}
+
+void Game::renderViewport()
+{
+    ScopedTimer timer("Game::renderViewport");
+
+    Graphics* g = Context::get()->getGraphics();
+    g->setColor(1.0, 1.0, 1.0, 1.0);
+
+    setupLight();
 
     // render world
     m_player->render(m_isEditorMode ? m_editor->getCamera() : NULL, m_light);
@@ -154,18 +163,23 @@ void Game::renderHUD()
 
 void Game::renderStats()
 {
+    std::ostringstream text;
+    text << "Game::tick: " <<  m_timers["Game::tick"] << "ms\n";
+    text << "Game::display: " <<  m_timers["Game::display"] << "ms\n";
+    text << "  Game::renderViewport: " <<  m_timers["Game::renderViewport"] << "ms\n";
+    text << "    Game::setupLight: " <<  m_timers["Game::setupLight"] << "ms\n";
+    text << "    Player::renderWorld: " <<  m_timers["Player::renderWorld"] << "ms\n";
+    text << "    Player::renderPlayer: " <<  m_timers["Player::renderPlayer"] << "ms\n";
+    text << "    Game::renderStats: " <<  m_timers["Game::renderStats"] << "ms\n";
+
+    ScopedTimer timer("Game::renderStats");
+
     Context* context = Context::get();
     Graphics* g = context->getGraphics();
 
     Vec2i wDim = g->getWindowDimensions();
     g->setOrthoProjection(0, wDim.m_x, 0, wDim.m_y);
     g->setDepthTest(false);
-
-    std::ostringstream text;
-    text << "Game::tick: " <<  m_timers["Game::tick"] << "ms\n";
-    text << "Game::display: " <<  m_timers["Game::display"] << "ms\n";
-    text << " Player::renderWorld: " <<  m_timers["Player::renderWorld"] << "ms\n";
-
     g->setColor(1.0f, 1.0f, 1.0f, 1.0f);
     g->drawString(text.str().c_str(), 550, 20);
 
@@ -261,5 +275,9 @@ void Game::processTimers()
     Timer* timer = Context::get()->getTimer();
     m_timers["Game::tick"] = timer->getTimerValue("Game::tick");
     m_timers["Game::display"] = timer->getTimerValue("Game::display");
+    m_timers["Game::renderViewport"] = timer->getTimerValue("Game::renderViewport");
+    m_timers["Game::setupLight"] = timer->getTimerValue("Game::setupLight");
     m_timers["Player::renderWorld"] = timer->getTimerValue("Player::renderWorld");
+    m_timers["Player::renderPlayer"] = timer->getTimerValue("Player::renderPlayer");
+    m_timers["Game::renderStats"] = timer->getTimerValue("Game::renderStats");
 }
