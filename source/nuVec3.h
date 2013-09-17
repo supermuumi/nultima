@@ -42,9 +42,13 @@ public:
     ~Vec3i() {}
 
     Vec3i operator+(Vec3i);
+    Vec3i operator-(Vec3i);
 
     void    serialize       (std::ofstream* stream);
     void    deserialize     (std::ifstream* stream);
+
+    float   length          ();
+    float   lengthSquared   ();
 
     int m_x;
     int m_y;

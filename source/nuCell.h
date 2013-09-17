@@ -18,7 +18,7 @@ public:
     ~Cell();
 
     Vec2i           getPosition () {return m_position;}
-    const Block*    getBlock    (Vec3i location);
+    Block*          getBlock    (Vec3i location);
     void            insertBlock (Block* block);
 
     void            clearBlock  (Vec3i location);

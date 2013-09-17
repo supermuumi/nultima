@@ -4,6 +4,7 @@
 #include "nuDefs.h"
 #include "nuModel.h"
 #include "nuTexManager.h"
+#include "nuTimer.h"
 
 #if NU_OS == NU_OS_WINDOWS
 #   include <windows.h>
@@ -71,6 +72,7 @@ void Block::deserialize(std::ifstream* stream)
 
 void Block::render() const
 {
+    ScopedTimer timer("Block::render", false);
     Context* context = Context::get();
     Graphics* graphics = context->getGraphics();
 

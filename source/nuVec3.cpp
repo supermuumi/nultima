@@ -49,3 +49,22 @@ Vec3i Vec3i::operator+(Vec3i v)
     ret.m_z = m_z + v.m_z;
     return ret;
 }
+
+Vec3i Vec3i::operator-(Vec3i v)
+{
+    Vec3i ret;
+    ret.m_x = m_x - v.m_x;
+    ret.m_y = m_y - v.m_y;
+    ret.m_z = m_z - v.m_z;
+    return ret;
+}
+
+float Vec3i::length()
+{
+    return std::sqrtf(lengthSquared());
+}
+
+float Vec3i::lengthSquared()
+{
+    return (float)(m_x*m_x + m_y*m_y + m_z*m_z);
+}

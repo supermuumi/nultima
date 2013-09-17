@@ -15,6 +15,8 @@
 
 using namespace Nultima;
 
+#define CULL_DISTANCE_SQUARED 400
+
 Player::Player(MapLocation location, World* world)
 {
     m_world = world;
@@ -47,16 +49,16 @@ void Player::renderWorld()
 
     Vec3i pos = m_location.m_position;
 
+    int numCulled = 0;
+    int numVisible = 0;
     // loop cells
     for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = cells.begin(); it != cells.end(); ++it)
-    // loop layers
-    for (int i=0; i<NU_MAX_LAYERS; i++)
     {
         Cell* cell = it->second;
-        // loop blocks
-
         if (cell)
         {
+            // loop layers
+            for (int i=0; i<NU_MAX_LAYERS; i++)
             for (int x=0; x<NU_CELL_WIDTH; x++)
             for (int y=0; y<NU_CELL_HEIGHT; y++)
             {
@@ -65,9 +67,21 @@ void Player::renderWorld()
                 if (i > pos.m_z && x == pos.m_x && y == pos.m_y)
                     continue;
                 */
-                const Block* block = cell->getBlock(Vec3i(x, y, i));
+
+                Block* block = cell->getBlock(Vec3i(x, y, i));
                 if (block)
-                    block->render();
+                {
+                    float distanceSquared = (block->getLocation() - m_location.m_position).lengthSquared();
+                    if (distanceSquared < CULL_DISTANCE_SQUARED)
+                    {
+                        block->render();
+                        numVisible++;
+                    }
+                    else
+                    {
+                        numCulled++;
+                    }
+                }
             }
         }
     }

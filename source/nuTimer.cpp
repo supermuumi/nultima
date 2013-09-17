@@ -11,7 +11,7 @@ void Timer::start(std::string name)
 
 void Timer::stop(std::string name)
 {
-    m_timerMap[name].elapsed = Utils::getCurrentTime() - m_timerMap[name].start;
+    m_timerMap[name].elapsed += Utils::getCurrentTime() - m_timerMap[name].start;
     m_timerMap[name].start = 0;
 }
 

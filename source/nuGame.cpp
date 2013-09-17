@@ -169,6 +169,7 @@ void Game::renderStats()
     text << "  Game::renderViewport: " <<  m_timers["Game::renderViewport"] << "ms\n";
     text << "    Game::setupLight: " <<  m_timers["Game::setupLight"] << "ms\n";
     text << "    Player::renderWorld: " <<  m_timers["Player::renderWorld"] << "ms\n";
+    text << "      Block::render: " <<  m_timers["Block::render"] << "ms\n";
     text << "    Player::renderPlayer: " <<  m_timers["Player::renderPlayer"] << "ms\n";
     text << "    Game::renderStats: " <<  m_timers["Game::renderStats"] << "ms\n";
 
@@ -278,6 +279,9 @@ void Game::processTimers()
     m_timers["Game::renderViewport"] = timer->getTimerValue("Game::renderViewport");
     m_timers["Game::setupLight"] = timer->getTimerValue("Game::setupLight");
     m_timers["Player::renderWorld"] = timer->getTimerValue("Player::renderWorld");
+    m_timers["Block::render"] = timer->getTimerValue("Block::render");
     m_timers["Player::renderPlayer"] = timer->getTimerValue("Player::renderPlayer");
     m_timers["Game::renderStats"] = timer->getTimerValue("Game::renderStats");
+
+    timer->reset("Block::render");
 }

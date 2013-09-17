@@ -172,7 +172,7 @@ void Cell::clearBlock(Vec3i position)
 }
 
 
-const Block* Cell::getBlock(Vec3i location)
+Block* Cell::getBlock(Vec3i location)
 {
     // translate coordinates to cell local coordinate space
     int x = location.m_x;
