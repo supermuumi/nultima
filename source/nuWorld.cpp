@@ -40,20 +40,26 @@ void World::generateFromPNG(std::string fname)
             for (int b = 0; b < bpp; b++)
                 p = (p << 8) | data[ofs+b];
 
-            Vec3i loc(x, y, 0);
+            Vec3i loc(x, h-y-1, 0);
 
 /*
-0xffffff = generic ground
-0xffff00 = highway / road
+0xffffff = generic ground (using grassland1)
+0xffff00 = highway / road (using road_vertical)
 0x0000ff = water
-0x00ff00 = park
+0x00ff00 = park (using grassland2)
+0x00ffff = Unkown (using mountain_small)
+0xff00ff = Unkown (using forest_normal)
  */
-            if (p == 0x0000ff) 
-                insertBlock(new Block(1, loc));
-            if (p == 0x00ff00)
-                insertBlock(new Block(2, loc));
-            if (p == 0x663300)
-                insertBlock(new Block(3, loc));
+            if (p == 0x0000ff)      insertBlock(new Block(0, loc));
+            else if (p == 0x00ff00) insertBlock(new Block(4, loc));
+            else if (p == 0xffffff) insertBlock(new Block(3, loc));
+            else if (p == 0x00ffff) insertBlock(new Block(8, loc));
+            else if (p == 0xffff00) insertBlock(new Block(11, loc));
+            else if (p == 0xff00ff) insertBlock(new Block(6, loc));
+            else
+            {
+                NU_ASSERT(!"unkown block type");
+            }
         }
     }
 
