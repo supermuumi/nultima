@@ -49,42 +49,60 @@ void Player::renderWorld()
 
     Vec3i pos = m_location.m_position;
 
-    int numCulled = 0;
-    int numVisible = 0;
+    int numCellsCulled = 0;
+    int numCellsVisible = 0;
+    int numBlocksCulled = 0;
+    int numBlocksVisible = 0;
     // loop cells
     for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = cells.begin(); it != cells.end(); ++it)
     {
         Cell* cell = it->second;
         if (cell)
         {
-            // loop layers
-            for (int i=0; i<NU_MAX_LAYERS; i++)
-            for (int x=0; x<NU_CELL_WIDTH; x++)
-            for (int y=0; y<NU_CELL_HEIGHT; y++)
-            {
-                // TODO [muumi] do not render blocks that are above player
-                /*
-                if (i > pos.m_z && x == pos.m_x && y == pos.m_y)
-                    continue;
-                */
+            Vec3i cellPos = Vec3i(cell->getPosition().m_x, cell->getPosition().m_y, 0);
+            cellPos.m_x += NU_CELL_WIDTH/2;
+            cellPos.m_y += NU_CELL_HEIGHT/2;
+            cellPos.m_z += NU_MAX_LAYERS/2;
 
-                Block* block = cell->getBlock(Vec3i(x, y, i));
-                if (block)
+            float distanceSquared = (cellPos - m_location.m_position).lengthSquared();
+
+            if (distanceSquared < CULL_DISTANCE_SQUARED)
+            {
+                numCellsVisible++;
+                // loop layers
+                for (int i=0; i<NU_MAX_LAYERS; i++)
+                for (int x=0; x<NU_CELL_WIDTH; x++)
+                for (int y=0; y<NU_CELL_HEIGHT; y++)
                 {
-                    float distanceSquared = (block->getLocation() - m_location.m_position).lengthSquared();
-                    if (distanceSquared < CULL_DISTANCE_SQUARED)
+                    // TODO [muumi] do not render blocks that are above player
+                    /*
+                    if (i > pos.m_z && x == pos.m_x && y == pos.m_y)
+                        continue;
+                    */
+
+                    Block* block = cell->getBlock(Vec3i(x, y, i));
+                    if (block)
                     {
-                        block->render();
-                        numVisible++;
-                    }
-                    else
-                    {
-                        numCulled++;
+                        float distanceSquared = (block->getLocation() - m_location.m_position).lengthSquared();
+                        if (distanceSquared < CULL_DISTANCE_SQUARED)
+                        {
+                            block->render();
+                            numBlocksVisible++;
+                        }
+                        else
+                        {
+                            numBlocksCulled++;
+                        }
                     }
                 }
             }
         }
+        else
+        {
+            numCellsCulled++;
+        }
     }
+    //printf("%d, %d, %d, %d\n", numCellsVisible, numCellsCulled, numBlocksVisible, numBlocksCulled);
 }
 
 void Player::renderPlayer()
