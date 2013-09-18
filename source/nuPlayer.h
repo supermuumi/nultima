@@ -22,7 +22,7 @@ public:
     Vec3i       getPosition() { return m_location.m_position; }
 
 private:
-    void        renderWorld();
+    void        renderWorld(bool disableCulling);
     void        renderPlayer();
     void        setupWorldRendering(Camera* inCamera);
     void        finishWorldRendering();

@@ -41,7 +41,7 @@ void Player::setupWorldRendering(Camera* inCamera)
     g->setLight(m_light);
 }
 
-void Player::renderWorld()
+void Player::renderWorld(bool disableCulling )
 {
     ScopedTimer timer("Player::renderWorld");
 
@@ -66,7 +66,7 @@ void Player::renderWorld()
 
             float distanceSquared = (cellPos - m_location.m_position).lengthSquared();
 
-            if (distanceSquared < CULL_DISTANCE_SQUARED)
+            if (disableCulling || distanceSquared < CULL_DISTANCE_SQUARED)
             {
                 numCellsVisible++;
                 // loop layers
@@ -84,7 +84,7 @@ void Player::renderWorld()
                     if (block)
                     {
                         float distanceSquared = (block->getLocation() - m_location.m_position).lengthSquared();
-                        if (distanceSquared < CULL_DISTANCE_SQUARED)
+                        if (disableCulling  || distanceSquared < CULL_DISTANCE_SQUARED)
                         {
                             block->render();
                             numBlocksVisible++;
@@ -129,7 +129,7 @@ void Player::render(Camera* inCamera, Light* light)
     m_light = light;
 
     setupWorldRendering(inCamera);
-    renderWorld();
+    renderWorld((inCamera != NULL));
     renderPlayer();
     finishWorldRendering();
 }
