@@ -1,4 +1,5 @@
 #include "nuVec3.h"
+#include <math.h>
 
 using namespace Nultima;
 
@@ -61,7 +62,7 @@ Vec3i Vec3i::operator-(Vec3i v)
 
 float Vec3i::length()
 {
-    return std::sqrtf(lengthSquared());
+    return sqrtf(lengthSquared());
 }
 
 float Vec3i::lengthSquared()
