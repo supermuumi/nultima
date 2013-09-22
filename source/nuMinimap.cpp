@@ -132,4 +132,14 @@ void Minimap::getWorldMinMax(Vec2i& min, Vec2i& max)
 
     if (dim.m_y < MINIMAP_HEIGHT)
         min.m_y -= MINIMAP_HEIGHT - dim.m_y;
+
+    int multX = (int)std::ceil((float)dim.m_x / (float)MINIMAP_WIDTH);
+    int multY = (int)std::ceil((float)dim.m_y / (float)MINIMAP_HEIGHT);
+    max.m_x += multX*MINIMAP_WIDTH - dim.m_x;
+    max.m_y += multY*MINIMAP_HEIGHT - dim.m_y;
+
+    if (multY > multX)
+        max.m_x += (multY-multX)*MINIMAP_WIDTH;
+    else
+        max.m_y += (multX-multY)*MINIMAP_HEIGHT;
 }
