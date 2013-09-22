@@ -110,7 +110,7 @@ void World::generateFromPNG(std::string fname)
                 NU_ASSERT(!"unknown block type");
             }
             
-            insertBlock(new Block(tilemap->getTileIndex(id), loc));
+            insertBlock(new Block((char)tilemap->getTileIndex(id), loc));
         }
     }
 
