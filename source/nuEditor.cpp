@@ -194,8 +194,8 @@ void Editor::handleKeypress(int key)
     if (key == ',') moveSelection(Vec3i(0, 0, -1));
 
     // move camera
-    if (key == NU_KEY_PAGE_UP) moveCamera(Vec3i(0, 0, 5));
-    if (key == NU_KEY_PAGE_DOWN) moveCamera(Vec3i(0, 0, -5));
+    if (key == NU_KEY_PAGE_UP) moveCamera(Vec3(0, 0, 5));
+    if (key == NU_KEY_PAGE_DOWN) moveCamera(Vec3(0, 0, -5));
 
     // cull distance
     if (key == NU_KEY_HOME) changeCullDistanceBy(-1);

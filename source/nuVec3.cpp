@@ -21,7 +21,8 @@ void Vec3::getFloats(float* array)
 
 float Vec3::length()
 {
-    return std::sqrtf(lengthSquared());
+    //return std::sqrtf(lengthSquared());
+    return sqrtf(lengthSquared());
 }
 
 float Vec3::lengthSquared()
