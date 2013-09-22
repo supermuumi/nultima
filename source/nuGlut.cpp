@@ -76,10 +76,8 @@ static void click(int button, int updown, int x, int y)
 
 static void motion(int x, int y)
 {
-    NU_UNREF(x);
-    NU_UNREF(y);
-
-    glutPostRedisplay();
+    Mouse* mouse = Context::get()->getMouse();
+    mouse->motion(x, glutGet(GLUT_WINDOW_HEIGHT)-y);
 }
 
 static void reshape(int x, int y)

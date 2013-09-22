@@ -26,6 +26,7 @@ public:
     ~Mouse() {};
 
     void        setClick    (int button, int x, int y, bool isDown);
+    void        motion      (int x, int y);
     KeyPress    getKeyPress (int button) { return m_keysDown[button]; }
 
 private:

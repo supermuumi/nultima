@@ -19,3 +19,14 @@ void Mouse::setClick(int button, int x, int y, bool isDown)
     m_keysDown[button].y = y;
 }
 
+void Mouse::motion(int x, int y)
+{
+    for (int i=0; i<2; i++)
+    {
+        if (m_keysDown[i].isDown)
+        {
+            m_keysDown[i].x = x;
+            m_keysDown[i].y = y;
+        }
+    }
+}
