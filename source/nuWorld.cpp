@@ -59,7 +59,7 @@ void World::generateFromPNG(std::string fname)
 0xffff00 = highway / road (using road_vertical)
 0xff00ff = Unkown (using forest_normal)
 */
-            // water, check for shoreline
+
             std::string id;
 
             bool sameLeft  = (x > 0 && getMapPixel(data, x-1, y, w) == p);
@@ -67,23 +67,16 @@ void World::generateFromPNG(std::string fname)
             bool sameUp    = (y > 0 && getMapPixel(data, x, y-1, w) == p);
             bool sameDown  = (y < h-1 && getMapPixel(data, x, y+1, w) == p);
 
+            // water, check for shoreline
             if (p == 0x0000ff) {
 
-                id = "sea_shallow";
-
-                // TODO not all cases covered, also need more tiles...
-                if (!sameRight)
-                {
-                    if (!sameDown)    id = "shore_topleft";
-                    else if (!sameUp) id = "shore_bottomleft";
-                    else             id = "shore_left";
-                }
-                else if (!sameLeft)
-                {
-                    if (!sameDown)    id = "shore_topright";
-                    else if (!sameUp) id = "shore_bottomright";
-                    else             id = "shore_right";
-                }
+                if (!sameLeft && sameRight && sameUp && sameDown)       id = "shore_right";
+                else if (sameLeft && !sameRight && sameUp && sameDown)  id = "shore_left";
+                else if (sameUp && sameLeft && !sameRight && !sameDown) id = "shore_topleft";
+                else if (sameUp && sameRight && !sameLeft && !sameDown) id = "shore_topright";
+                else if (!sameUp && sameLeft && !sameRight && sameDown) id = "shore_bottomleft";
+                else if (!sameUp && !sameLeft && sameRight && sameDown) id = "shore_bottomright";
+                else id = "sea_shallow";
             }
             else if (p == 0x00ff00) id = "grassland";
             else if (p == 0xffffff) id = "plains";
