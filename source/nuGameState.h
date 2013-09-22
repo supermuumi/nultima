@@ -1,7 +1,5 @@
 #pragma once
 
-#include "nuMapLocation.h"
-
 #include <string>
 
 namespace Nultima
@@ -13,7 +11,7 @@ public:
     GameState(std::string filename) {};
     ~GameState() {};
 
-    bool getPlayerLocation(MapLocation& location) { (void)location; return false; }
+    bool getPlayerLocation(Vec3i& location) { (void)location; return false; }
 };
 
 };

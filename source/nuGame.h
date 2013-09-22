@@ -35,12 +35,13 @@ public:
 
 private:
     // rendering
-    void beginFrame();
-    void endFrame();
-    void renderViewport();
-    void renderHUD();
-    void renderStats();
-    void setupLight();
+    void beginFrame     ();
+    void endFrame       ();
+    void renderViewport ();
+    void renderWorld    (Camera* camera);
+    void renderHUD      ();
+    void renderStats    ();
+    void setupLight     ();
 
     // actual gameplay related
     void movePlayer(Vec3i d);

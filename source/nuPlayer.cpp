@@ -15,123 +15,31 @@
 
 using namespace Nultima;
 
-#define CULL_DISTANCE_SQUARED 400
-
-Player::Player(MapLocation location, World* world)
+Player::Player(Vec3i position, World* world)
 {
     m_world = world;
-    m_location = location;
+    m_position = position;
     m_avatar = new Character();
+    Vec3 cameraPosition((float)m_position.m_x, (float)m_position.m_y, (float)m_position.m_z);
+    cameraPosition.m_z += 10; 
+    m_camera = new Camera(cameraPosition);
 }
 
-void Player::setupWorldRendering(Camera* inCamera)
-{
-    // TODO [sampo] tick outside?
-    m_avatar->tick();
-
-    Graphics* g = Context::get()->getGraphics();
-    g->setPerspectiveProjection();
-
-    // place camera
-    Camera playerCamera(m_location);
-    Camera* camera = (inCamera) ? inCamera : &playerCamera;
-    camera->setView();
-
-    g->enableLighting();
-    g->setLight(m_light);
-}
-
-void Player::renderWorld(bool disableCulling )
-{
-    ScopedTimer timer("Player::renderWorld");
-
-    std::tr1::unordered_map<unsigned int, Cell*> cells = m_world->getCells();
-
-    Vec3i pos = m_location.m_position;
-
-    int numCellsCulled = 0;
-    int numCellsVisible = 0;
-    int numBlocksCulled = 0;
-    int numBlocksVisible = 0;
-    // loop cells
-    for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = cells.begin(); it != cells.end(); ++it)
-    {
-        Cell* cell = it->second;
-        if (cell)
-        {
-            Vec3i cellPos = Vec3i(cell->getPosition().m_x, cell->getPosition().m_y, 0);
-            cellPos.m_x += NU_CELL_WIDTH/2;
-            cellPos.m_y += NU_CELL_HEIGHT/2;
-            cellPos.m_z += NU_MAX_LAYERS/2;
-
-            float distanceSquared = (cellPos - m_location.m_position).lengthSquared();
-
-            if (disableCulling || distanceSquared < CULL_DISTANCE_SQUARED)
-            {
-                numCellsVisible++;
-                // loop layers
-                for (int i=0; i<NU_MAX_LAYERS; i++)
-                for (int x=0; x<NU_CELL_WIDTH; x++)
-                for (int y=0; y<NU_CELL_HEIGHT; y++)
-                {
-                    // TODO [muumi] do not render blocks that are above player
-                    /*
-                    if (i > pos.m_z && x == pos.m_x && y == pos.m_y)
-                        continue;
-                    */
-
-                    Block* block = cell->getBlock(Vec3i(x, y, i));
-                    if (block)
-                    {
-                        float distanceSquared = (block->getLocation() - m_location.m_position).lengthSquared();
-                        if (disableCulling  || distanceSquared < CULL_DISTANCE_SQUARED)
-                        {
-                            block->render();
-                            numBlocksVisible++;
-                        }
-                        else
-                        {
-                            numBlocksCulled++;
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            numCellsCulled++;
-        }
-    }
-    //printf("%d, %d, %d, %d\n", numCellsVisible, numCellsCulled, numBlocksVisible, numBlocksCulled);
-}
-
-void Player::renderPlayer()
+void Player::render()
 {
     ScopedTimer timer("Player::renderPlayer");
 
     Graphics* g = Context::get()->getGraphics();
     // Render player
     g->pushMatrix();
-    g->translate((float)m_location.m_position.m_x+0.5f, (float)m_location.m_position.m_y+0.5f, (float)m_location.m_position.m_z+0.5f);
+    g->translate((float)m_position.m_x+0.5f, (float)m_position.m_y+0.5f, (float)m_position.m_z+0.5f);
     m_avatar->render();
     g->popMatrix();
 }
 
-void Player::finishWorldRendering()
+void Player::tick()
 {
-    Graphics* g = Context::get()->getGraphics();
-    g->disableLighting();
-}
-
-// TODO [sampo] frustum culling
-void Player::render(Camera* inCamera, Light* light)
-{
-    m_light = light;
-
-    setupWorldRendering(inCamera);
-    renderWorld((inCamera != NULL));
-    renderPlayer();
-    finishWorldRendering();
+    m_avatar->tick();
 }
 
 bool Player::move(Vec3i d)
@@ -139,10 +47,10 @@ bool Player::move(Vec3i d)
     Tilemap* tilemap = Context::get()->getTexManager()->getTilemap();
 
     // Current block
-    Block* currentBlock = m_world->getBlockAt(m_location.m_position);
+    Block* currentBlock = m_world->getBlockAt(m_position);
 
     // Target block
-    Vec3i targetPosition = m_location.m_position + d;
+    Vec3i targetPosition = m_position + d;
     // Player must always be on at least layer 1
     NU_ASSERT(targetPosition.m_z > 0);
     Block* targetBlock = m_world->getBlockAt(targetPosition);
@@ -201,6 +109,9 @@ bool Player::move(Vec3i d)
         return false;
     }
 
-    m_location.set(targetPosition);
+    m_position = targetPosition;
+
+    Vec3 cameraPos((float)m_position.m_x, (float)m_position.m_y, (float)m_position.m_z+10);
+    m_camera->moveTo(cameraPos);
     return true;
 }

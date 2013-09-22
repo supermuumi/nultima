@@ -7,13 +7,13 @@
 #include "nuWorld.h"
 #include "nuGameState.h"
 #include "nuPlayer.h"
-#include "nuMapLocation.h"
 #include "nuCamera.h"
 #include "nuEditor.h"
 #include "nuAudioManager.h"
 #include "nuLight.h"
 #include "nuUtils.h"
 #include "nuTimer.h"
+#include "nuCell.h"
 
 #include <cmath>
 #include <sstream>
@@ -33,12 +33,12 @@ Game::Game(std::string worldFile, std::string stateFile) :
 /*
     m_world = new World();
     m_world->generateFromPNG("../../assets/maps/test.png");
-    m_world->generateFromPNG("../../assets/maps/south_helsinki.png");
 */
+    m_world->generateFromPNG("../../assets/maps/south_helsinki.png");
     m_state = new GameState(stateFile);
     m_editor = new Editor(m_world);
 
-    MapLocation playerLocation;
+    Vec3i playerLocation;
     if (!m_state->getPlayerLocation(playerLocation))
         playerLocation = m_world->getPlayerStart();
 
@@ -86,10 +86,10 @@ void Game::tick()
     handleKeyboard();
     handleMouse();
 
-    // Streaming
-
     if (m_advanceTurn)
         processTurn();
+
+    m_player->tick();
 }
 
 void Game::display()
@@ -132,6 +132,83 @@ void Game::setupLight()
     m_light->m_pos.m_z = (float)pPos.m_z + (float)std::sin(lightTimer)*1.0f;
 }
 
+void Game::renderWorld(Camera* camera)
+{
+    Graphics* g = Context::get()->getGraphics();
+    g->setPerspectiveProjection();
+
+    // place camera
+    camera->setView();
+
+    g->enableLighting();
+    g->setLight(m_light);
+
+    {
+        ScopedTimer timer("Player::renderWorld");
+
+        std::tr1::unordered_map<unsigned int, Cell*> cells = m_world->getCells();
+
+        Vec3 pos = camera->getPosition();
+
+        int numCellsCulled = 0;
+        int numCellsVisible = 0;
+        int numBlocksCulled = 0;
+        int numBlocksVisible = 0;
+
+        float cullDistanceSquared = camera->getCullDistance() * camera->getCullDistance();
+        // loop cells
+        for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = cells.begin(); it != cells.end(); ++it)
+        {
+            Cell* cell = it->second;
+            if (cell)
+            {
+                Vec3 cellPos = Vec3((float)cell->getPosition().m_x, (float)cell->getPosition().m_y, 0);
+                cellPos.m_x += NU_CELL_WIDTH/2;
+                cellPos.m_y += NU_CELL_HEIGHT/2;
+                cellPos.m_z += NU_MAX_LAYERS/2;
+
+                float distanceSquared = (cellPos - pos).lengthSquared();
+
+                if (distanceSquared < cullDistanceSquared)
+                {
+                    numCellsVisible++;
+                    // loop layers
+                    for (int i=0; i<NU_MAX_LAYERS; i++)
+                    for (int x=0; x<NU_CELL_WIDTH; x++)
+                    for (int y=0; y<NU_CELL_HEIGHT; y++)
+                    {
+                        Block* block = cell->getBlock(Vec3i(x, y, i));
+                        if (block)
+                        {
+                            Vec3i blockPosi = block->getLocation();
+                            Vec3 blockPos = Vec3((float)blockPosi.m_x, (float)blockPosi.m_y, (float)blockPosi.m_z);
+                            float distanceSquared = (blockPos - pos).lengthSquared();
+                            if (distanceSquared < cullDistanceSquared)
+                            {
+                                block->render();
+                                numBlocksVisible++;
+                            }
+                            else
+                            {
+                                numBlocksCulled++;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                numCellsCulled++;
+            }
+        }
+        //printf("%d, %d, %d, %d\n", numCellsVisible, numCellsCulled, numBlocksVisible, numBlocksCulled);
+    }
+
+    m_player->render();
+
+    g->disableLighting();
+}
+
 void Game::renderViewport()
 {
     ScopedTimer timer("Game::renderViewport");
@@ -142,7 +219,8 @@ void Game::renderViewport()
     setupLight();
 
     // render world
-    m_player->render(m_isEditorMode ? m_editor->getCamera() : NULL, m_light);
+    Camera* camera = m_isEditorMode ? m_editor->getCamera() : m_player->getCamera();
+    renderWorld(camera);
 
     if (m_isEditorMode) 
         m_editor->render();

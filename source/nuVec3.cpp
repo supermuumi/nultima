@@ -19,6 +19,25 @@ void Vec3::getFloats(float* array)
     array[2] = m_z;
 }
 
+float Vec3::length()
+{
+    return std::sqrtf(lengthSquared());
+}
+
+float Vec3::lengthSquared()
+{
+    return (float)(m_x*m_x + m_y*m_y + m_z*m_z);
+}
+
+Vec3 Vec3::operator-(Vec3 v)
+{
+    Vec3 ret;
+    ret.m_x = m_x - v.m_x;
+    ret.m_y = m_y - v.m_y;
+    ret.m_z = m_z - v.m_z;
+    return ret;
+}
+
 Vec3ui Vec3ui::operator+(Vec3ui v)
 {
     Vec3ui ret;
