@@ -70,9 +70,9 @@ void World::generateFromPNG(std::string fname)
             // water, check for shoreline
             if (p == 0x0000ff) {
 
-                if (!sameLeft && sameRight && sameUp && sameDown)       id = "shore_right";
-                else if (sameLeft && !sameRight && sameUp && sameDown)  id = "shore_left";
-                else if (sameUp && sameLeft && !sameRight && !sameDown) id = "shore_topleft";
+                //if (!sameLeft && sameRight && sameUp && sameDown)       id = "shore_right";
+                //else if (sameLeft && !sameRight && sameUp && sameDown)  id = "shore_left";
+                if (sameUp && sameLeft && !sameRight && !sameDown) id = "shore_topleft";
                 else if (sameUp && sameRight && !sameLeft && !sameDown) id = "shore_topright";
                 else if (!sameUp && sameLeft && !sameRight && sameDown) id = "shore_bottomleft";
                 else if (!sameUp && !sameLeft && sameRight && sameDown) id = "shore_bottomright";
