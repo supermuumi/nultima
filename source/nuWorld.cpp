@@ -59,8 +59,6 @@ void World::generateFromPNG(std::string fname)
 0xffff00 = highway / road (using road_vertical)
 0xff00ff = Unkown (using forest_normal)
 */
-
-
             // water, check for shoreline
             std::string id;
 
@@ -95,7 +93,6 @@ void World::generateFromPNG(std::string fname)
             // TODO [muumi] not all cases
             else if (p == 0xffff00) 
             {
-                printf("road at %d,%d\n", x, h-y-1);
                 id = "road_vert";
                 if (sameRight && sameLeft && sameUp && sameDown) id = "road_crossroad";
                 else if (sameRight && sameLeft && sameDown) id = "road_T";
