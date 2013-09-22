@@ -95,12 +95,12 @@ void World::generateFromPNG(std::string fname)
             {
                 id = "road_vert";
                 if (sameRight && sameLeft && sameUp && sameDown) id = "road_crossroad";
-                else if (sameRight && sameLeft && sameDown) id = "road_T";
-                else if (sameRight && sameLeft) id = "road_horiz";
-                else if (sameRight && sameUp) id = "road_L";
-                else if (sameRight && sameDown) id = "road_L90";                
-                else if (sameLeft && sameDown) id = "road_L180";
-                else if (sameLeft && sameUp) id = "road_L270";
+                else if (sameRight && sameLeft && sameDown && !sameUp) id = "road_T";
+                else if (sameRight && sameLeft && !sameDown && !sameUp) id = "road_horiz";
+                else if (sameRight && sameUp && !sameLeft && !sameDown) id = "road_L";
+                else if (sameRight && sameDown && !sameLeft && !sameUp) id = "road_L90";                
+                else if (sameLeft && sameDown && !sameRight && !sameUp) id = "road_L180";
+                else if (sameLeft && sameUp && !sameRight && !sameDown) id = "road_L270";
                 else if (sameRight && sameLeft) id = "road_horiz";
             }
             else if (p == 0xff00ff) id = "forest_normal"; 
