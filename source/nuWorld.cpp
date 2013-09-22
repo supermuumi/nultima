@@ -55,12 +55,12 @@ void World::generateFromPNG(std::string fname)
 0xffff00 = highway / road (using road_vertical)
 0xff00ff = Unkown (using forest_normal)
 */
-            if (p == 0x0000ff)      insertBlock(new Block(tilemap->getTileIndex("sea_normal"), loc));
-            else if (p == 0x00ff00) insertBlock(new Block(tilemap->getTileIndex("grassland"), loc));
-            else if (p == 0xffffff) insertBlock(new Block(tilemap->getTileIndex("plains"), loc));
-            else if (p == 0x00ffff) insertBlock(new Block(tilemap->getTileIndex("mountain_medium"), loc));
-            else if (p == 0xffff00) insertBlock(new Block(tilemap->getTileIndex("road_vert"), loc));
-            else if (p == 0xff00ff) insertBlock(new Block(tilemap->getTileIndex("forest_normal"), loc));
+            if (p == 0x0000ff)      insertBlock(new Block((char)tilemap->getTileIndex("sea_normal"), loc));
+            else if (p == 0x00ff00) insertBlock(new Block((char)tilemap->getTileIndex("grassland"), loc));
+            else if (p == 0xffffff) insertBlock(new Block((char)tilemap->getTileIndex("plains"), loc));
+            else if (p == 0x00ffff) insertBlock(new Block((char)tilemap->getTileIndex("mountain_medium"), loc));
+            else if (p == 0xffff00) insertBlock(new Block((char)tilemap->getTileIndex("road_vert"), loc));
+            else if (p == 0xff00ff) insertBlock(new Block((char)tilemap->getTileIndex("forest_normal"), loc));
             else
             {
                 NU_ASSERT(!"unkown block type");

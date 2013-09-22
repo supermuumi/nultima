@@ -110,6 +110,7 @@ void Editor::renderHud()
 void Editor::renderActiveBlock()
 {
     Graphics* g = Context::get()->getGraphics();
+    g->setColor(1, 1, 1, 1);
 
     int timer = (int)Utils::getCurrentTime();
     if (timer % 300 < 150)
