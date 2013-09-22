@@ -16,22 +16,18 @@ public:
     Player(MapLocation location, World* world);
     ~Player() {};
 
-    void        render(Camera* camera, Light* light);
-    bool        move  (Vec3i d);
+    void        render  ();
+    bool        move    (Vec3i d);
+    void        tick    ();
 
     Vec3i       getPosition() { return m_location.m_position; }
+    Camera*     getCamera()     { return m_camera; }
 
 private:
-    void        renderWorld(bool disableCulling);
-    void        renderPlayer();
-    void        setupWorldRendering(Camera* inCamera);
-    void        finishWorldRendering();
-
     MapLocation m_location;
     Character*  m_avatar;
     World*      m_world;
-    // TODO [sampo] get this from the world?
-    Light*      m_light;
+    Camera*     m_camera;
 };
 
 };

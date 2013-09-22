@@ -10,11 +10,14 @@ Camera::Camera()
     m_dir = Vec3(0, 0, -1);
     m_up = Vec3(0, 1, 0);
     m_right = Vec3(1, 0, 0);
+
+    m_cullDistance = 40;
 }
 
 Camera::Camera(MapLocation location)
 {
     moveToLocation(location);
+    m_cullDistance = 40;
 }
 
 void Camera::moveTo(Vec3i v)

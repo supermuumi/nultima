@@ -53,6 +53,7 @@ private:
     void    changeEditMode(EditMode m);
     int     getBlocksetStart(int idx);
     void    moveCamera(Vec3i);
+    void    changeCullDistanceBy(float d);
     void    moveSelection(Vec3i d);
     void    saveWorld();
     void    renderHud();

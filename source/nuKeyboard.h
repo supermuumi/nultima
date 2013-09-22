@@ -12,6 +12,8 @@ namespace Nultima
 #define NU_KEY_DOWN         359
 #define NU_KEY_PAGE_UP      360
 #define NU_KEY_PAGE_DOWN    361
+#define NU_KEY_HOME         362
+#define NU_KEY_END          363
 
 class Keyboard
 {

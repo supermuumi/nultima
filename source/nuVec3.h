@@ -13,7 +13,11 @@ public:
     ~Vec3() {}
 
     Vec3 operator+ (Vec3);
+    Vec3 operator- (Vec3);
     void getFloats(float* array);
+
+    float   length          ();
+    float   lengthSquared   ();
 
     float m_x;
     float m_y;

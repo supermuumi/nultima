@@ -72,6 +72,7 @@ void Editor::renderHud()
             ".            - up layer\n"
             ",            - down layer\n"
             "page up/down - zoom\n"
+            "home/end     - cull distance\n"
             "\n"
             "h            - toggle help\n"
             "\n"
@@ -156,6 +157,13 @@ void Editor::moveCamera(Vec3i d)
     m_camera->moveTo(m_cursor + m_cameraOffset);
 }
 
+
+void Editor::changeCullDistanceBy(float d)
+{
+    float current = m_camera->getCullDistance();
+    m_camera->setCullDistance(current+d);
+}
+
 void Editor::changeActiveBlockBy(char delta)
 {
     m_cursorType += delta;
@@ -181,6 +189,9 @@ void Editor::handleKeypress(int key)
     if (key == NU_KEY_PAGE_UP) moveCamera(Vec3i(0, 0, 1));
     if (key == NU_KEY_PAGE_DOWN) moveCamera(Vec3i(0, 0, -1));
 
+    // cull distance
+    if (key == NU_KEY_HOME) changeCullDistanceBy(-1);
+    if (key == NU_KEY_END) changeCullDistanceBy(1);
 
     // misc
     if (key == 'h') m_helpActive = !m_helpActive;
