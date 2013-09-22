@@ -93,19 +93,26 @@ void World::generateFromPNG(std::string fname)
             else if (p == 0xffff00) 
             {
                 id = "road_vert";
-                if (sameRight && sameLeft && sameUp && sameDown) id = "road_crossroad";
-
-                else if (sameRight && sameLeft && sameDown && !sameUp) id = "road_T";
-                else if (sameRight && sameLeft && !sameDown && sameUp) id = "road_T180";
-                else if (!sameRight && sameLeft && sameDown && sameUp) id = "road_T270";
-                else if (sameRight && !sameLeft && sameDown && sameUp) id = "road_T90";
-
-                else if (sameRight && sameLeft && !sameDown && !sameUp) id = "road_horiz";
-                else if (sameRight && sameLeft) id = "road_horiz";
-                else if (sameRight && sameUp && !sameLeft && !sameDown) id = "road_L";
-                else if (sameRight && sameDown && !sameLeft && !sameUp) id = "road_L90";                
-                else if (sameLeft && sameDown && !sameRight && !sameUp) id = "road_L180";
-                else if (sameLeft && sameUp && !sameRight && !sameDown) id = "road_L270";
+                if (sameRight)
+                {
+                    if (sameLeft)
+                    {
+                        if (sameUp && sameDown) id = "road_crossroad";
+                        else if (sameDown && !sameUp) id = "road_T";
+                        else if (!sameDown && sameUp) id = "road_T180";
+                        else if (!sameDown && !sameUp) id = "road_horiz";
+                        else id = "road_horiz";
+                    }
+                    else if (!sameLeft && sameDown && sameUp) id = "road_T90";
+                    else if (sameUp && !sameLeft && !sameDown) id = "road_L";
+                    else if (sameDown && !sameLeft && !sameUp) id = "road_L90";
+                }                
+                else if (sameLeft && !sameRight)
+                {
+                    if (sameDown && sameUp) id = "road_T270";
+                    else if (sameDown && !sameUp) id = "road_L180";
+                    else if (sameUp && !sameDown) id = "road_L270";
+                }
             }
             else if (p == 0xff00ff) id = "forest_normal"; 
             else
