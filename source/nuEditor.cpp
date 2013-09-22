@@ -178,7 +178,7 @@ void Editor::changeActiveBlockBy(char delta)
     TexManager* tex = Context::get()->getTexManager();
 
     if (m_cursorType < 0) 
-        m_cursorType = tex->getNumTiles()-1;
+        m_cursorType = (char)tex->getNumTiles()-1;
     if (m_cursorType >= tex->getNumTiles())
         m_cursorType = 0;
 }
