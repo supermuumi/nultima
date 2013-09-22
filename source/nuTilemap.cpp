@@ -29,6 +29,7 @@ using namespace Nultima;
 
 Tilemap::Tilemap()
 {
+    m_tiles.resize(512);
 }
 
 Tilemap::~Tilemap()
@@ -70,7 +71,8 @@ void Tilemap::load(std::string fname)
     // process tile info 
     // for each tile we'll create a m_tileSize^2 texture
     const rapidjson::Value& tiles = doc["tiles"];
-
+    
+    printf("Processing %d tiles...\n", tiles.Size());
     for (rapidjson::SizeType i = 0; i < tiles.Size(); i++)
     {
         const rapidjson::Value& tile = tiles[i];
@@ -79,13 +81,12 @@ void Tilemap::load(std::string fname)
         bool isSolid = tile["solid"].GetBool();
 
         // (x1,y1)-(x2,y2) define tile data in tilemap
-	    int x1 = idx%tilesPerLine * m_tileSize;
-	    int y1 = idx/tilesPerLine * m_tileSize;
-	    int x2 = x1+m_tileSize;
-	    int y2 = y1+m_tileSize;
+        int x1 = idx%tilesPerLine * m_tileSize;
+        int y1 = idx/tilesPerLine * m_tileSize;
+        int x2 = x1+m_tileSize;
+        int y2 = y1+m_tileSize;
 
         // TODO this is shit
-
         unsigned int sRed = 0;
         unsigned int sGreen = 0;
         unsigned int sBlue = 0;
@@ -122,8 +123,16 @@ void Tilemap::load(std::string fname)
         info.textureId  = tempTextureId;
         info.isSolid    = isSolid;
         info.color      = tileColor;
-        m_tiles.push_back(info);
+        m_tiles[idx]    = info; //.push_back(info);
+
+        // store name<->id mapping
+        m_tileNameIdMap[tile["name"].GetString()] = tile["id"].GetInt();
+
+        printf("\t%s -> %d\n", tile["name"].GetString(), tile["id"].GetInt());
+
     }
+    printf("done\n");
+    printf("tilemap numtiles = %d\n", (int)m_tiles.size());
 
     delete[] tempTexture;
 

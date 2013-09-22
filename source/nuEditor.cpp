@@ -98,7 +98,7 @@ void Editor::renderHud()
 
         // render stats
         char str[128];
-        sprintf(str, "Mode=%s Loc=[%d,%d] Block=%d\nlayer=%d", getEditModeName().c_str(), m_cursor.m_x, m_cursor.m_y, m_cursorType, m_cursor.m_z);
+        sprintf(str, "Mode=%s Loc=[%d,%d,%d] Block=%d", getEditModeName().c_str(), m_cursor.m_x, m_cursor.m_y, m_cursor.m_z, m_cursorType);
         g->setColor(1.0, 1.0, 1.0, 1.0);
         g->drawString(str, 20, 20);
     }
@@ -161,6 +161,7 @@ void Editor::changeActiveBlockBy(char delta)
     m_cursorType += delta;
 
     TexManager* tex = Context::get()->getTexManager();
+
     if (m_cursorType < 0) 
         m_cursorType = tex->getNumTiles()-1;
     if (m_cursorType >= tex->getNumTiles())
@@ -178,8 +179,8 @@ void Editor::handleKeypress(int key)
     if (key == ',') moveSelection(Vec3i(0, 0, -1));
 
     // move camera
-    if (key == NU_KEY_PAGE_UP) moveCamera(Vec3i(0, 0, 1));
-    if (key == NU_KEY_PAGE_DOWN) moveCamera(Vec3i(0, 0, -1));
+    if (key == NU_KEY_PAGE_UP) moveCamera(Vec3i(0, 0, 5));
+    if (key == NU_KEY_PAGE_DOWN) moveCamera(Vec3i(0, 0, -5));
 
 
     // misc

@@ -23,7 +23,8 @@ Context::Context() :
     m_keyboard(NULL),
     m_mouse(NULL),
     m_fullScreen(false)
-{}
+{
+}
 
 Context::~Context()
 {
@@ -55,8 +56,8 @@ void Context::init(int argc, char** argv)
     m_models.resize(Model::NUM_MODELS, NULL);
 
     m_texManager = new TexManager();
-    m_texManager->loadTilemap("../../config/tilemap.json");
-    //m_texManager->loadTilemap("../../assets/tilemaps/tilemap_plain.json");
+    //m_texManager->loadTilemap("../../config/tilemap.json");
+    m_texManager->loadTilemap("../../assets/tilemaps/tilemap_plain.json");
 
     m_timer = new Timer();
 }
