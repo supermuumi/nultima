@@ -38,10 +38,10 @@
         { "name": "road_L180"         , "id": 71,  "solid": true }, 
         { "name": "road_L270"         , "id": 72,  "solid": true }, 
         { "name": "road_crossroad"    , "id": 73,  "solid": true }, 
-        { "name": "road_t"            , "id": 74,  "solid": true }, 
-        { "name": "road_t90"          , "id": 75,  "solid": true }, 
-        { "name": "road_t180"         , "id": 76,  "solid": true }, 
-        { "name": "road_t270"         , "id": 77,  "solid": true }, 
+        { "name": "road_T180"         , "id": 74,  "solid": true }, 
+        { "name": "road_T90"          , "id": 75,  "solid": true }, 
+        { "name": "road_T"            , "id": 76,  "solid": true }, 
+        { "name": "road_T270"         , "id": 77,  "solid": true }, 
 
         { "name": "wall_horiz"        , "id": 99,  "solid": true }, 
         { "name": "wall_vert"         , "id": 100, "solid": true }, 
@@ -50,10 +50,10 @@
         { "name": "wall_L180"         , "id": 103, "solid": true }, 
         { "name": "wall_L270"         , "id": 104, "solid": true }, 
         { "name": "wall_crossroad"    , "id": 105, "solid": true }, 
-        { "name": "wall_t"            , "id": 106, "solid": true }, 
-        { "name": "wall_t90"          , "id": 107, "solid": true }, 
-        { "name": "wall_t180"         , "id": 108, "solid": true }, 
-        { "name": "wall_t270"         , "id": 109, "solid": true }, 
+        { "name": "wall_T180"         , "id": 106, "solid": true }, 
+        { "name": "wall_T90"          , "id": 107, "solid": true }, 
+        { "name": "wall_T"            , "id": 108, "solid": true }, 
+        { "name": "wall_T270"         , "id": 109, "solid": true }, 
 
         { "name": "brickwall"         , "id": 110, "solid": true }, 
         { "name": "brickwall_window"  , "id": 111, "solid": true }, 
@@ -70,9 +70,9 @@
         { "name": "river_L180"        , "id": 135, "solid": true }, 
         { "name": "river_L270"        , "id": 136, "solid": true }, 
         { "name": "river_crossroad"   , "id": 137, "solid": true }, 
-        { "name": "river_t"           , "id": 138, "solid": true }, 
-        { "name": "river_t90"         , "id": 139, "solid": true }, 
-        { "name": "river_t180"        , "id": 140, "solid": true }, 
-        { "name": "river_t270"        , "id": 141, "solid": true }
+        { "name": "river_T180"        , "id": 138, "solid": true }, 
+        { "name": "river_T90"         , "id": 139, "solid": true }, 
+        { "name": "river_T"           , "id": 140, "solid": true }, 
+        { "name": "river_T270"        , "id": 141, "solid": true }
     ]
 }

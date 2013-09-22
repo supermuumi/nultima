@@ -62,15 +62,14 @@ void World::generateFromPNG(std::string fname)
             // water, check for shoreline
             std::string id;
 
-            bool sameLeft  = !(x > 0 && getMapPixel(data, x-1, y, w) != p);
-            bool sameRight = !(x < w-1 && getMapPixel(data, x+1, y, w) != p);
-            bool sameUp    = !(y > 0 && getMapPixel(data, x, y-1, w) != p);
-            bool sameDown  = !(y < h-1 && getMapPixel(data, x, y+1, w) != p);
+            bool sameLeft  = (x > 0 && getMapPixel(data, x-1, y, w) == p);
+            bool sameRight = (x < w-1 && getMapPixel(data, x+1, y, w) == p);
+            bool sameUp    = (y > 0 && getMapPixel(data, x, y-1, w) == p);
+            bool sameDown  = (y < h-1 && getMapPixel(data, x, y+1, w) == p);
 
             if (p == 0x0000ff) {
 
                 id = "sea_shallow";
-
 
                 // TODO not all cases covered, also need more tiles...
                 if (!sameRight)
@@ -95,13 +94,18 @@ void World::generateFromPNG(std::string fname)
             {
                 id = "road_vert";
                 if (sameRight && sameLeft && sameUp && sameDown) id = "road_crossroad";
+
                 else if (sameRight && sameLeft && sameDown && !sameUp) id = "road_T";
+                else if (sameRight && sameLeft && !sameDown && sameUp) id = "road_T180";
+                else if (!sameRight && sameLeft && sameDown && sameUp) id = "road_T270";
+                else if (sameRight && !sameLeft && sameDown && sameUp) id = "road_T90";
+
                 else if (sameRight && sameLeft && !sameDown && !sameUp) id = "road_horiz";
+                else if (sameRight && sameLeft) id = "road_horiz";
                 else if (sameRight && sameUp && !sameLeft && !sameDown) id = "road_L";
                 else if (sameRight && sameDown && !sameLeft && !sameUp) id = "road_L90";                
                 else if (sameLeft && sameDown && !sameRight && !sameUp) id = "road_L180";
                 else if (sameLeft && sameUp && !sameRight && !sameDown) id = "road_L270";
-                else if (sameRight && sameLeft) id = "road_horiz";
             }
             else if (p == 0xff00ff) id = "forest_normal"; 
             else
