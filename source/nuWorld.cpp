@@ -27,6 +27,15 @@ World::World(std::string fileName)
     }
 }
 
+// TODO assuming bpp=3
+// TODO handle out of bounds?
+int World::getMapPixel(unsigned char* data, int x, int y, int w)
+{
+    int ofs = (y*w + x)*3;
+    int p = (data[ofs]<<16) | (data[ofs+1] << 8) | data[ofs+2];
+    return p;
+}
+
 void World::generateFromPNG(std::string fname)
 {
     int w, h, bpp;
@@ -39,13 +48,8 @@ void World::generateFromPNG(std::string fname)
     {
         for (int x = 0; x < w; x++)
         {
-
-            int ofs = (y*w + x)*bpp;
-            int p = 0;
-            for (int b = 0; b < bpp; b++)
-                p = (p << 8) | data[ofs+b];
-
             Vec3i loc(x, h-y-1, 0);
+            int p = getMapPixel(data, x, y, w);
 
 /*
 0x0000ff = water
@@ -55,16 +59,61 @@ void World::generateFromPNG(std::string fname)
 0xffff00 = highway / road (using road_vertical)
 0xff00ff = Unkown (using forest_normal)
 */
-            if (p == 0x0000ff)      insertBlock(new Block(tilemap->getTileIndex("sea_normal"), loc));
-            else if (p == 0x00ff00) insertBlock(new Block(tilemap->getTileIndex("grassland"), loc));
-            else if (p == 0xffffff) insertBlock(new Block(tilemap->getTileIndex("plains"), loc));
-            else if (p == 0x00ffff) insertBlock(new Block(tilemap->getTileIndex("mountain_medium"), loc));
-            else if (p == 0xffff00) insertBlock(new Block(tilemap->getTileIndex("road_vert"), loc));
-            else if (p == 0xff00ff) insertBlock(new Block(tilemap->getTileIndex("forest_normal"), loc));
+
+
+            // water, check for shoreline
+            std::string id;
+
+            bool sameLeft  = !(x > 0 && getMapPixel(data, x-1, y, w) != p);
+            bool sameRight = !(x < w-1 && getMapPixel(data, x+1, y, w) != p);
+            bool sameUp    = !(y > 0 && getMapPixel(data, x, y-1, w) != p);
+            bool sameDown  = !(y < h-1 && getMapPixel(data, x, y+1, w) != p);
+
+            if (p == 0x0000ff) {
+
+                id = "sea_shallow";
+
+
+                // TODO not all cases covered, also need more tiles...
+                if (!sameRight)
+                {
+                    if (!sameDown)    id = "shore_topleft";
+                    else if (!sameUp) id = "shore_bottomleft";
+                    else             id = "shore_left";
+                }
+                else if (!sameLeft)
+                {
+                    if (!sameDown)    id = "shore_topright";
+                    else if (!sameUp) id = "shore_bottomright";
+                    else             id = "shore_right";
+                }
+            }
+            else if (p == 0x00ff00) id = "grassland";
+            else if (p == 0xffffff) id = "plains";
+            else if (p == 0x00ffff) id = "mountain_medium";
+            // roads
+            // TODO [muumi] not all cases
+            else if (p == 0xffff00) 
+            {
+                printf("road at %d,%d\n", x, h-y-1);
+                id = "road_vert";
+                if (sameRight && sameLeft && sameUp && sameDown) id = "road_crossroad";
+                else if (sameRight && sameLeft && sameDown) id = "road_T";
+                else if (sameRight && sameLeft) id = "road_horiz";
+                else if (sameRight && sameUp) id = "road_L";
+                else if (sameRight && sameDown) id = "road_L90";                
+                else if (sameLeft && sameDown) id = "road_L180";
+                else if (sameLeft && sameUp) id = "road_L270";
+                else if (sameRight && sameLeft) id = "road_horiz";
+            }
+            else if (p == 0xff00ff) id = "forest_normal"; 
             else
             {
-                NU_ASSERT(!"unkown block type");
+                printf("p = %x\n", p);
+                NU_ASSERT(!"unknown block type");
             }
+            
+            insertBlock(new Block(tilemap->getTileIndex(id), loc));
         }
     }
 
