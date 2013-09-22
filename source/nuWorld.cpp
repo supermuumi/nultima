@@ -2,6 +2,9 @@
 #include "nuWorld.h"
 #include "nuBlock.h"
 #include "nuCell.h"
+#include "nuContext.h"
+#include "nuTexManager.h"
+#include "nuTilemap.h"
 #include "nuVec3.h"
 
 #include <fstream>
@@ -29,6 +32,9 @@ void World::generateFromPNG(std::string fname)
     int w, h, bpp;
     unsigned char* data = stbi_load(fname.c_str(), &w, &h, &bpp, 0);
 
+    TexManager* tex = Context::get()->getTexManager();
+    Tilemap* tilemap = tex->getTilemap();
+
     for (int y = 0; y < h; y++)
     {
         for (int x = 0; x < w; x++)
@@ -42,19 +48,19 @@ void World::generateFromPNG(std::string fname)
             Vec3i loc(x, h-y-1, 0);
 
 /*
-0xffffff = generic ground (using grassland1)
-0xffff00 = highway / road (using road_vertical)
 0x0000ff = water
 0x00ff00 = park (using grassland2)
+0xffffff = generic ground (using grassland1)
 0x00ffff = Unkown (using mountain_small)
+0xffff00 = highway / road (using road_vertical)
 0xff00ff = Unkown (using forest_normal)
- */
-            if (p == 0x0000ff)      insertBlock(new Block(0, loc));
-            else if (p == 0x00ff00) insertBlock(new Block(4, loc));
-            else if (p == 0xffffff) insertBlock(new Block(3, loc));
-            else if (p == 0x00ffff) insertBlock(new Block(8, loc));
-            else if (p == 0xffff00) insertBlock(new Block(11, loc));
-            else if (p == 0xff00ff) insertBlock(new Block(6, loc));
+*/
+            if (p == 0x0000ff)      insertBlock(new Block(tilemap->getTileIndex("sea_normal"), loc));
+            else if (p == 0x00ff00) insertBlock(new Block(tilemap->getTileIndex("grassland"), loc));
+            else if (p == 0xffffff) insertBlock(new Block(tilemap->getTileIndex("plains"), loc));
+            else if (p == 0x00ffff) insertBlock(new Block(tilemap->getTileIndex("mountain_medium"), loc));
+            else if (p == 0xffff00) insertBlock(new Block(tilemap->getTileIndex("road_vert"), loc));
+            else if (p == 0xff00ff) insertBlock(new Block(tilemap->getTileIndex("forest_normal"), loc));
             else
             {
                 NU_ASSERT(!"unkown block type");
