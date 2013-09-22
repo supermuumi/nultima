@@ -1,6 +1,5 @@
 #include "nuDefs.h"
 #include "nuWorld.h"
-#include "nuMapLocation.h"
 #include "nuBlock.h"
 #include "nuCell.h"
 #include "nuVec3.h"
@@ -75,7 +74,7 @@ void World::serialize(std::ofstream* stream)
 
     cWrite = WORLD_TAG_PLAYERSTART;
     stream->write(&cWrite, 1);
-    MapLocation playerStart(Vec3i(1, 3, 1));
+    Vec3i playerStart(1, 3, 1);
     playerStart.serialize(stream);
 
     for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = m_cellMap.begin(); it != m_cellMap.end(); ++it)
@@ -107,7 +106,18 @@ void World::deserialize(std::ifstream* stream)
 
         case WORLD_TAG_PLAYERSTART:
             {
-                m_playerStart.deserialize(stream, m_version);
+                if (m_version == World::VERSION_INITIAL)
+                {
+                    int idx;
+                    stream->read((char*)&idx, 4);
+                    stream->read((char*)&m_playerStart.m_x, 4);
+                    stream->read((char*)&m_playerStart.m_y, 4);
+                    stream->read((char*)&m_playerStart.m_z, 4);
+                }
+                else
+                {
+                    m_playerStart.deserialize(stream);
+                }
                 break;
             }
 
@@ -144,11 +154,11 @@ void World::insertBlock(Block* block)
     m_cellMap[cellIdx]->insertBlock(block);
 }
 
-void World::clearBlock(MapLocation location)
+void World::clearBlock(Vec3i location)
 {
-    unsigned int cellIdx = Cell::indexAtLocation(Vec3i(location.m_position.m_x, location.m_position.m_y, location.m_position.m_z));
+    unsigned int cellIdx = Cell::indexAtLocation(location);
     if (m_cellMap[cellIdx])
-        m_cellMap[cellIdx]->clearBlock(location.m_position);
+        m_cellMap[cellIdx]->clearBlock(location);
 }
 
 Cell* World::getCellAt(Vec3i v)

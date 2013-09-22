@@ -8,7 +8,6 @@ namespace Nultima
 {
 
     class Camera;
-    class MapLocation;
     class World;
     class Minimap;
     class Block;
@@ -52,7 +51,10 @@ private:
     void    changeActiveBlockBy(char);
     void    changeEditMode(EditMode m);
     int     getBlocksetStart(int idx);
-    void    moveCamera(Vec3i);
+    
+    void    moveCamera(Vec3 d);
+    void    updateCameraPosition();
+
     void    changeCullDistanceBy(float d);
     void    moveSelection(Vec3i d);
     void    saveWorld();
@@ -60,7 +62,7 @@ private:
     void    renderActiveBlock();
 
     Camera*     m_camera;
-    Vec3i       m_cameraOffset;
+    Vec3        m_cameraOffset;
     World*      m_world;
     EditMode    m_editMode;
     bool        m_helpActive;

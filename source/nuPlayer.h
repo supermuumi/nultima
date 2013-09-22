@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nuMapLocation.h"
+#include "nuVec3.h"
 
 namespace Nultima
 {
@@ -13,18 +13,18 @@ class Light;
 class Player
 {
 public:
-    Player(MapLocation location, World* world);
+    Player(Vec3i position, World* world);
     ~Player() {};
 
     void        render  ();
     bool        move    (Vec3i d);
     void        tick    ();
 
-    Vec3i       getPosition() { return m_location.m_position; }
+    Vec3i       getPosition() { return m_position; }
     Camera*     getCamera()     { return m_camera; }
 
 private:
-    MapLocation m_location;
+    Vec3i       m_position;
     Character*  m_avatar;
     World*      m_world;
     Camera*     m_camera;

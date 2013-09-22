@@ -142,7 +142,7 @@ void Editor::moveSelection(Vec3i d)
     if (m_cursor.m_z >= NU_MAX_LAYERS)
         m_cursor.m_z = NU_MAX_LAYERS-1;
 
-    m_camera->moveTo(m_cursor + m_cameraOffset);
+    updateCameraPosition();
 
     if (m_editMode == EDITMODE_PAINT)
         paintCurrentBlock();
@@ -151,12 +151,19 @@ void Editor::moveSelection(Vec3i d)
         eraseCurrentBlock();
 }
 
-void Editor::moveCamera(Vec3i d)
+void Editor::moveCamera(Vec3 d)
 {
     m_cameraOffset = m_cameraOffset + d;
-    m_camera->moveTo(m_cursor + m_cameraOffset);
+
+    updateCameraPosition();
 }
 
+void Editor::updateCameraPosition()
+{
+    Vec3 cameraLoc((float)m_cursor.m_x, (float)m_cursor.m_y, (float)m_cursor.m_z);
+    cameraLoc = cameraLoc + m_cameraOffset;
+    m_camera->moveTo(cameraLoc);
+}
 
 void Editor::changeCullDistanceBy(float d)
 {
@@ -186,8 +193,8 @@ void Editor::handleKeypress(int key)
     if (key == ',') moveSelection(Vec3i(0, 0, -1));
 
     // move camera
-    if (key == NU_KEY_PAGE_UP) moveCamera(Vec3i(0, 0, 1));
-    if (key == NU_KEY_PAGE_DOWN) moveCamera(Vec3i(0, 0, -1));
+    if (key == NU_KEY_PAGE_UP) moveCamera(Vec3(0, 0, 1));
+    if (key == NU_KEY_PAGE_DOWN) moveCamera(Vec3(0, 0, -1));
 
     // cull distance
     if (key == NU_KEY_HOME) changeCullDistanceBy(-1);
@@ -240,8 +247,8 @@ void Editor::handleMouse()
 
             m_cursor.m_x = coord.m_x;
             m_cursor.m_y = coord.m_y;
-            m_camera->moveTo(m_cursor + m_cameraOffset);
 
+            updateCameraPosition();
         }
     }
 }

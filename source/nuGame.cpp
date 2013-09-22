@@ -7,7 +7,6 @@
 #include "nuWorld.h"
 #include "nuGameState.h"
 #include "nuPlayer.h"
-#include "nuMapLocation.h"
 #include "nuCamera.h"
 #include "nuEditor.h"
 #include "nuAudioManager.h"
@@ -39,7 +38,7 @@ Game::Game(std::string worldFile, std::string stateFile) :
     m_state = new GameState(stateFile);
     m_editor = new Editor(m_world);
 
-    MapLocation playerLocation;
+    Vec3i playerLocation;
     if (!m_state->getPlayerLocation(playerLocation))
         playerLocation = m_world->getPlayerStart();
 

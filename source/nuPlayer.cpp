@@ -15,12 +15,14 @@
 
 using namespace Nultima;
 
-Player::Player(MapLocation location, World* world)
+Player::Player(Vec3i position, World* world)
 {
     m_world = world;
-    m_location = location;
+    m_position = position;
     m_avatar = new Character();
-    m_camera = new Camera(m_location);
+    Vec3 cameraPosition((float)m_position.m_x, (float)m_position.m_y, (float)m_position.m_z);
+    cameraPosition.m_z += 10; 
+    m_camera = new Camera(cameraPosition);
 }
 
 void Player::render()
@@ -30,7 +32,7 @@ void Player::render()
     Graphics* g = Context::get()->getGraphics();
     // Render player
     g->pushMatrix();
-    g->translate((float)m_location.m_position.m_x+0.5f, (float)m_location.m_position.m_y+0.5f, (float)m_location.m_position.m_z+0.5f);
+    g->translate((float)m_position.m_x+0.5f, (float)m_position.m_y+0.5f, (float)m_position.m_z+0.5f);
     m_avatar->render();
     g->popMatrix();
 }
@@ -45,10 +47,10 @@ bool Player::move(Vec3i d)
     Tilemap* tilemap = Context::get()->getTexManager()->getTilemap();
 
     // Current block
-    Block* currentBlock = m_world->getBlockAt(m_location.m_position);
+    Block* currentBlock = m_world->getBlockAt(m_position);
 
     // Target block
-    Vec3i targetPosition = m_location.m_position + d;
+    Vec3i targetPosition = m_position + d;
     // Player must always be on at least layer 1
     NU_ASSERT(targetPosition.m_z > 0);
     Block* targetBlock = m_world->getBlockAt(targetPosition);
@@ -107,7 +109,9 @@ bool Player::move(Vec3i d)
         return false;
     }
 
-    m_location.set(targetPosition);
-    m_camera->moveToLocation(m_location);
+    m_position = targetPosition;
+
+    Vec3 cameraPos((float)m_position.m_x, (float)m_position.m_y, (float)m_position.m_z+10);
+    m_camera->moveTo(cameraPos);
     return true;
 }

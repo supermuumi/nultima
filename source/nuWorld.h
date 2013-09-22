@@ -1,6 +1,5 @@
 #pragma once
 
-#include "nuMapLocation.h"
 #include "nuVec3.h"
 #include "nuVec2.h"
 
@@ -46,13 +45,13 @@ public:
 
     void generateFromPNG(std::string fname);
 
-    MapLocation getPlayerStart  () { return m_playerStart; }
+    Vec3i       getPlayerStart  () { return m_playerStart; }
     std::tr1::unordered_map<unsigned int, Cell*> getCells   () { return m_cellMap; }
 
     Cell*       getCellAt       (Vec3i);
     Block*      getBlockAt      (Vec3i);
     void        insertBlock     (Block* block);
-    void        clearBlock      (MapLocation location);
+    void        clearBlock      (Vec3i location);
 
     void        serialize       (std::ofstream* stream);
     void        deserialize     (std::ifstream* stream);
@@ -62,8 +61,8 @@ public:
 
 private:
     std::tr1::unordered_map<unsigned int, Cell*> m_cellMap;
-    MapLocation                             m_playerStart;
-    char                                    m_version;
+    Vec3i   m_playerStart;
+    char    m_version;
 };
 
 }; // namespace
