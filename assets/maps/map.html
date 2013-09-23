@@ -1,0 +1,114 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>Google Maps JavaScript API v3 Example: Styled MapTypes</title> 
+<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" /> 
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>  
+<script> 
+ 
+var map;
+var brooklyn = new google.maps.LatLng(40.6743890, -73.9455);
+ 
+var MY_MAPTYPE_ID = 'HeatSeekr';
+ 
+function initialize() {
+    
+  var stylez = [
+  {
+    "featureType": "road.local",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      { "color": "#808080" },
+      { "weight": 0.1 },
+      { "visibility": "on" }
+    ]
+  },{
+    "featureType": "road.local",
+    "elementType": "geometry.fill",
+    "stylers": [
+      { "visibility": "simplified" }
+    ]
+  },{
+    "elementType": "labels",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },{
+    "featureType": "water",
+    "elementType": "geometry.fill",
+    "stylers": [
+      { "visibility": "on" },
+      { "color": "#0000ff" }
+    ]
+  },{
+    "featureType": "transit",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },{
+    "featureType": "road.highway",
+    "elementType": "geometry.fill",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },{
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      { "visibility": "on" },
+      { "weight": 0.1 },
+      { "color": "#808080" }
+    ]
+  },{
+    "featureType": "road.arterial",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      { "visibility": "on" },
+      { "weight": 0.1 },
+      { "color": "#808080" }
+    ]
+  },{
+    "featureType": "road",
+    "elementType": "geometry.fill",
+    "stylers": [
+      { "color": "#808080" },
+      { "visibility": "simplified" }
+    ]
+  },{
+    "featureType": "road",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      { "visibility": "on" },
+      { "color": "#808080" },
+      { "weight": 0.1 }
+    ]
+  }
+];
+
+ 
+  var mapOptions = {
+    zoom: 16,
+    center: brooklyn,
+    mapTypeControlOptions: {
+       mapTypeIds: [google.maps.MapTypeId.ROADMAP, MY_MAPTYPE_ID]
+    },
+    mapTypeId: MY_MAPTYPE_ID
+  };
+ 
+  map = new google.maps.Map(document.getElementById("map_canvas"),
+      mapOptions);
+      
+  var styledMapOptions = {
+    name: "HeatSeekr"
+  };
+ 
+  var jayzMapType = new google.maps.StyledMapType(stylez, styledMapOptions);
+  
+  map.mapTypes.set(MY_MAPTYPE_ID, jayzMapType);
+}
+</script> 
+</head> 
+<body onload="initialize()"> 
+  <div id="map_canvas" style="width: 1940px; height: 1080px;"></div> 
+</body> 
+</html> 
