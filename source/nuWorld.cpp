@@ -78,8 +78,8 @@ void World::generateFromPNG(std::string fname)
                 else if (!sameUp && !sameLeft && sameRight && sameDown) id = "shore_bottomright";
                 else id = "sea_shallow";
             }
-            else if (p == 0x00ff00) id = "grassland";
-            else if (p == 0xffffff) id = "plains";
+            else if (p == 0x00ff00) id = "plains";
+            else if (p == 0xffffff) id = "grassland";
             else if (p == 0x00ffff) id = "mountain_medium";
             // roads
             // TODO [muumi] not all cases

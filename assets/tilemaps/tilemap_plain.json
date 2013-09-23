@@ -24,8 +24,8 @@
         { "name": "mountain_medium"   , "id": 7,   "solid": true }, 
         { "name": "mountain_high"     , "id": 8,   "solid": true }, 
 
-        { "name": "grassland"         , "id": 35,  "solid": true }, 
-        { "name": "plains"            , "id": 36,  "solid": true }, 
+        { "name": "plains"            , "id": 35,  "solid": true }, 
+        { "name": "grassland"         , "id": 36,  "solid": true }, 
 
         { "name": "forest_light"      , "id": 37,  "solid": true }, 
         { "name": "forest_normal"     , "id": 38,  "solid": true }, 
