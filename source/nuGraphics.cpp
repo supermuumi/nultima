@@ -41,12 +41,14 @@ void Graphics::init()
     glewInit();
 
     // OpenGL state
-    glShadeModel(GL_FLAT);
+    glShadeModel(GL_SMOOTH);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
+    glDisable(GL_POLYGON_SMOOTH);
+    glDisable(GL_BLEND);
 }
 
 void Graphics::deinit()

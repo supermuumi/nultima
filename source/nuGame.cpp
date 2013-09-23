@@ -125,11 +125,11 @@ void Game::setupLight()
 
     // really really really shitty placeholder lighting
     // TODO replace with something proper
-    double lightTimer = Utils::getCurrentTime() * 0.001;
+    double lightTimer = Utils::getCurrentTime() * 0.0001;
     Vec3i pPos = m_player->getPosition();
     m_light->m_pos.m_x = (float)pPos.m_x;
     m_light->m_pos.m_y = (float)pPos.m_y;
-    m_light->m_pos.m_z = (float)pPos.m_z + (float)std::sin(lightTimer)*1.0f;
+    m_light->m_pos.m_z = (float)pPos.m_z + (float)std::sin(lightTimer)*10.0f;
 }
 
 void Game::renderWorld(Camera* camera)
