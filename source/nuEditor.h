@@ -41,6 +41,7 @@ public:
     void    handleKeypress(int key);
     void    handleMouse();
     Camera* getCamera();
+    Vec3i   getCursorPosition() { return m_cursor; }
 
 private:
     std::string getEditModeName();

@@ -155,6 +155,8 @@ void Game::renderWorld(Camera* camera)
         int numBlocksCulled = 0;
         int numBlocksVisible = 0;
 
+        Vec3i playerPos = m_isEditorMode ? m_editor->getCursorPosition() : m_player->getPosition();
+
         float cullDistanceSquared = camera->getCullDistance() * camera->getCullDistance();
         // loop cells
         for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = cells.begin(); it != cells.end(); ++it)
@@ -182,6 +184,12 @@ void Game::renderWorld(Camera* camera)
                         {
                             Vec3i blockPosi = block->getLocation();
                             Vec3 blockPos = Vec3((float)blockPosi.m_x, (float)blockPosi.m_y, (float)blockPosi.m_z);
+
+                            // hide blocks that are above the player
+                            
+                            if (blockPosi.m_x == playerPos.m_x && blockPosi.m_y == playerPos.m_y && blockPosi.m_z > playerPos.m_z)
+                                continue;
+
                             float distanceSquared = (blockPos - pos).lengthSquared();
                             if (distanceSquared < cullDistanceSquared)
                             {
