@@ -15,20 +15,20 @@ public:
     ~Tilemap();
 
     void            load        (std::string fname);
-    // TODO [muumi] accessors should probably return -1/NULL/something to denote missing tile?
-    unsigned int    getTexture  (int id)         { return m_tiles[id].textureId; }
-    unsigned int    getTexture  (std::string id) { return m_tiles[m_tileNameIdMap[id]].textureId; }
+    int             getTexture  (int id)         { return m_tiles[id].textureId; }
+    int             getTexture  (std::string id) { return m_tiles[m_tileNameIdMap[id]].textureId; }
     unsigned int    getTileIndex(std::string id) { return m_tileNameIdMap[id]; }
     Vec3ui          getTileColor(int id)         { return m_tiles[id].color; }
     Vec3ui          getTileColor(std::string id) { return m_tiles[m_tileNameIdMap[id]].color; }
     bool            isTileSolid (int id)         { return m_tiles[id].isSolid; }    
     bool            isTileSolid (std::string id) { return m_tiles[m_tileNameIdMap[id]].isSolid; }    
     int             getNumTiles ()               { return m_tiles.size(); }
+    int             getNextTile (int n, int d);
 
 private:
     typedef struct
     {
-        unsigned int    textureId;
+        int    textureId;
         bool            isSolid;
         Vec3ui          color;
     } BlockInfo;

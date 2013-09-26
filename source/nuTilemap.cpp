@@ -30,6 +30,11 @@ using namespace Nultima;
 Tilemap::Tilemap()
 {
     m_tiles.resize(512);
+    for (int i = 0; i < 512; i++) {
+        BlockInfo b;
+        b.textureId = -1;
+        m_tiles[i] = b;
+    }
 }
 
 Tilemap::~Tilemap()
@@ -117,13 +122,11 @@ void Tilemap::load(std::string fname)
         glBindTexture(GL_TEXTURE_2D, tempTextureId);
         gluBuild2DMipmaps(GL_TEXTURE_2D, 3, m_tileSize, m_tileSize, GL_RGB, GL_UNSIGNED_BYTE, tempTexture);
 
-//        printf("OGL texture %d: id=%s idx=%d coords=(%d,%d)-(%d,%d)\n", tempTextureId, textureId.c_str(), idx, x1, y1, x2, y2);
-
         BlockInfo info;
-        info.textureId  = tempTextureId;
-        info.isSolid    = isSolid;
-        info.color      = tileColor;
-        m_tiles[idx]    = info; //.push_back(info);
+        info.textureId   = tempTextureId;
+        info.isSolid     = isSolid;
+        info.color       = tileColor;
+        m_tiles[idx]     = info; //.push_back(info);
 
         // store name<->id mapping
         m_tileNameIdMap[tile["name"].GetString()] = tile["id"].GetInt();
@@ -139,3 +142,21 @@ void Tilemap::load(std::string fname)
     free(tilemapData);
 }
 
+int Tilemap::getNextTile(int n, int d)
+{
+    printf("getNextTile(%d, %d)\n", n, d);
+    int ret = n+d;
+    while (ret != n)
+    {
+        if (ret < 0) 
+            ret = m_tiles.size()-1;
+        if (ret >= (int)m_tiles.size())
+            ret = 0;
+        if (m_tiles[ret].textureId >= 0)
+            break;
+
+        ret += d;
+        printf("ret=%d\n", ret);
+    }
+    return ret;
+}

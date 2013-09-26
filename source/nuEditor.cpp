@@ -174,14 +174,10 @@ void Editor::changeCullDistanceBy(float d)
 
 void Editor::changeActiveBlockBy(char delta)
 {
-    m_cursorType += delta;
-
     TexManager* tex = Context::get()->getTexManager();
+    Tilemap* tilemap = tex->getTilemap();
 
-    if (m_cursorType < 0) 
-        m_cursorType = (char)tex->getNumTiles()-1;
-    if (m_cursorType >= tex->getNumTiles())
-        m_cursorType = 0;
+    m_cursorType = tilemap->getNextTile(m_cursorType, delta);
 }
 
 void Editor::handleKeypress(int key)

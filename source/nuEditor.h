@@ -69,7 +69,7 @@ private:
     bool        m_helpActive;
 
     Vec3i       m_cursor;
-    char        m_cursorType;
+    int         m_cursorType;
     NuUInt8     m_cursorRepresentation;
     Minimap*    m_minimap;
 };
