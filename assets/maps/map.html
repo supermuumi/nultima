@@ -7,7 +7,17 @@
 <script> 
  
 var map;
-var brooklyn = new google.maps.LatLng(40.6743890, -73.9455);
+var mapCoords = [
+    // center helsinki
+    new google.maps.LatLng(60.20493068716288, 24.942317493934873),
+    new google.maps.LatLng(60.19713561859678, 24.942317493934873),
+    new google.maps.LatLng(60.18920002195174, 24.942317493934873),
+    new google.maps.LatLng(60.18125183655311, 24.942317493934873),
+    new google.maps.LatLng(60.174134177586865, 24.942317493934873),
+    new google.maps.LatLng(60.16642786653288, 24.942317493934873),
+    new google.maps.LatLng(60.15817519999873, 24.94231749393486),
+    new google.maps.LatLng(60.15061466496305, 24.942317493934873)
+];
  
 var MY_MAPTYPE_ID = 'HeatSeekr';
  
@@ -82,13 +92,19 @@ function initialize() {
       { "color": "#808080" },
       { "weight": 0.1 }
     ]
+  },{
+    "featureType": "road.local",
+    "stylers": [
+      { "visibility": "off" }
+    ]
   }
 ];
 
  
   var mapOptions = {
     zoom: 16,
-    center: brooklyn,
+    center: mapCoords[0],
+      disableDefaultUI: true,
     mapTypeControlOptions: {
        mapTypeIds: [google.maps.MapTypeId.ROADMAP, MY_MAPTYPE_ID]
     },
@@ -96,19 +112,27 @@ function initialize() {
   };
  
   map = new google.maps.Map(document.getElementById("map_canvas"),
-      mapOptions);
-      
+                            mapOptions);
+    map.bounds_changed = function() {
+        var cnt = map.getCenter();
+        document.getElementById("debug").innerHTML = cnt.lat()+", "+cnt.lng();
+    };
+
+
   var styledMapOptions = {
-    name: "HeatSeekr"
+      //name: "HeatSeekr"
+
   };
  
   var jayzMapType = new google.maps.StyledMapType(stylez, styledMapOptions);
   
   map.mapTypes.set(MY_MAPTYPE_ID, jayzMapType);
+
 }
 </script> 
 </head> 
 <body onload="initialize()"> 
-  <div id="map_canvas" style="width: 1940px; height: 1080px;"></div> 
+  <div id="map_canvas" style="width: 800px; height: 800px;"></div> 
+  <div id="debug"></div>
 </body> 
 </html> 
