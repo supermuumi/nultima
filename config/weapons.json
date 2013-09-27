@@ -1,0 +1,40 @@
+{
+    "swords" : 
+    {
+        "short_sword" :
+        {
+            desc   : "Short sword",
+            attack : 10,
+            weight : 8,
+            hands  : 1
+        },
+        "long_sword" :
+        {
+            desc   : "Long sword",
+            attack : 20,
+            weight : 12,
+            hands  : 1,
+        },
+        "broad_sword" :
+        {
+            desc   : "Broadsword",
+            attack : 20,
+            weight : 12,
+            hands  : 1,
+        },
+        "2h_sword" :
+        {
+            desc   : "Two handed sword",
+            attack : 20,
+            weight : 12,
+            hands  : 2,
+        },
+        "dagger" :
+        {
+            desc   : "Dagger",
+            attack : ,
+            weight : 2,
+            hands  : 1,
+        }
+    }
+}
