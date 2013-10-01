@@ -80,6 +80,16 @@ Vec3i Vec3i::operator-(Vec3i v)
     return ret;
 }
 
+bool Vec3i::operator==(Vec3i v2)
+{
+    return (m_x == v2.m_x && m_y == v2.m_y && m_z == v2.m_z);
+}
+
+bool Vec3i::operator!=(Vec3i v2)
+{
+    return !(m_x == v2.m_x && m_y == v2.m_y && m_z == v2.m_z);
+}
+
 float Vec3i::length()
 {
     return sqrtf(lengthSquared());

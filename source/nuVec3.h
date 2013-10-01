@@ -47,6 +47,8 @@ public:
 
     Vec3i operator+(Vec3i);
     Vec3i operator-(Vec3i);
+    bool  operator==(Vec3i);
+    bool  operator!=(Vec3i);
 
     void    serialize       (std::ofstream* stream);
     void    deserialize     (std::ifstream* stream);

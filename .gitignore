@@ -49,3 +49,7 @@ source/.#nuModel.h
 *.vsp
 
 Nultima.xcworkspace/contents.xcworkspacedata
+
+*.xcuserstate
+
+build/xcode4/Nultima.xcodeproj/project.xcworkspace/xcuserdata/muumi.xcuserdatad/UserInterfaceState.xcuserstate

@@ -25,7 +25,7 @@ Editor::Editor(World *world) :
     m_editMode = EDITMODE_NONE;
     m_helpActive = false;
     m_cursor = Vec3i(0, 0, 0);
-    m_cursorType = 0; //Block::ROCK;
+    m_cursorType = 0;
     m_cursorRepresentation = Block::PLANE;
     m_minimap = new Minimap(m_world);
     m_minimap->update();
@@ -47,7 +47,8 @@ std::string Editor::getEditModeName()
     std::string modeNames[] = {
         "None",
         "Paint",
-        "Erase"
+        "Erase",
+        "Road"
     };
 
     return modeNames[m_editMode];
@@ -150,6 +151,67 @@ void Editor::moveSelection(Vec3i d)
 
     if (m_editMode == EDITMODE_ERASE)
         eraseCurrentBlock();
+
+    if (m_editMode == EDITMODE_ROAD)
+    {
+        TexManager* tex = Context::get()->getTexManager();
+        Tilemap* tilemap = tex->getTilemap();
+
+        std::string newId = "";
+        
+        Block* bUp          = m_world->getBlockAt(m_cursor+Vec3i( 0,  1, 0));
+        Block* bLeft        = m_world->getBlockAt(m_cursor+Vec3i(-1,  0, 0));
+        Block* bRight       = m_world->getBlockAt(m_cursor+Vec3i( 1,  0, 0));
+        Block* bDown        = m_world->getBlockAt(m_cursor+Vec3i( 0, -1, 0));
+
+        std::string idUp    = bUp != NULL    ? tilemap->getTextureId(bUp->getType()) : "";
+        std::string idLeft  = bLeft != NULL  ? tilemap->getTextureId(bLeft->getType()) : "";
+        std::string idRight = bRight != NULL ? tilemap->getTextureId(bRight->getType()) : "";
+        std::string idDown  = bDown != NULL  ? tilemap->getTextureId(bDown->getType()) : "";
+
+        bool roadUp    = idUp.substr(0, 5) == "road_";
+        bool roadLeft  = idLeft.substr(0, 5) == "road_";
+        bool roadRight = idRight.substr(0, 5) == "road_";
+        bool roadDown  = idDown.substr(0, 5) == "road_";
+
+        // TODO optimize tree
+        if (roadUp && roadLeft && roadRight && roadDown)
+            newId = "road_crossroad";
+        // T intersections
+        else if (roadDown && roadLeft && roadRight)
+            newId = "road_T";
+        else if (roadUp && roadLeft && roadDown)
+            newId = "road_T270";
+        else if (roadUp && roadRight && roadDown)
+            newId = "road_T90";
+        else if (roadUp && roadRight && roadLeft)
+            newId = "road_T180";
+        else if (roadUp && roadLeft)
+            newId = "road_L270";
+        else if (roadUp && roadRight)
+            newId = "road_L";
+        else if (roadDown && roadLeft)
+            newId = "road_L180";
+        else if (roadDown && roadRight)
+            newId = "road_L90";
+        else if (roadUp && roadDown)
+            newId = "road_vert";
+        else if (roadLeft && roadRight)
+            newId = "road_horiz";
+        else if (d.m_x != 0)
+            newId = "road_horiz";
+        else if (d.m_y != 0)
+            newId = "road_vert";
+        if (newId != "")
+        {
+            int id = tilemap->getTileIndex(newId);
+            printf("adding new road: %s -> %d\n", newId.c_str(), id);
+            Block* newRoad = new Block(id, m_cursor);
+            newRoad->setRepresentation(m_cursorRepresentation);
+            m_world->insertBlock(newRoad);
+        }
+    }
+
 }
 
 void Editor::moveCamera(Vec3 d)
@@ -204,6 +266,7 @@ void Editor::handleKeypress(int key)
     // painting blocks
     if (key == 'p') changeEditMode(EDITMODE_PAINT);
     if (key == 'e') changeEditMode(EDITMODE_ERASE);
+    if (key == 'r') changeEditMode(EDITMODE_ROAD);
     if (key == 's') paintCurrentBlock();
     if (key == 'd') eraseCurrentBlock();
 
@@ -272,6 +335,11 @@ void Editor::changeEditMode(EditMode newMode)
         m_editMode = (m_editMode == EDITMODE_ERASE) ? EDITMODE_NONE : EDITMODE_ERASE;
         if (m_editMode == EDITMODE_ERASE)
             eraseCurrentBlock();
+    }
+
+    if (newMode == EDITMODE_ROAD)
+    {
+        m_editMode = (m_editMode == EDITMODE_ROAD) ? EDITMODE_NONE : EDITMODE_ROAD;
     }
 }
 

@@ -126,6 +126,7 @@ void Tilemap::load(std::string fname)
         info.textureId   = tempTextureId;
         info.isSolid     = isSolid;
         info.color       = tileColor;
+        info.name        = tile["name"].GetString();
         m_tiles[idx]     = info; //.push_back(info);
 
         // store name<->id mapping
