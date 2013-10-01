@@ -47,3 +47,5 @@ source/.#nuModel.h
 *.cpp#
 *.psess
 *.vsp
+
+Nultima.xcworkspace/contents.xcworkspacedata

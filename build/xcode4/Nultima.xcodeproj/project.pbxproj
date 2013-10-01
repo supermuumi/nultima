@@ -1,0 +1,185 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		58F98BBA17FAAAB800BCD704 /* external */ = {isa = PBXFileReference; lastKnownFileType = folder; name = external; path = ../../../external; sourceTree = "<group>"; };
+		58F98BBB17FAAAB800BCD704 /* source */ = {isa = PBXFileReference; lastKnownFileType = folder; name = source; path = ../../../source; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		588E283E17FAA6BA00D69170 = {
+			isa = PBXGroup;
+			children = (
+				588E284917FAA6BA00D69170 /* Nultima */,
+				588E284817FAA6BA00D69170 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		588E284817FAA6BA00D69170 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		588E284917FAA6BA00D69170 /* Nultima */ = {
+			isa = PBXGroup;
+			children = (
+				58F98BBA17FAAAB800BCD704 /* external */,
+				58F98BBB17FAAAB800BCD704 /* source */,
+			);
+			path = Nultima;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		588E285317FAA70300D69170 /* Nultima */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 588E285417FAA70300D69170 /* Build configuration list for PBXLegacyTarget "Nultima" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = ../../;
+			dependencies = (
+			);
+			name = Nultima;
+			passBuildSettingsInEnvironment = 1;
+			productName = Nultima;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		588E283F17FAA6BA00D69170 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = Nultima;
+			};
+			buildConfigurationList = 588E284217FAA6BA00D69170 /* Build configuration list for PBXProject "Nultima" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 588E283E17FAA6BA00D69170;
+			productRefGroup = 588E284817FAA6BA00D69170 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				588E285317FAA70300D69170 /* Nultima */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		588E284E17FAA6BA00D69170 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		588E284F17FAA6BA00D69170 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		588E285517FAA70300D69170 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		588E285617FAA70300D69170 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		588E284217FAA6BA00D69170 /* Build configuration list for PBXProject "Nultima" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				588E284E17FAA6BA00D69170 /* Debug */,
+				588E284F17FAA6BA00D69170 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		588E285417FAA70300D69170 /* Build configuration list for PBXLegacyTarget "Nultima" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				588E285517FAA70300D69170 /* Debug */,
+				588E285617FAA70300D69170 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 588E283F17FAA6BA00D69170 /* Project object */;
+}
