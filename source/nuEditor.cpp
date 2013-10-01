@@ -25,7 +25,7 @@ Editor::Editor(World *world) :
     m_editMode = EDITMODE_NONE;
     m_helpActive = false;
     m_cursor = Vec3i(0, 0, 0);
-    m_cursorType = 0; //Block::ROCK;
+    m_cursorType = 0;
     m_cursorRepresentation = Block::PLANE;
     m_minimap = new Minimap(m_world);
     m_minimap->update();
@@ -47,7 +47,8 @@ std::string Editor::getEditModeName()
     std::string modeNames[] = {
         "None",
         "Paint",
-        "Erase"
+        "Erase",
+        "Road"
     };
 
     return modeNames[m_editMode];
@@ -136,6 +137,55 @@ void Editor::render()
 
 void Editor::moveSelection(Vec3i d)
 {
+    // road gets painted before we move the cursor
+    if (m_editMode == EDITMODE_ROAD)
+    {
+        TexManager* tex = Context::get()->getTexManager();
+        Tilemap* tilemap = tex->getTilemap();
+
+        std::string newId = "";
+        
+        Block* bLeft = m_world->getBlockAt(m_cursor-Vec3i(1, 0, 0));
+        Block* bRight = m_world->getBlockAt(m_cursor+Vec3i(1, 0, 0));
+        Block* bUp = m_world->getBlockAt(m_cursor+Vec3i(0, 1, 0));
+        Block* bDown = m_world->getBlockAt(m_cursor-Vec3i(0, 1, 0));
+
+        std::string idLeft = tilemap->getTextureId(bLeft->getType());
+        std::string idRight = tilemap->getTextureId(bRight->getType());
+        std::string idUp = tilemap->getTextureId(bUp->getType());
+        std::string idDown = tilemap->getTextureId(bDown->getType());
+
+        printf("left=%s, right=%s, up=%s, down=%s\n", idLeft.c_str(), idRight.c_str(), idUp.c_str(), idDown.c_str());
+
+        if (d.m_x != 0) 
+        {
+            newId = "road_horiz";
+
+            if (idLeft == "road_vert")
+            {
+                bLeft->setType(tilemap->getTileIndex("road_L90"));
+                m_world->insertBlock(bLeft);
+            }
+            if (idRight == "road_vert")
+            {
+                bRight->setType(tilemap->getTileIndex("road_L180"));
+                m_world->insertBlock(bRight);
+            }
+        }
+        else if (d.m_y != 0) 
+        {
+            newId = "road_vert";
+        }
+        
+        if (newId != "")
+        {
+            int id = tilemap->getTileIndex(newId);
+            printf("%s -> %d\n", newId.c_str(), id);
+            Block* newRoad = new Block(id, m_cursor);
+            m_world->insertBlock(newRoad);
+        }
+    }
+
     m_cursor = m_cursor + d;
     // TODO Vec3ui means we never go <0, but rather get -1>NU_MAX_LAYERS which makes layer switching wrap around
     if (m_cursor.m_z < 0)
@@ -150,6 +200,7 @@ void Editor::moveSelection(Vec3i d)
 
     if (m_editMode == EDITMODE_ERASE)
         eraseCurrentBlock();
+
 }
 
 void Editor::moveCamera(Vec3 d)
@@ -204,6 +255,7 @@ void Editor::handleKeypress(int key)
     // painting blocks
     if (key == 'p') changeEditMode(EDITMODE_PAINT);
     if (key == 'e') changeEditMode(EDITMODE_ERASE);
+    if (key == 'r') changeEditMode(EDITMODE_ROAD);
     if (key == 's') paintCurrentBlock();
     if (key == 'd') eraseCurrentBlock();
 
@@ -272,6 +324,11 @@ void Editor::changeEditMode(EditMode newMode)
         m_editMode = (m_editMode == EDITMODE_ERASE) ? EDITMODE_NONE : EDITMODE_ERASE;
         if (m_editMode == EDITMODE_ERASE)
             eraseCurrentBlock();
+    }
+
+    if (newMode == EDITMODE_ROAD)
+    {
+        m_editMode = (m_editMode == EDITMODE_ROAD) ? EDITMODE_NONE : EDITMODE_ROAD;
     }
 }
 

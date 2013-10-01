@@ -30,7 +30,8 @@ class Editor
     {
         EDITMODE_NONE = 0,
         EDITMODE_PAINT,
-        EDITMODE_ERASE
+        EDITMODE_ERASE,
+        EDITMODE_ROAD
     } EditMode;
 
 public:
