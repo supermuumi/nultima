@@ -59,11 +59,13 @@ public:
     Vec2i       getMinCoordinate();
     Vec2i       getMaxCoordinate();
 
+    void        setPlayerStart(Vec3i v) { m_playerStart = v; }
+
 private:
     int         getMapPixel(unsigned char* data, int x, int y, int w);
     std::tr1::unordered_map<unsigned int, Cell*> m_cellMap;
-    Vec3i   m_playerStart;
-    char    m_version;
+    Vec3i       m_playerStart;
+    char        m_version;
 };
 
 }; // namespace

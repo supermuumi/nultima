@@ -11,6 +11,8 @@
 #include "nuMinimap.h"
 #include "nuTexManager.h"
 #include "nuMouse.h"
+#include "nuGame.h"
+#include "nuPlayer.h"
 
 #include <string>
 
@@ -79,6 +81,7 @@ void Editor::renderHud()
             "\n"
             "p            - toggle paint mode\n"
             "e            - toggle erase mode\n"
+            "r            - toggle road mode\n"
             "s            - paint current block\n"
             "d            - erase current block\n"
             "q/w          - prev/next block type\n"
@@ -87,6 +90,7 @@ void Editor::renderHud()
             "m            - update minimap\n"
             "\n"
             "5            - save\n"
+            "0            - drop player\n"
             ;
 
         g->setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -282,6 +286,15 @@ void Editor::handleKeypress(int key)
     // saving & loading
     // TODO change to something that doesn't overlap with "blockset" selection
     if (key == '5') saveWorld();
+    if (key == '0') dropPlayer();
+}
+
+void Editor::dropPlayer()
+{
+    Game* game = Context::get()->getGame();
+    Player* p = game->getPlayer();
+    p->setPosition(m_cursor);
+    m_world->setPlayerStart(m_cursor);
 }
 
 void Editor::handleMouse()

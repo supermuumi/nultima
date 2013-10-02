@@ -33,6 +33,8 @@ public:
     void tick();
     void processTimers();
 
+    Player* getPlayer() { return m_player; }
+
 private:
     // rendering
     void beginFrame     ();

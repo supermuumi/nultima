@@ -62,6 +62,8 @@ private:
     void    saveWorld();
     void    renderHud();
     void    renderActiveBlock();
+    
+    void    dropPlayer();
 
     Camera*     m_camera;
     Vec3        m_cameraOffset;

@@ -20,8 +20,9 @@ public:
     bool        move    (Vec3i d);
     void        tick    ();
 
-    Vec3i       getPosition() { return m_position; }
-    Camera*     getCamera()     { return m_camera; }
+    void        setPosition(Vec3i v) { m_position = v; }
+    Vec3i       getPosition()        { return m_position; }
+    Camera*     getCamera()          { return m_camera; }
 
 private:
     Vec3i       m_position;

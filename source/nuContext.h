@@ -7,6 +7,7 @@
 namespace Nultima
 {
 
+class Game;
 class Graphics;
 class Keyboard;
 class Model;
@@ -25,6 +26,9 @@ public:
 
     void            init(int argc, char** argv);
     void            deinit();
+
+    void            setGame(Game* g) { m_game = g; }
+    Game*           getGame()        { return m_game; }
 
     std::string     getWorldFile();
     std::string     getStateFile();
@@ -48,6 +52,7 @@ private:
 
     int                 m_argc;
     char**              m_argv;
+    Game*               m_game;
     Graphics*           m_graphics;
     Keyboard*           m_keyboard;
     Mouse*              m_mouse;

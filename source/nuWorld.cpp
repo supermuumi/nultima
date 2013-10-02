@@ -131,9 +131,8 @@ void World::serialize(std::ofstream* stream)
 
     cWrite = WORLD_TAG_PLAYERSTART;
     stream->write(&cWrite, 1);
-    Vec3i playerStart(1, 3, 1);
-    playerStart.serialize(stream);
-
+    m_playerStart.serialize(stream);
+    
     for (std::tr1::unordered_map<unsigned int, Cell*>::iterator it = m_cellMap.begin(); it != m_cellMap.end(); ++it)
     {
         Cell* cell = it->second;
@@ -174,6 +173,8 @@ void World::deserialize(std::ifstream* stream)
                 else
                 {
                     m_playerStart.deserialize(stream);
+
+                    Log::msg("Read player start: %d, %d, %d\n", m_playerStart.m_x, m_playerStart.m_y, m_playerStart.m_z);
                 }
                 break;
             }

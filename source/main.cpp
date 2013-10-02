@@ -11,6 +11,7 @@ int main (int argc, char** argv)
 
     // Create World
     Game* game = new Game(context->getWorldFile(), context->getStateFile());
+    context->setGame(game);
 
     // Start update loop
     game->mainloop();
