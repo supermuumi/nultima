@@ -1,7 +1,7 @@
 #include "nuDefs.h"
 #include "nuTilemap.h"
 #include "nuFileUtils.h"
-
+#include "nuLog.h"
 #include "rapidjson/document.h"
 
 #include <string>
@@ -77,7 +77,7 @@ void Tilemap::load(std::string fname)
     // for each tile we'll create a m_tileSize^2 texture
     const rapidjson::Value& tiles = doc["tiles"];
     
-    printf("Processing %d tiles...\n", tiles.Size());
+    Log::msg("Processing %d tiles...\n", tiles.Size());
     for (rapidjson::SizeType i = 0; i < tiles.Size(); i++)
     {
         const rapidjson::Value& tile = tiles[i];
@@ -132,11 +132,11 @@ void Tilemap::load(std::string fname)
         // store name<->id mapping
         m_tileNameIdMap[tile["name"].GetString()] = tile["id"].GetInt();
 
-        printf("\t%s -> %d\n", tile["name"].GetString(), tile["id"].GetInt());
+        Log::msg("\t%s -> %d\n", tile["name"].GetString(), tile["id"].GetInt());
 
     }
-    printf("done\n");
-    printf("tilemap numtiles = %d\n", (int)m_tiles.size());
+    Log::msg("done\n");
+    Log::msg("tilemap numtiles = %d\n", (int)m_tiles.size());
 
     delete[] tempTexture;
 
@@ -145,7 +145,6 @@ void Tilemap::load(std::string fname)
 
 int Tilemap::getNextTile(int n, int d)
 {
-    printf("getNextTile(%d, %d)\n", n, d);
     int ret = n+d;
     while (ret != n)
     {
@@ -157,7 +156,6 @@ int Tilemap::getNextTile(int n, int d)
             break;
 
         ret += d;
-        printf("ret=%d\n", ret);
     }
     return ret;
 }

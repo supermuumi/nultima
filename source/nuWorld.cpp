@@ -6,6 +6,7 @@
 #include "nuTexManager.h"
 #include "nuTilemap.h"
 #include "nuVec3.h"
+#include "nuLog.h"
 
 #include <fstream>
 
@@ -110,7 +111,7 @@ void World::generateFromPNG(std::string fname)
             else if (p == 0xff00ff) id = "forest_normal"; 
             else
             {
-                printf("p = %x\n", p);
+                Log::msg("p = %x\n", p);
                 NU_ASSERT(!"unknown block type");
             }
             
@@ -156,7 +157,7 @@ void World::deserialize(std::ifstream* stream)
         case WORLD_TAG_VERSION:
             {
                 stream->read(&m_version, 1);
-                printf("World file format version: %d\n", m_version);
+                Log::msg("World file format version: %d\n", m_version);
                 break;
             }
 
