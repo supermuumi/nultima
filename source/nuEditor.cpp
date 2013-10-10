@@ -46,11 +46,16 @@ Camera* Editor::getCamera()
 
 std::string Editor::getEditModeName()
 {
+    // TODO use map?
     std::string modeNames[] = {
         "None",
         "Paint",
         "Erase",
-        "Road"
+
+        // these three should be in sequence
+        "Road",
+        "Wall",
+        "River"
     };
 
     return modeNames[m_editMode];
@@ -81,7 +86,7 @@ void Editor::renderHud()
             "\n"
             "p            - toggle paint mode\n"
             "e            - toggle erase mode\n"
-            "r            - toggle road mode\n"
+            "r            - toggle road/wall/river paint mode\n"
             "s            - paint current block\n"
             "d            - erase current block\n"
             "q/w          - prev/next block type\n"
@@ -156,7 +161,7 @@ void Editor::moveSelection(Vec3i d)
     if (m_editMode == EDITMODE_ERASE)
         eraseCurrentBlock();
 
-    if (m_editMode == EDITMODE_ROAD)
+    if (m_editMode == EDITMODE_ROAD || m_editMode == EDITMODE_WALL || m_editMode == EDITMODE_RIVER)
     {
         TexManager* tex = Context::get()->getTexManager();
         Tilemap* tilemap = tex->getTilemap();
@@ -173,39 +178,48 @@ void Editor::moveSelection(Vec3i d)
         std::string idRight = bRight != NULL ? tilemap->getTextureId(bRight->getType()) : "";
         std::string idDown  = bDown != NULL  ? tilemap->getTextureId(bDown->getType()) : "";
 
-        bool roadUp    = idUp.substr(0, 5) == "road_";
-        bool roadLeft  = idLeft.substr(0, 5) == "road_";
-        bool roadRight = idRight.substr(0, 5) == "road_";
-        bool roadDown  = idDown.substr(0, 5) == "road_";
+        std::string tilePrefix;
+        switch (m_editMode)
+        {
+            case EDITMODE_ROAD: tilePrefix = "road_"; break;
+            case EDITMODE_WALL: tilePrefix = "wall_"; break;
+            case EDITMODE_RIVER: tilePrefix = "river_"; break;
+            default: break; //tilePrefix = "road_"; break;
+        }
+
+        bool roadUp    = idUp.substr(0, tilePrefix.length()) == tilePrefix; //"road_";
+        bool roadLeft  = idLeft.substr(0, tilePrefix.length()) == tilePrefix; //"road_";
+        bool roadRight = idRight.substr(0, tilePrefix.length()) == tilePrefix; //"road_";
+        bool roadDown  = idDown.substr(0, tilePrefix.length()) == tilePrefix; //"road_";
 
         // TODO optimize tree
         if (roadUp && roadLeft && roadRight && roadDown)
-            newId = "road_crossroad";
+            newId = tilePrefix + "crossroad";
         // T intersections
         else if (roadDown && roadLeft && roadRight)
-            newId = "road_T";
+            newId = tilePrefix + "T";
         else if (roadUp && roadLeft && roadDown)
-            newId = "road_T270";
+            newId = tilePrefix + "T270";
         else if (roadUp && roadRight && roadDown)
-            newId = "road_T90";
+            newId = tilePrefix + "T90";
         else if (roadUp && roadRight && roadLeft)
-            newId = "road_T180";
+            newId = tilePrefix + "T180";
         else if (roadUp && roadLeft)
-            newId = "road_L270";
+            newId = tilePrefix + "L270";
         else if (roadUp && roadRight)
-            newId = "road_L";
+            newId = tilePrefix + "L";
         else if (roadDown && roadLeft)
-            newId = "road_L180";
+            newId = tilePrefix + "L180";
         else if (roadDown && roadRight)
-            newId = "road_L90";
+            newId = tilePrefix + "L90";
         else if (roadUp && roadDown)
-            newId = "road_vert";
+            newId = tilePrefix + "vert";
         else if (roadLeft && roadRight)
-            newId = "road_horiz";
+            newId = tilePrefix + "horiz";
         else if (d.m_x != 0)
-            newId = "road_horiz";
+            newId = tilePrefix + "horiz";
         else if (d.m_y != 0)
-            newId = "road_vert";
+            newId = tilePrefix + "vert";
         if (newId != "")
         {
             int id = tilemap->getTileIndex(newId);
@@ -352,7 +366,14 @@ void Editor::changeEditMode(EditMode newMode)
 
     if (newMode == EDITMODE_ROAD)
     {
-        m_editMode = (m_editMode == EDITMODE_ROAD) ? EDITMODE_NONE : EDITMODE_ROAD;
+        switch (m_editMode)
+        {
+            case EDITMODE_NONE:  m_editMode = EDITMODE_ROAD;  break;
+            case EDITMODE_ROAD:  m_editMode = EDITMODE_WALL;  break;
+            case EDITMODE_WALL:  m_editMode = EDITMODE_RIVER; break;
+            case EDITMODE_RIVER: m_editMode = EDITMODE_NONE;  break;
+            default: break;
+        }
     }
 }
 

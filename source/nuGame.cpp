@@ -29,12 +29,11 @@ Game::Game(std::string worldFile, std::string stateFile) :
     m_isEditorMode(false),
     m_timeOfDay(0)
 {
+
     m_world = new World(worldFile);
-/*
-    m_world = new World();
-    m_world->generateFromPNG("../../assets/maps/test.png");
-*/
+//    m_world = new World();
 //    m_world->generateFromPNG("../../assets/maps/south_helsinki.png");
+
     m_state = new GameState(stateFile);
     m_editor = new Editor(m_world);
 

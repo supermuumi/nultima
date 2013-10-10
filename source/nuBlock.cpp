@@ -21,7 +21,7 @@
 
 using namespace Nultima;
 
-Block::Block(char type, Vec3i location) :
+Block::Block(NuUInt32 type, Vec3i location) :
     m_type(type),
     m_location(location)
 {
@@ -38,7 +38,7 @@ void Block::moveTo(Vec3i v)
     determineModel();
 }
 
-void Block::setType(char type)
+void Block::setType(NuUInt32 type)
 {
     m_type = type;
 }
@@ -56,14 +56,14 @@ void Block::determineModel()
 
 void Block::serialize(std::ofstream* stream)
 {
-    stream->write(&m_type, 1);
+    stream->write((char*)&m_type, 4);
     stream->write((char*)&m_representation, 1);
     m_location.serialize(stream);
 }
 
 void Block::deserialize(std::ifstream* stream)
 {
-    stream->read(&m_type, 1);
+    stream->read((char*)&m_type, 4);
     stream->read((char*)&m_representation, 1);
     m_location.deserialize(stream);
 

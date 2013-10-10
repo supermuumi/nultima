@@ -126,8 +126,8 @@ void World::serialize(std::ofstream* stream)
 {
     char cWrite = WORLD_TAG_VERSION;
     stream->write(&cWrite, 1);
-    cWrite = VERSION_BLOCK_REPRESENTATION;
-    stream->write(&cWrite, 1);
+    cWrite = VERSION_BLOCK_BLOCKTYPE_NUINT32;
+    stream->write((char*)&cWrite, 4);
 
     cWrite = WORLD_TAG_PLAYERSTART;
     stream->write(&cWrite, 1);
@@ -155,7 +155,8 @@ void World::deserialize(std::ifstream* stream)
         {
         case WORLD_TAG_VERSION:
             {
-                stream->read(&m_version, 1);
+                // TODO what to do if version != latest version? generate from scratch? generate empty?
+                stream->read((char*)&m_version, 4);
                 Log::msg("World file format version: %d\n", m_version);
                 break;
             }

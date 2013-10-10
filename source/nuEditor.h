@@ -31,7 +31,14 @@ class Editor
         EDITMODE_NONE = 0,
         EDITMODE_PAINT,
         EDITMODE_ERASE,
-        EDITMODE_ROAD
+
+        // these three should be in sequence
+        EDITMODE_ROAD,
+        EDITMODE_WALL,
+        EDITMODE_RIVER,
+
+        EDITMODE_LAST
+
     } EditMode;
 
 public:

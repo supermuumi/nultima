@@ -61,8 +61,8 @@ void Tilemap::load(std::string fname)
     int tilemapWidth, tilemapHeight, tilemapBpp;
     int tilesPerLine;
     tilemapData = stbi_load(tilemapFile.c_str(), &tilemapWidth, &tilemapHeight, &tilemapBpp, 0);
-    //std::cout << "tilemap = " << m_tilemapWidth << "x" << m_tilemapHeight << "x" << m_tilemapBpp << "\n";
     tilesPerLine = tilemapWidth / m_tileSize;
+    Log::msg("Tilemap size = %dx%d, bpp=%d, tilesPerLine=%d\n", tilemapWidth, tilemapHeight, tilemapBpp, tilesPerLine);
 
     unsigned char* tempTexture = new unsigned char[m_tileSize*m_tileSize*3];
 
@@ -127,12 +127,12 @@ void Tilemap::load(std::string fname)
         info.isSolid     = isSolid;
         info.color       = tileColor;
         info.name        = tile["name"].GetString();
-        m_tiles[idx]     = info; //.push_back(info);
+        m_tiles[idx]     = info;
 
         // store name<->id mapping
-        m_tileNameIdMap[tile["name"].GetString()] = tile["id"].GetInt();
+        m_tileNameIdMap[tile["name"].GetString()] = idx; //tile["id"].GetInt();
 
-        Log::msg("\t%s -> %d\n", tile["name"].GetString(), tile["id"].GetInt());
+        Log::msg("\t%s -> %d\n", tile["name"].GetString(), idx);
 
     }
     Log::msg("done\n");

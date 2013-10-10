@@ -1,5 +1,6 @@
 #pragma once
 
+#include "nuDefs.h"
 #include "nuVec3.h"
 #include "nuVec2.h"
 
@@ -36,7 +37,8 @@ public:
     {
          VERSION_INITIAL = 0,
          VERSION_UNIFIED_COORDS,
-         VERSION_BLOCK_REPRESENTATION // each block = 2 bytes on disk now
+         VERSION_BLOCK_REPRESENTATION,   // each block = 2 bytes on disk now
+         VERSION_BLOCK_BLOCKTYPE_NUINT32 // muumi 9-oct-2013: change block type to uint 
     } WorldVersion;
 
     World() {}
@@ -65,7 +67,7 @@ private:
     int         getMapPixel(unsigned char* data, int x, int y, int w);
     std::tr1::unordered_map<unsigned int, Cell*> m_cellMap;
     Vec3i       m_playerStart;
-    char        m_version;
+    NuUInt32    m_version;
 };
 
 }; // namespace
