@@ -119,6 +119,13 @@ void Graphics::translate(float x, float y, float z)
     NU_ASSERT(glGetError() == GL_NO_ERROR);
 }
 
+void Graphics::translate(Vec3i v)
+{
+    NU_ASSERT(glGetError() == GL_NO_ERROR);
+    glTranslatef((float)v.m_x, v.m_y, v.m_z);
+    NU_ASSERT(glGetError() == GL_NO_ERROR);
+}
+
 void Graphics::scale(float x, float y, float z)
 {
     NU_ASSERT(glGetError() == GL_NO_ERROR);

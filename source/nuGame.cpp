@@ -14,6 +14,7 @@
 #include "nuUtils.h"
 #include "nuTimer.h"
 #include "nuCell.h"
+#include "nuMonster.h"
 
 #include <cmath>
 #include <sstream>
@@ -29,7 +30,7 @@ Game::Game(std::string worldFile, std::string stateFile) :
     m_isEditorMode(false),
     m_timeOfDay(0)
 {
-
+    // TODO [muumi] cmdline switch for regenerating world might be nicer...
     m_world = new World(worldFile);
 //    m_world = new World();
 //    m_world->generateFromPNG("../../assets/maps/south_helsinki.png");
@@ -53,6 +54,11 @@ Game::Game(std::string worldFile, std::string stateFile) :
         Vec3(.8f, .8f, .8f),
         Vec3(.8f, .8f, .8f)
         );
+
+    // TODO temp hack, setup properly
+    m_monsters.push_back(new Monster(Vec3i(2, 2, 0)));
+    m_monsters.push_back(new Monster(Vec3i(4, 4, 0)));
+    m_monsters.push_back(new Monster(Vec3i(6, 6, 0)));
 }
 
 Game::~Game()
@@ -212,6 +218,12 @@ void Game::renderWorld(Camera* camera)
     }
 
     m_player->render();
+
+    // render monsters
+    for (std::vector<Monster*>::iterator it = m_monsters.begin(); it != m_monsters.end(); ++it)
+    {
+        (*it)->render();
+    }
 
     g->disableLighting();
 }

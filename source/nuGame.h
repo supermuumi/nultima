@@ -1,8 +1,11 @@
 #pragma once
 
 #include "nuVec3.h"
+#include "nuMonster.h"
 
 #include <string>
+#include <vector>
+
 #if defined(__APPLE__) || defined(MACOSX)
 #include <tr1/unordered_map>
 #else
@@ -62,6 +65,8 @@ private:
     AudioManager*   m_audio;
     Light*          m_light;
     std::tr1::unordered_map<std::string, double> m_timers;
+
+    std::vector<Monster*> m_monsters;
 };
 
 }; // namespace
