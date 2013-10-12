@@ -15,6 +15,7 @@
 #include "nuTimer.h"
 #include "nuCell.h"
 #include "nuMonster.h"
+#include "nuNPC.h"
 
 #include <cmath>
 #include <sstream>
@@ -59,6 +60,9 @@ Game::Game(std::string worldFile, std::string stateFile) :
     m_monsters.push_back(new Monster(Vec3i(2, 2, 0)));
     m_monsters.push_back(new Monster(Vec3i(4, 4, 0)));
     m_monsters.push_back(new Monster(Vec3i(6, 6, 0)));
+
+    //addNPCToParty(new NPC("jope"));
+    m_npcs.push_back(new NPC("jope"));
 }
 
 Game::~Game()
@@ -95,6 +99,8 @@ void Game::tick()
         processTurn();
 
     m_player->tick();
+    for (std::vector<NPC*>::iterator it = m_npcs.begin(); it != m_npcs.end(); ++it)
+        (*it)->tick();
 }
 
 void Game::display()
@@ -219,11 +225,17 @@ void Game::renderWorld(Camera* camera)
 
     m_player->render();
 
+    // render party
+    for (std::vector<NPC*>::iterator it = m_party.begin(); it != m_party.end(); ++it)
+        (*it)->render();
+
+    // render NPCs
+    for (std::vector<NPC*>::iterator it = m_npcs.begin(); it != m_npcs.end(); ++it)
+        (*it)->render();
+
     // render monsters
     for (std::vector<Monster*>::iterator it = m_monsters.begin(); it != m_monsters.end(); ++it)
-    {
         (*it)->render();
-    }
 
     g->disableLighting();
 }
@@ -345,6 +357,8 @@ void Game::handleKeypress(int key)
 
 
     // TODO process other keys like r=rest etc.
+    if (key == 32)
+        m_advanceTurn = true;
 }
 
 /*
@@ -359,7 +373,13 @@ void Game::movePlayer(Vec3i d)
 void Game::processTurn()
 {
     // TODO move nearby monsters
-    // TODO move inhabitants
+
+    // move inhabitants etc
+    for (std::vector<NPC*>::iterator it = m_npcs.begin(); it != m_npcs.end(); ++it)
+    {
+        (*it)->processTurn();
+        // TODO if NPC too far off camera, remove from m_npcs?
+    }
 
     // advance time of day
     // TODO Muumi - This is now .16 fixed, I dunno why really.
@@ -381,4 +401,49 @@ void Game::processTimers()
     m_timers["Game::renderStats"] = timer->getTimerValue("Game::renderStats");
 
     timer->reset("Block::render");
+}
+
+void Game::addNPCToParty(NPC* npc)
+{
+    m_party.push_back(npc);
+}
+
+void Game::removeNPCFromParty(std::string name)
+{
+}
+
+bool Game::findPath(Vec3i start, Vec3i goal)
+{
+
+//    closedset := the empty set    // The set of nodes already evaluated.
+//    openset := {start}    // The set of tentative nodes to be evaluated, initially containing the start node
+//    came_from := the empty map    // The map of navigated nodes.
+//
+//    g_score[start] := 0    // Cost from start along best known path.
+//    // Estimated total cost from start to goal through y.
+//    f_score[start] := g_score[start] + heuristic_cost_estimate(start, goal)
+//     
+//    while openset is not empty
+//        current := the node in openset having the lowest f_score[] value
+//        if current = goal
+//            return reconstruct_path(came_from, goal)
+//         
+//        remove current from openset
+//        add current to closedset
+//        for each neighbor in neighbor_nodes(current)
+//            tentative_g_score := g_score[current] + dist_between(current,neighbor)
+//            tentative_f_score := tentative_g_score + heuristic_cost_estimate(neighbor, goal)
+//            if neighbor in closedset and tentative_f_score >= f_score[neighbor]
+//                    continue
+//
+//            if neighbor not in openset or tentative_f_score < f_score[neighbor] 
+//                came_from[neighbor] := current
+//                g_score[neighbor] := tentative_g_score
+//                f_score[neighbor] := tentative_f_score
+//                if neighbor not in openset
+//                    add neighbor to openset
+//
+//    return failure
+
+    return false;
 }

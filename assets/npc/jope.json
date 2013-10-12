@@ -1,0 +1,35 @@
+{
+    "stats" :
+    {
+        "name"    : "Jope",
+        "canJoin" : false
+    },
+
+
+    "waypoints" :
+    [
+        [1, 1, 0, 2],
+        [3, 3, 0, 3],
+        [2, 3, 0, 2]
+    ],
+
+    "dialogue"  :
+    {
+        "lines" : 
+        [
+	    "Greetings!",
+	    "My name is Jope!",
+	    "I am the town drunk.",
+	    "Aye, I like to mess with the big four-oh!",
+	    "Yarr, it makes my mind slow"
+        ],
+        "keywords": 
+        {
+	    "name" : 1,
+	    "job" : 2,
+	    "drunk" : 3,
+	    "four-oh" : 4
+        }
+    }
+
+}

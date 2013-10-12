@@ -1,7 +1,6 @@
 #pragma once
 
 #include "nuVec3.h"
-#include "nuMonster.h"
 
 #include <string>
 #include <vector>
@@ -24,6 +23,8 @@ class Camera;
 class Editor;
 class AudioManager;
 class Light;
+class Monster;
+class NPC;
 
 class Game
 {
@@ -55,6 +56,13 @@ private:
     void handleKeypress(int key);
     void processTurn();
 
+    // party related
+    void addNPCToParty(NPC*);
+    void removeNPCFromParty(std::string name);
+
+    // pathfinding etc
+    bool findPath(Vec3i start, Vec3i goal);
+
     World*          m_world;
     GameState*      m_state;
     Player*         m_player;
@@ -67,6 +75,8 @@ private:
     std::tr1::unordered_map<std::string, double> m_timers;
 
     std::vector<Monster*> m_monsters;
+    std::vector<NPC*>     m_npcs;
+    std::vector<NPC*>     m_party;
 };
 
 }; // namespace
