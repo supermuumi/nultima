@@ -1,27 +1,27 @@
 #include "nuGraphics.h"
 #include "nuDefs.h"
-#include "nuGlut.h"
 #include "nuLight.h"
 
 #if NU_OS == NU_OS_WINDOWS
 #   include <Windows.h>
 #endif
 
-#include "glew/include/GL/glew.h"
-
 #if defined(__APPLE__) || defined(MACOSX)
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
-#include <GLUT/glut.h>
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "glut/include/GL/glut.h"
 #endif
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+
 #include "stb/stb_image.c"
+#include <iostream>
 
 using namespace Nultima;
+using namespace std;
 
 Graphics::Graphics(Vec2i windowDimensions) :
     m_windowDimensions(windowDimensions)
@@ -30,15 +30,37 @@ Graphics::Graphics(Vec2i windowDimensions) :
 
 Graphics::~Graphics()
 {
-    NU_ASSERT(!m_GLUT);
 }
 
-void Graphics::init()
+int Graphics::init()
 {
-    m_GLUT = new GLUT();
-    m_GLUT->init(m_windowDimensions.m_x, m_windowDimensions.m_y);
 
-    glewInit();
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+	std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
+	return 1;
+    }
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+    sdlWindow = SDL_CreateWindow("Nultima",
+                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                 m_windowDimensions.m_x, m_windowDimensions.m_y,
+                                 SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    if (sdlWindow == NULL) {
+	//std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
+	return 1;
+    }
+    
+    sdlGLContext = SDL_GL_CreateContext(sdlWindow);
+    SDL_GL_SetSwapInterval(1);
+
+    sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (sdlRenderer == NULL) {
+	//std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
+	return 1;
+    }
 
     // OpenGL state
     glShadeModel(GL_SMOOTH);
@@ -49,13 +71,18 @@ void Graphics::init()
     glFrontFace(GL_CCW);
     glDisable(GL_POLYGON_SMOOTH);
     glDisable(GL_BLEND);
+
+    return 0;
 }
 
 void Graphics::deinit()
 {
-    m_GLUT->deinit();
-    delete m_GLUT;
-    m_GLUT = NULL;
+    SDL_GL_DeleteContext(sdlGLContext);
+    if (sdlRenderer != NULL)
+        SDL_DestroyRenderer(sdlRenderer);
+    if (sdlWindow != NULL)
+        SDL_DestroyWindow(sdlWindow);
+    SDL_Quit();    
 }
 
 void Graphics::resize(int x, int y)
@@ -98,7 +125,7 @@ void Graphics::clear()
 void Graphics::swap()
 {
     NU_ASSERT(glGetError() == GL_NO_ERROR);
-    m_GLUT->swap();
+    SDL_GL_SwapWindow(sdlWindow);
     NU_ASSERT(glGetError() == GL_NO_ERROR);
 }
 
@@ -311,7 +338,8 @@ void Graphics::drawString(const char* str, float x, float y)
 		}
 		else
 		{
-			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, (int)str[i]);
+                    //TODO SDL_ttf?
+                    //glutBitmapCharacter(GLUT_BITMAP_8_BY_13, (int)str[i]);
 		}
 	}
 

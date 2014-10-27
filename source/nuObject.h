@@ -13,7 +13,7 @@ class Object
 public:
 
     Object() {}
-    ~Object() {}
+    virtual ~Object() {}
 
     virtual void render     (void) const = 0;
 

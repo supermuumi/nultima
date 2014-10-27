@@ -1,5 +1,5 @@
 #include "nuGame.h"
-#include "nuGlut.h"
+//#include "nuGlut.h"
 #include "nuKeyboard.h"
 #include "nuDefs.h"
 #include "nuContext.h"
@@ -81,8 +81,29 @@ void Game::mainloop()
 {
     //m_audio->playMusic("bgmusic");
 
-    Graphics* graphics = Context::get()->getGraphics();
-    GLUT::mainloop(this, graphics);
+    //Graphics* graphics = Context::get()->getGraphics();
+    //GLUT::mainloop(this, graphics);
+
+    bool quit = false;
+    while (!quit)
+    {
+        SDL_Event e;
+        while (SDL_PollEvent(&e) != 0)
+        {
+            if (e.type == SDL_QUIT)
+            {
+                quit = true;
+            }
+            else if (e.type == SDL_KEYDOWN)
+            {
+                handleKeypress(e.key.keysym.sym);
+            }
+        }
+
+        tick();
+        display();
+        processTimers();
+    }
 }
 
 void Game::tick()
@@ -92,9 +113,10 @@ void Game::tick()
     m_advanceTurn = false;
 
     // Handle input
+    /*
     handleKeyboard();
     handleMouse();
-
+    */
     if (m_advanceTurn)
         processTurn();
 
@@ -301,16 +323,10 @@ void Game::renderStats()
  */
 void Game::handleKeyboard()
 {
-    Keyboard* keyboard = Context::get()->getKeyboard();
+    
 
-    /*
-      if (keyboard->isKeyPressed('q')) m_light->m_pos.m_z -= 0.1;
-      if (keyboard->isKeyPressed('z')) m_light->m_pos.m_z += 0.1;
-      if (keyboard->isKeyPressed('w')) m_light->m_pos.m_y -= 0.1;
-      if (keyboard->isKeyPressed('s')) m_light->m_pos.m_y += 0.1;
-      if (keyboard->isKeyPressed('a')) m_light->m_pos.m_x -= 0.1;
-      if (keyboard->isKeyPressed('d')) m_light->m_pos.m_x += 0.1;
-    */
+Keyboard* keyboard = Context::get()->getKeyboard();
+/*
     while (keyboard->hasKeyPresses())
     {
         int key = keyboard->processKeyPress();
@@ -329,6 +345,7 @@ void Game::handleKeyboard()
                 handleKeypress(key);
         }
     }
+    */
 }
 
 void Game::handleMouse()
@@ -336,7 +353,6 @@ void Game::handleMouse()
     //Mouse* mouse = Context::get()->getMouse();
     if (m_isEditorMode)
         m_editor->handleMouse();
-
 }
 
 /*
@@ -344,21 +360,48 @@ void Game::handleMouse()
  */
 void Game::handleKeypress(int key)
 {
-    // move player
-    if (key == NU_KEY_LEFT)
-        movePlayer(Vec3i(-1, 0, 0));
-    if (key == NU_KEY_RIGHT)
-        movePlayer(Vec3i(1, 0, 0));
-    if (key == NU_KEY_UP)
-        movePlayer(Vec3i(0, 1, 0));
-    if (key == NU_KEY_DOWN)
-        movePlayer(Vec3i(0, -1, 0));
+    if (key == NU_KEY_TAB) 
+    {
+        //m_audio->playEffect("freefall", true);
+        m_isEditorMode = !m_isEditorMode;
+    }
+    else
+    {
+        if (m_isEditorMode)
+        {
+            m_editor->handleKeypress(key);
+        }
+        else
+        {
+            if (key == NU_KEY_LEFT)
+                movePlayer(Vec3i(-1, 0, 0));
+            if (key == NU_KEY_RIGHT)
+                movePlayer(Vec3i(1, 0, 0));
+            if (key == NU_KEY_UP)
+                movePlayer(Vec3i(0, 1, 0));
+            if (key == NU_KEY_DOWN)
+                movePlayer(Vec3i(0, -1, 0));
+            if (key == NU_KEY_RETURN)
+                m_advanceTurn = true;
+
+            /*
+              if (keyboard->isKeyPressed('q')) m_light->m_pos.m_z -= 0.1;
+              if (keyboard->isKeyPressed('z')) m_light->m_pos.m_z += 0.1;
+              if (keyboard->isKeyPressed('w')) m_light->m_pos.m_y -= 0.1;
+              if (keyboard->isKeyPressed('s')) m_light->m_pos.m_y += 0.1;
+              if (keyboard->isKeyPressed('a')) m_light->m_pos.m_x -= 0.1;
+              if (keyboard->isKeyPressed('d')) m_light->m_pos.m_x += 0.1;
+            */
+
+        }
+    }
+    
+
     // TODO handle climbing up/down
 
 
     // TODO process other keys like r=rest etc.
-    if (key == 32)
-        m_advanceTurn = true;
+
 }
 
 /*

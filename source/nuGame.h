@@ -5,12 +5,13 @@
 #include <string>
 #include <vector>
 
+// OSX 10.9 no longer wants this?
+//#include <unordered_map>
 #if defined(__APPLE__) || defined(MACOSX)
 #include <tr1/unordered_map>
 #else
 #include <unordered_map>
 #endif
-
 #define NU_GAME_TIMEPERTURN 2048
 
 namespace Nultima

@@ -1,20 +1,22 @@
 #pragma once
 
 #include <list>
+#include <SDL2/SDL.h>
 
 namespace Nultima
 {
 
-#define NU_KEY_TAB          9
-#define NU_KEY_LEFT         356
-#define NU_KEY_UP           357
-#define NU_KEY_RIGHT        358
-#define NU_KEY_DOWN         359
-#define NU_KEY_PAGE_UP      360
-#define NU_KEY_PAGE_DOWN    361
-#define NU_KEY_HOME         362
-#define NU_KEY_END          363
-
+#define NU_KEY_TAB          SDLK_TAB
+#define NU_KEY_LEFT         SDLK_LEFT
+#define NU_KEY_UP           SDLK_UP
+#define NU_KEY_RIGHT        SDLK_RIGHT
+#define NU_KEY_DOWN         SDLK_DOWN
+#define NU_KEY_PAGE_UP      SDLK_PAGEUP
+#define NU_KEY_PAGE_DOWN    SDLK_PAGEDOWN
+#define NU_KEY_HOME         SDLK_HOME
+#define NU_KEY_END          SDLK_END
+#define NU_KEY_RETURN       SDLK_RETURN
+    
 class Keyboard
 {
 public:

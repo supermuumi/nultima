@@ -3,12 +3,14 @@
 #include "nuVec3.h"
 #include "nuVec2.h"
 
+#include <SDL2/SDL.h>
+
 #include <string>
 
 namespace Nultima
 {
 
-class GLUT;
+//class GLUT;
 class Light;
 
 class Graphics
@@ -17,7 +19,7 @@ public:
     Graphics(Vec2i windowDimensions);
     ~Graphics();
 
-    void init();
+    int  init();
     void deinit();
 
     // Window
@@ -67,7 +69,9 @@ public:
 
 private:
     Vec2i   m_windowDimensions;
-    GLUT*   m_GLUT;
+    SDL_GLContext sdlGLContext;
+    SDL_Window    *sdlWindow;
+    SDL_Renderer  *sdlRenderer;
 };
 
 }; // namespace
